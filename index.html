@@ -1,138 +1,472 @@
 <!DOCTYPE HTML>
-<!--
-	Directive by HTML5 UP
-	html5up.net | @ajlkn
-	Free for personal and commercial use under the CCA 3.0 license (html5up.net/license)
--->
-<html>
-	<head>
-		<title>Gamze Bıçakçı | Kişisel Portfolyo</title>
-		<meta charset="utf-8" />
-		<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
-		<link rel="stylesheet" href="assets/css/main.css" />
-	</head>
-	
-	<body class="is-preload">
+<html lang="tr">
+<head>
+    <title>Gamze Bıçakçı | Yaratıcı Portfolyo</title>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:wght@400;500;600&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
 
-		<!-- Header -->
-			<!-- Header bölümüne ekleyin -->
-<div id="header">
-    <h1>Gamze Bıçakçı</h1>
-    <p>Yazmaya, üretmeye ve ilham olmaya gönül vermiş bir reklamcılık öğrencisi</p>
-    <nav style="margin-top: 1rem;">
-        <a href="/blog" style="color: white; text-decoration: none; margin: 0 1rem; padding: 0.5rem 1rem; background: rgba(255,255,255,0.1); border-radius: 5px;">📝 Blog</a>
-        <a href="/admin" style="color: white; text-decoration: none; margin: 0 1rem; padding: 0.5rem 1rem; background: rgba(255,255,255,0.1); border-radius: 5px;">⚙️ Admin</a>
-    </nav>
-</div>
+        :root {
+            --primary-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            --soft-gradient: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            --gentle-gradient: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+            --warm-gradient: linear-gradient(135deg, #fa709a 0%, #fee140 100%);
+            --text-dark: #2d3748;
+            --text-light: #718096;
+            --glass-bg: rgba(255, 255, 255, 0.1);
+            --glass-border: rgba(255, 255, 255, 0.2);
+        }
 
-		<!-- Main -->
-			<div id="main">
+        body {
+            font-family: 'Inter', sans-serif;
+            line-height: 1.7;
+            color: var(--text-dark);
+            background: var(--primary-gradient);
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
 
-				<header class="major container medium">
-					<h2>Ben Kimim?</h2>
-					<p>2004 yılının sıcak bir yaz gününde, 14 Ağustos'ta dünyaya geldim. Kendisinden 2 yaş büyük bir abimle birlikte dört kişilik bir ailede büyüdüm. 
-					İlkokuldan beri yazmaya ilgi duydum. Kısa hikâyeler, deneme yazıları ve milli bayramlarla ilgili içerikler yazarak yarışmalara katıldım. Yazdıklarımın insanları etkilediğini gördükçe bu yönümün güçlü olduğuna inandım ve geleceğimin bir parçası olması gerektiğini düşündüm.
-					Yaratıcı tarafıma güvenerek üniversitede reklamcılık okumaya karar verdim.</p>
-				</header>
+        /* Modern Header */
+        .hero-section {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            padding: 2rem;
+            position: relative;
+        }
 
-				<!-- HOBİLER -->
-				<div class="box alt container">
-					<section class="feature left">
-						<a href="#" class="image icon solid fa-heart"><img src="images/pic01.jpg" alt="" /></a>
-						<div class="content">
-							<h3>Hobiler</h3>
-							<ul>
-								<li>Bir dönem kitap kurduydu :)</li>
-								<li>Müzik dinlemeyi ve dans etmeyi sever.</li>
-								<li>Bir şeyler pişirmeyi (özellikle tatlı) sever.</li>
-								<li>Basketbol oynamayı sever.</li>
-								<li>Pilates ve yoga ilgisi vardı.</li>
-								<li>Psikolojiyle ilgili kitaplar okumayı, film izlemeyi sever.</li>
-								<li>Yeni yerler keşfetmeye bayılır (özellikle az insanlı yerler).</li>
-								<li>Yürüyüş yapmayı sever.</li>
-								<li>Yüzmeyi tam bilmese de sever.</li>
-								<li>Müzik aleti çalmayı deniyor, bir gün başaracak :)</li>
-								<li>Organizasyon yapmayı çok sever (doğum günü, özel günler vb.)</li>
-								<li>Sesini kullanmayı sever (şiir okumak, dinleti vs.)</li>
-							</ul>
-						</div>
-					</section>
+        .hero-content {
+            background: rgba(255, 255, 255, 0.15);
+            backdrop-filter: blur(20px);
+            border-radius: 30px;
+            padding: 4rem 3rem;
+            border: 1px solid var(--glass-border);
+            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.1);
+            max-width: 800px;
+            transform: translateY(20px);
+            animation: fadeInUp 1s ease forwards;
+        }
 
-					<section class="feature right">
-						<a href="#" class="image icon solid fa-book"><img src="images/pic02.jpg" alt="" /></a>
-						<div class="content">
-							<h3>Aldığım Dersler</h3>
-							<ul>
-								<li>Fotoğrafçılık</li>
-								<li>İnternet Programcılığı</li>
-								<li>İletişim Tarihi</li>
-								<li>Reklama Giriş II</li>
-								<li>Siyaset Bilimine Giriş</li>
-								<li>İktisat</li>
-								<li>Psikoloji</li>
-								<li>Kariyer Planlama</li>
-								<li>İngilizce</li>
-							</ul>
-						</div>
-					</section>
-				</div>
+        .hero-title {
+            font-family: 'Playfair Display', serif;
+            font-size: clamp(2.5rem, 5vw, 4rem);
+            font-weight: 600;
+            color: white;
+            margin-bottom: 1rem;
+            text-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
 
-				<footer class="major container medium">
-					<h3>Biraz Dans, Müzik...</h3>
-					<p>Biraz da kahve ☕</p>
-					<h4>En Büyük Hayalim:</h4>
-					<p>Kelimelerle dünyaları değiştirmek. Yaratıcı fikirlerimi insanlarla buluşturabileceğim bir alanda kalıcı işler üretmek.</p>
-				</footer>
+        .hero-subtitle {
+            font-size: clamp(1.1rem, 2.5vw, 1.4rem);
+            color: rgba(255, 255, 255, 0.9);
+            margin-bottom: 2.5rem;
+            font-weight: 300;
+            letter-spacing: 0.5px;
+        }
 
-			</div>
+        .nav-pills {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
 
-		<!-- Footer -->
-			<div id="footer">
-				<div class="container medium">
+        .nav-pill {
+            padding: 1rem 2rem;
+            background: rgba(255, 255, 255, 0.15);
+            color: white;
+            text-decoration: none;
+            border-radius: 50px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            backdrop-filter: blur(10px);
+        }
 
-					<header class="major last">
-						<h2>İletişime Geç</h2>
-					</header>
+        .nav-pill:hover {
+            transform: translateY(-3px);
+            background: rgba(255, 255, 255, 0.25);
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
+        }
 
-					<p>Her türlü soru, fikir ya da işbirliği için benimle iletişime geçebilirsin.</p>
+        /* Modern Sections */
+        .section {
+            padding: 6rem 2rem;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
 
-					<form method="post" action="#">
-						<div class="row">
-							<div class="col-6 col-12-mobilep">
-								<input type="text" name="name" placeholder="Adın" />
-							</div>
-							<div class="col-6 col-12-mobilep">
-								<input type="email" name="email" placeholder="E-posta" />
-							</div>
-							<div class="col-12">
-								<textarea name="message" placeholder="Mesajın" rows="6"></textarea>
-							</div>
-							<div class="col-12">
-								<ul class="actions special">
-									<li><input type="submit" value="Gönder" /></li>
-								</ul>
-							</div>
-						</div>
-					</form>
+        .section-card {
+            background: rgba(255, 255, 255, 0.12);
+            backdrop-filter: blur(20px);
+            border-radius: 25px;
+            padding: 3rem;
+            margin-bottom: 3rem;
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+            transition: all 0.4s ease;
+        }
 
-					<ul class="icons">
-						<li><a href="#" class="icon brands fa-instagram"><span class="label">Instagram</span></a></li>
-						<li><a href="#" class="icon brands fa-twitter"><span class="label">Twitter</span></a></li>
-					</ul>
+        .section-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 30px 60px rgba(0, 0, 0, 0.15);
+        }
 
-					<ul class="copyright">
-						<li>&copy; Gamze Bıçakçı. Tüm hakları saklıdır.</li><li>Tasarım: <a href="http://html5up.net">HTML5 UP</a></li>
-					</ul>
+        .section-title {
+            font-family: 'Playfair Display', serif;
+            font-size: 2.5rem;
+            color: white;
+            margin-bottom: 1.5rem;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+            text-align: center;
+        }
 
-				</div>
-			</div>
+        .about-text {
+            font-size: 1.1rem;
+            color: rgba(255, 255, 255, 0.9);
+            text-align: center;
+            line-height: 1.8;
+            max-width: 800px;
+            margin: 0 auto;
+        }
 
-		<!-- Scripts -->
-			<script src="assets/js/jquery.min.js"></script>
-			<script src="assets/js/browser.min.js"></script>
-			<script src="assets/js/breakpoints.min.js"></script>
-			<script src="assets/js/util.js"></script>
-			<script src="assets/js/main.js"></script>
+        /* Modern Grid */
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 2rem;
+            margin-top: 3rem;
+        }
 
-	</body>
-</html>
+        .feature-card {
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0.05));
+            padding: 2.5rem;
+            border-radius: 20px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(15px);
+            transition: all 0.4s ease;
+        }
+
+        .feature-card:hover {
+            transform: translateY(-5px) scale(1.02);
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.2), rgba(255, 255, 255, 0.1));
+        }
+
+        .feature-icon {
+            font-size: 2.5rem;
+            margin-bottom: 1.5rem;
+            display: block;
+        }
+
+        .feature-title {
+            font-size: 1.5rem;
+            color: white;
+            margin-bottom: 1.5rem;
+            font-weight: 600;
+        }
+
+        .feature-list {
+            list-style: none;
+            color: rgba(255, 255, 255, 0.8);
+        }
+
+        .feature-list li {
+            padding: 0.5rem 0;
+            padding-left: 1.5rem;
+            position: relative;
+        }
+
+        .feature-list li::before {
+            content: "✨";
+            position: absolute;
+            left: 0;
+            color: rgba(255, 255, 255, 0.6);
+        }
+
+        /* Dream Section */
+        .dream-section {
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.15), rgba(255, 255, 255, 0.05));
+            border-radius: 25px;
+            padding: 3rem;
+            text-align: center;
+            margin: 3rem 0;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .dream-title {
+            font-family: 'Playfair Display', serif;
+            font-size: 2rem;
+            color: white;
+            margin-bottom: 1rem;
+        }
+
+        .dream-text {
+            font-size: 1.2rem;
+            color: rgba(255, 255, 255, 0.9);
+            font-style: italic;
+            line-height: 1.7;
+        }
+
+        /* Modern Contact */
+        .contact-section {
+            background: rgba(255, 255, 255, 0.12);
+            backdrop-filter: blur(20px);
+            border-radius: 25px;
+            padding: 3rem;
+            margin-top: 3rem;
+            border: 1px solid rgba(255, 255, 255, 0.15);
+        }
+
+        .contact-form {
+            display: grid;
+            gap: 1.5rem;
+            max-width: 600px;
+            margin: 2rem auto 0;
+        }
+
+        .form-group {
+            display: grid;
+            gap: 1rem;
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+        }
+
+        .form-input {
+            padding: 1rem 1.5rem;
+            border: 2px solid rgba(255, 255, 255, 0.2);
+            border-radius: 15px;
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+            font-family: inherit;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            backdrop-filter: blur(10px);
+        }
+
+        .form-input:focus {
+            outline: none;
+            border-color: rgba(255, 255, 255, 0.5);
+            background: rgba(255, 255, 255, 0.15);
+            transform: translateY(-2px);
+        }
+
+        .form-input::placeholder {
+            color: rgba(255, 255, 255, 0.6);
+        }
+
+        .form-textarea {
+            min-height: 150px;
+            resize: vertical;
+        }
+
+        .submit-btn {
+            padding: 1.2rem 3rem;
+            background: linear-gradient(45deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 50px;
+            font-weight: 600;
+            font-size: 1.1rem;
+            cursor: pointer;
+            transition: all 0.4s ease;
+            justify-self: center;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+        }
+
+        .submit-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.3);
+            background: linear-gradient(45deg, #7289f4 0%, #8e5bb8 100%);
+        }
+
+        /* Social Links */
+        .social-links {
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+            margin: 2rem 0;
+        }
+
+        .social-link {
+            width: 50px;
+            height: 50px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .social-link:hover {
+            background: rgba(255, 255, 255, 0.2);
+            transform: translateY(-3px);
+        }
+
+        /* Footer */
+        .footer {
+            text-align: center;
+            padding: 2rem;
+            color: rgba(255, 255, 255, 0.7);
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            margin-top: 3rem;
+        }
+
+        /* Animations */
+        @keyframes fadeInUp {
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .fade-in {
+            opacity: 0;
+            transform: translateY(30px);
+            animation: fadeInUp 0.8s ease forwards;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .hero-content {
+                padding: 2rem;
+                margin: 1rem;
+            }
+            
+            .features-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .form-row {
+                grid-template-columns: 1fr;
+            }
+            
+            .section {
+                padding: 3rem 1rem;
+            }
+        }
+
+        /* Floating Animation */
+        .floating {
+            animation: floating 3s ease-in-out infinite;
+        }
+
+        @keyframes floating {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-10px); }
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Hero Section -->
+    <section class="hero-section">
+        <div class="hero-content floating">
+            <h1 class="hero-title">Gamze Bıçakçı</h1>
+            <p class="hero-subtitle">Yazmaya, üretmeye ve ilham olmaya gönül vermiş bir yaratıcı ruh ✨</p>
+            <nav class="nav-pills">
+                <a href="/blog" class="nav-pill">📝 Blog</a>
+                <a href="/admin" class="nav-pill">⚙️ Admin</a>
+            </nav>
+        </div>
+    </section>
+
+    <!-- About Section -->
+    <section class="section fade-in">
+        <div class="section-card">
+            <h2 class="section-title">✨ Ben Kimim?</h2>
+            <p class="about-text">
+                2004 yılının sıcak bir yaz gününde, 14 Ağustos'ta dünyaya geldim. Kendisinden 2 yaş büyük bir abimle birlikte dört kişilik bir ailede büyüdüm. 
+                <br><br>
+                İlkokuldan beri yazmaya ilgi duydum. Kısa hikâyeler, deneme yazıları ve milli bayramlarla ilgili içerikler yazarak yarışmalara katıldım. Yazdıklarımın insanları etkilediğini gördükçe bu yönümün güçlü olduğuna inandım ve geleceğimin bir parçası olması gerektiğini düşündüm.
+                <br><br>
+                Yaratıcı tarafıma güvenerek üniversitede reklamcılık okumaya karar verdim.
+            </p>
+        </div>
+    </section>
+
+    <!-- Features Grid -->
+    <section class="section">
+        <div class="features-grid">
+            <div class="feature-card fade-in">
+                <span class="feature-icon">💝</span>
+                <h3 class="feature-title">Hobilerim</h3>
+                <ul class="feature-list">
+                    <li>Kitap okuma tutkusu</li>
+                    <li>Dans ve müzik sevgisi</li>
+                    <li>Tatlı yapma sanatı</li>
+                    <li>Basketbol tutkusu</li>
+                    <li>Pilates & yoga deneyimi</li>
+                    <li>Psikoloji ve sinema</li>
+                    <li>Yeni yerler keşfetme</li>
+                    <li>Doğa yürüyüşleri</li>
+                    <li>Müzik aleti öğrenme serüveni</li>
+                    <li>Etkinlik organizasyonu</li>
+                </ul>
+            </div>
+
+            <div class="feature-card fade-in">
+                <span class="feature-icon">📚</span>
+                <h3 class="feature-title">Eğitim Yolculuğum</h3>
+                <ul class="feature-list">
+                    <li>Fotoğrafçılık</li>
+                    <li>İnternet Programcılığı</li>
+                    <li>İletişim Tarihi</li>
+                    <li>Reklama Giriş II</li>
+                    <li>Siyaset Bilimine Giriş</li>
+                    <li>İktisat</li>
+                    <li>Psikoloji</li>
+                    <li>Kariyer Planlama</li>
+                    <li>İngilizce</li>
+                </ul>
+            </div>
+        </div>
+    </section>
+
+    <!-- Dream Section -->
+    <section class="section">
+        <div class="dream-section fade-in">
+            <h3 class="dream-title">🌟 En Büyük Hayalim</h3>
+            <p class="dream-text">
+                "Kelimelerle dünyaları değiştirmek. Yaratıcı fikirlerimi insanlarla buluşturabileceğim bir alanda kalıcı işler üretmek."
+            </p>
+        </div>
+    </section>
+
+    <!-- Contact Section -->
+    <section class="section">
+        <div class="contact-section fade-in">
+            <h2 class="section-title">💌 İletişime Geç</h2>
+            <p style="text-align: center; color: rgba(255,255,255,0.8); margin-bottom: 2rem;">
+                Her türlü soru, fikir ya da işbirliği için benimle iletişime geçebilirsin.
+            </p>
+            
+            <form class="contact-form" method="post" action="#">
+                <div class="form-row">
+                    <input type="text" name="name" placeholder="✨ Adın" class="form-input" required />
+                    <input type="email" name="email" placeholder="📧 E-posta" class="form-input" required />
+                </div>
+                <textarea name="message" placeholder="💭 Mesajın..." class="form-input form-textarea" required></textarea>
+                <button type="submit" class="submit-btn">Gönder 🚀</button>
+            
