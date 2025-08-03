@@ -5,70 +5,151 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
     <link rel="stylesheet" href="../assets/css/main.css" />
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <style>
+        body {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            font-family: 'Inter', sans-serif;
+        }
+        
         .blog-container {
-            max-width: 800px;
+            max-width: 900px;
             margin: 0 auto;
-            padding: 2rem;
+            padding: 2rem 1rem;
         }
         
         .blog-header {
             text-align: center;
-            margin-bottom: 3rem;
-            background: rgba(255, 255, 255, 0.1);
-            padding: 2rem;
-            border-radius: 15px;
-            backdrop-filter: blur(10px);
+            margin-bottom: 4rem;
+            background: rgba(255, 255, 255, 0.15);
+            padding: 3rem 2rem;
+            border-radius: 25px;
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+        }
+        
+        .blog-header h1 {
+            font-size: 3rem;
+            font-weight: 700;
+            color: white;
+            margin-bottom: 1rem;
+            text-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+        }
+        
+        .blog-header p {
+            font-size: 1.2rem;
+            color: rgba(255, 255, 255, 0.9);
+            font-weight: 300;
+            letter-spacing: 0.5px;
         }
         
         .blog-post {
-            background: rgba(255, 255, 255, 0.1);
-            margin-bottom: 2rem;
-            padding: 2rem;
-            border-radius: 15px;
-            backdrop-filter: blur(10px);
-            border-left: 4px solid #667eea;
-            transition: all 0.3s ease;
+            background: rgba(255, 255, 255, 0.12);
+            margin-bottom: 2.5rem;
+            padding: 2.5rem;
+            border-radius: 20px;
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .blog-post::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, #ff6b6b, #4ecdc4, #45b7d1, #96ceb4);
+            border-radius: 20px 20px 0 0;
         }
         
         .blog-post:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            transform: translateY(-10px) scale(1.02);
+            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.2);
+            background: rgba(255, 255, 255, 0.18);
         }
         
         .post-title {
-            font-size: 1.5rem;
-            font-weight: bold;
-            margin-bottom: 1rem;
+            font-size: 1.8rem;
+            font-weight: 600;
+            margin-bottom: 1.5rem;
             color: white;
+            line-height: 1.3;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
         }
         
         .post-meta {
-            font-size: 0.9rem;
-            color: rgba(255, 255, 255, 0.7);
-            margin-bottom: 1rem;
-            padding-bottom: 1rem;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+            font-size: 0.95rem;
+            color: rgba(255, 255, 255, 0.8);
+            margin-bottom: 1.5rem;
+            padding-bottom: 1.5rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.15);
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            font-weight: 400;
+        }
+        
+        .meta-item {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            background: rgba(255, 255, 255, 0.1);
+            padding: 0.5rem 1rem;
+            border-radius: 25px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
         }
         
         .post-content {
-            color: rgba(255, 255, 255, 0.9);
-            line-height: 1.6;
-            margin-bottom: 1rem;
+            color: rgba(255, 255, 255, 0.95);
+            line-height: 1.8;
+            margin-bottom: 2rem;
+            font-weight: 400;
+            font-size: 1.05rem;
+            text-align: justify;
+        }
+        
+        .post-content p {
+            margin-bottom: 1.2rem;
         }
         
         .post-tags {
             display: flex;
-            gap: 0.5rem;
+            gap: 0.8rem;
             flex-wrap: wrap;
+            margin-top: 1.5rem;
         }
         
         .tag {
-            background: rgba(255, 255, 255, 0.2);
+            background: linear-gradient(45deg, rgba(255, 255, 255, 0.15), rgba(255, 255, 255, 0.05));
             color: white;
-            padding: 0.25rem 0.75rem;
-            border-radius: 15px;
-            font-size: 0.8rem;
+            padding: 0.5rem 1.2rem;
+            border-radius: 25px;
+            font-size: 0.85rem;
+            font-weight: 500;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            transition: all 0.3s ease;
+            text-transform: lowercase;
+        }
+        
+        .tag:hover {
+            background: linear-gradient(45deg, rgba(255, 255, 255, 0.25), rgba(255, 255, 255, 0.15));
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+        
+        .tag::before {
+            content: '#';
+            opacity: 0.7;
+            margin-right: 2px;
         }
         
         .home-link {
@@ -77,30 +158,141 @@
             left: 2rem;
             color: white;
             text-decoration: none;
-            padding: 0.5rem 1rem;
-            background: rgba(255, 255, 255, 0.1);
-            border-radius: 5px;
+            padding: 1rem 1.5rem;
+            background: rgba(255, 255, 255, 0.15);
+            border-radius: 15px;
             transition: all 0.3s ease;
             z-index: 1000;
+            font-weight: 500;
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
         }
         
         .home-link:hover {
-            background: rgba(255, 255, 255, 0.2);
+            background: rgba(255, 255, 255, 0.25);
+            transform: translateY(-3px);
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
         }
         
         .no-posts {
             text-align: center;
-            color: rgba(255, 255, 255, 0.7);
+            color: rgba(255, 255, 255, 0.8);
             font-style: italic;
-            padding: 3rem;
-            background: rgba(255, 255, 255, 0.1);
-            border-radius: 15px;
+            padding: 4rem 2rem;
+            background: rgba(255, 255, 255, 0.12);
+            border-radius: 20px;
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+        }
+        
+        .no-posts h3 {
+            font-size: 2rem;
+            margin-bottom: 1rem;
+            color: white;
+            font-weight: 600;
+        }
+        
+        .no-posts p {
+            font-size: 1.1rem;
+            font-weight: 300;
         }
         
         .loading {
             text-align: center;
+            color: rgba(255, 255, 255, 0.8);
+            padding: 3rem;
+            font-size: 1.1rem;
+            background: rgba(255, 255, 255, 0.12);
+            border-radius: 20px;
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+        }
+        
+        .loading::after {
+            content: '';
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            margin-left: 10px;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            border-top-color: white;
+            animation: spin 1s linear infinite;
+        }
+        
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+        
+        .post-excerpt {
+            font-style: italic;
             color: rgba(255, 255, 255, 0.7);
-            padding: 2rem;
+            font-size: 1.1rem;
+            margin-bottom: 1.5rem;
+            padding: 1rem 1.5rem;
+            background: rgba(255, 255, 255, 0.08);
+            border-radius: 10px;
+            border-left: 3px solid rgba(255, 255, 255, 0.3);
+        }
+        
+        .read-time {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 0.5rem 1rem;
+            border-radius: 25px;
+            font-size: 0.85rem;
+            color: rgba(255, 255, 255, 0.8);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .blog-container {
+                padding: 1rem 0.5rem;
+            }
+            
+            .blog-header h1 {
+                font-size: 2.2rem;
+            }
+            
+            .blog-post {
+                padding: 1.5rem;
+                margin-bottom: 1.5rem;
+            }
+            
+            .post-title {
+                font-size: 1.5rem;
+            }
+            
+            .post-meta {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 0.5rem;
+            }
+            
+            .home-link {
+                top: 1rem;
+                left: 1rem;
+                padding: 0.75rem 1rem;
+            }
+        }
+        
+        /* Scroll Animation */
+        .blog-post {
+            opacity: 0;
+            transform: translateY(30px);
+            animation: fadeInUp 0.6s ease forwards;
+        }
+        
+        .blog-post:nth-child(2) { animation-delay: 0.1s; }
+        .blog-post:nth-child(3) { animation-delay: 0.2s; }
+        .blog-post:nth-child(4) { animation-delay: 0.3s; }
+        
+        @keyframes fadeInUp {
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
         }
     </style>
 </head>
@@ -109,12 +301,12 @@
     
     <div class="blog-container">
         <div class="blog-header">
-            <h1>Blog</h1>
+            <h1>✨ Blog</h1>
             <p>Düşüncelerim, deneyimlerim ve öğrendiklerim...</p>
         </div>
         
         <div id="blog-posts">
-            <div class="loading">Yazılar yükleniyor...</div>
+            <div class="loading">Yazılar yükleniyor</div>
         </div>
     </div>
 
@@ -126,6 +318,19 @@
     <script src="../assets/js/main.js"></script>
     
     <script>
+        function calculateReadTime(text) {
+            const wordsPerMinute = 200;
+            const words = text.split(' ').length;
+            const minutes = Math.ceil(words / wordsPerMinute);
+            return `${minutes} dk okuma`;
+        }
+        
+        function formatContent(content) {
+            return content.split('\n').map(paragraph => 
+                paragraph.trim() ? `<p>${paragraph.trim()}</p>` : ''
+            ).join('');
+        }
+        
         async function loadBlogPosts() {
             try {
                 const response = await fetch('/api/posts');
@@ -135,14 +340,14 @@
                 if (posts.length === 0) {
                     postsContainer.innerHTML = `
                         <div class="no-posts">
-                            <h3>Henüz yazı yok</h3>
+                            <h3>🌟 Henüz yazı yok</h3>
                             <p>İlk blog yazısı yakında yayınlanacak!</p>
                         </div>
                     `;
                     return;
                 }
                 
-                postsContainer.innerHTML = posts.map(post => {
+                postsContainer.innerHTML = posts.map((post, index) => {
                     const date = new Date(post.created_at).toLocaleDateString('tr-TR', {
                         year: 'numeric',
                         month: 'long',
@@ -153,16 +358,35 @@
                         `<span class="tag">${tag.trim()}</span>`
                     ).join('') : '';
                     
+                    const readTime = calculateReadTime(post.content);
+                    const formattedContent = formatContent(post.content);
+                    
                     return `
-                        <article class="blog-post">
+                        <article class="blog-post" style="animation-delay: ${index * 0.1}s">
                             <h2 class="post-title">${post.title}</h2>
+                            
+                            ${post.excerpt ? `<div class="post-excerpt">"${post.excerpt}"</div>` : ''}
+                            
                             <div class="post-meta">
-                                <span>📅 ${date}</span>
-                                ${post.author ? ` • ✍️ ${post.author}` : ''}
+                                <div class="meta-item">
+                                    <span>📅</span>
+                                    <span>${date}</span>
+                                </div>
+                                ${post.author ? `
+                                <div class="meta-item">
+                                    <span>✍️</span>
+                                    <span>${post.author}</span>
+                                </div>` : ''}
+                                <div class="meta-item">
+                                    <span>⏱️</span>
+                                    <span>${readTime}</span>
+                                </div>
                             </div>
+                            
                             <div class="post-content">
-                                ${post.content.replace(/\n/g, '<br>')}
+                                ${formattedContent}
                             </div>
+                            
                             ${tags ? `<div class="post-tags">${tags}</div>` : ''}
                         </article>
                     `;
@@ -172,7 +396,7 @@
                 console.error('Blog yazıları yüklenemedi:', error);
                 document.getElementById('blog-posts').innerHTML = `
                     <div class="no-posts">
-                        <h3>Hata oluştu</h3>
+                        <h3>⚠️ Hata oluştu</h3>
                         <p>Blog yazıları yüklenirken bir sorun oluştu. Lütfen daha sonra tekrar deneyin.</p>
                     </div>
                 `;
@@ -181,6 +405,24 @@
         
         // Sayfa yüklendiğinde blog yazılarını getir
         loadBlogPosts();
+        
+        // Smooth scroll animation for new posts
+        function observeElements() {
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.style.animationPlayState = 'running';
+                    }
+                });
+            });
+            
+            document.querySelectorAll('.blog-post').forEach(el => {
+                observer.observe(el);
+            });
+        }
+        
+        // Call observer after posts are loaded
+        setTimeout(observeElements, 500);
     </script>
 </body>
 </html>

@@ -5,156 +5,298 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Admin Panel - Gamze Bıçakçı</title>
     <link rel="stylesheet" href="../assets/css/main.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <style>
+        body {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            font-family: 'Inter', sans-serif;
+            margin: 0;
+            padding: 0;
+        }
+        
         .admin-container {
-            max-width: 800px;
+            max-width: 1200px;
             margin: 0 auto;
-            padding: 2rem;
-            background: rgba(255, 255, 255, 0.1);
-            border-radius: 15px;
-            backdrop-filter: blur(10px);
-            margin-top: 2rem;
+            padding: 2rem 1rem;
+        }
+        
+        .admin-header {
+            text-align: center;
+            margin-bottom: 3rem;
+            background: rgba(255, 255, 255, 0.15);
+            padding: 2.5rem;
+            border-radius: 25px;
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+        }
+        
+        .admin-header h1 {
+            font-size: 2.8rem;
+            font-weight: 700;
+            color: white;
+            margin-bottom: 0.5rem;
+            text-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+        }
+        
+        .admin-header p {
+            font-size: 1.1rem;
+            color: rgba(255, 255, 255, 0.8);
+            font-weight: 300;
         }
         
         .admin-nav {
             display: flex;
             gap: 1rem;
             margin-bottom: 2rem;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.2);
-            padding-bottom: 1rem;
+            background: rgba(255, 255, 255, 0.1);
+            padding: 1rem;
+            border-radius: 20px;
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            justify-content: center;
+            flex-wrap: wrap;
         }
         
         .admin-nav button {
-            padding: 0.5rem 1rem;
-            background: transparent;
-            border: 1px solid rgba(255, 255, 255, 0.3);
+            padding: 1rem 2rem;
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
             color: white;
-            border-radius: 5px;
+            border-radius: 15px;
             cursor: pointer;
-            transition: all 0.3s ease;
+            transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            font-weight: 500;
+            font-size: 0.95rem;
+            backdrop-filter: blur(10px);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .admin-nav button::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+            transition: left 0.5s;
+        }
+        
+        .admin-nav button:hover::before {
+            left: 100%;
         }
         
         .admin-nav button:hover,
         .admin-nav button.active {
-            background: rgba(255, 255, 255, 0.2);
-            border-color: rgba(255, 255, 255, 0.5);
+            background: rgba(255, 255, 255, 0.25);
+            border-color: rgba(255, 255, 255, 0.4);
+            transform: translateY(-3px);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+        }
+        
+        .admin-nav button.active {
+            background: linear-gradient(45deg, rgba(255, 255, 255, 0.3), rgba(255, 255, 255, 0.2));
         }
         
         .admin-section {
             display: none;
+            animation: fadeInUp 0.5s ease forwards;
         }
         
         .admin-section.active {
             display: block;
         }
         
-        .post-form {
-            background: rgba(0, 0, 0, 0.2);
-            padding: 1.5rem;
-            border-radius: 10px;
+        .section-card {
+            background: rgba(255, 255, 255, 0.12);
+            padding: 2.5rem;
+            border-radius: 20px;
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
             margin-bottom: 2rem;
         }
         
+        .section-title {
+            font-size: 2rem;
+            font-weight: 600;
+            color: white;
+            margin-bottom: 2rem;
+            text-align: center;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+        }
+        
+        .post-form {
+            background: rgba(0, 0, 0, 0.15);
+            padding: 2rem;
+            border-radius: 15px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
         .form-group {
-            margin-bottom: 1rem;
+            margin-bottom: 1.5rem;
         }
         
         .form-group label {
             display: block;
-            margin-bottom: 0.5rem;
+            margin-bottom: 0.75rem;
             color: white;
-            font-weight: bold;
+            font-weight: 600;
+            font-size: 1rem;
+            text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
         }
         
         .form-group input,
         .form-group textarea {
             width: 100%;
-            padding: 0.75rem;
-            border: 1px solid rgba(255, 255, 255, 0.3);
-            border-radius: 5px;
+            padding: 1rem 1.25rem;
+            border: 2px solid rgba(255, 255, 255, 0.2);
+            border-radius: 12px;
             background: rgba(255, 255, 255, 0.1);
             color: white;
             font-family: inherit;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            backdrop-filter: blur(10px);
+            box-sizing: border-box;
+        }
+        
+        .form-group input:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-color: rgba(255, 255, 255, 0.5);
+            background: rgba(255, 255, 255, 0.15);
+            box-shadow: 0 0 20px rgba(255, 255, 255, 0.1);
+            transform: translateY(-2px);
         }
         
         .form-group input::placeholder,
         .form-group textarea::placeholder {
-            color: rgba(255, 255, 255, 0.7);
+            color: rgba(255, 255, 255, 0.6);
         }
         
         .form-group textarea {
-            min-height: 150px;
+            min-height: 200px;
             resize: vertical;
+            line-height: 1.6;
         }
         
         .btn {
-            padding: 0.75rem 2rem;
+            padding: 1rem 2.5rem;
             background: linear-gradient(45deg, #667eea 0%, #764ba2 100%);
             color: white;
             border: none;
-            border-radius: 5px;
+            border-radius: 15px;
             cursor: pointer;
-            font-weight: bold;
-            transition: all 0.3s ease;
+            font-weight: 600;
+            font-size: 1rem;
+            transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+            transition: left 0.5s;
+        }
+        
+        .btn:hover::before {
+            left: 100%;
         }
         
         .btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+            transform: translateY(-3px);
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
+            background: linear-gradient(45deg, #7289f4 0%, #8e5bb8 100%);
+        }
+        
+        .btn:active {
+            transform: translateY(-1px);
         }
         
         .posts-list {
-            background: rgba(0, 0, 0, 0.2);
-            padding: 1.5rem;
-            border-radius: 10px;
+            background: rgba(0, 0, 0, 0.15);
+            padding: 2rem;
+            border-radius: 15px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
         }
         
         .post-item {
             background: rgba(255, 255, 255, 0.1);
-            padding: 1rem;
-            margin-bottom: 1rem;
-            border-radius: 8px;
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+            border-radius: 12px;
             border-left: 4px solid #667eea;
+            transition: all 0.3s ease;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .post-item:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+            background: rgba(255, 255, 255, 0.15);
         }
         
         .post-title {
-            font-size: 1.2rem;
-            font-weight: bold;
-            margin-bottom: 0.5rem;
+            font-size: 1.3rem;
+            font-weight: 600;
+            margin-bottom: 0.75rem;
             color: white;
+            text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
         }
         
         .post-excerpt {
             color: rgba(255, 255, 255, 0.8);
-            margin-bottom: 0.5rem;
+            margin-bottom: 1rem;
+            line-height: 1.5;
+            font-style: italic;
         }
         
         .post-meta {
             font-size: 0.9rem;
-            color: rgba(255, 255, 255, 0.6);
+            color: rgba(255, 255, 255, 0.7);
             display: flex;
             justify-content: space-between;
             align-items: center;
+            flex-wrap: wrap;
+            gap: 1rem;
         }
         
         .post-actions {
             display: flex;
-            gap: 0.5rem;
+            gap: 0.75rem;
         }
         
         .btn-small {
-            padding: 0.25rem 0.75rem;
-            font-size: 0.8rem;
-            background: transparent;
-            border: 1px solid rgba(255, 255, 255, 0.3);
+            padding: 0.5rem 1rem;
+            font-size: 0.85rem;
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
             color: white;
-            border-radius: 3px;
+            border-radius: 8px;
             cursor: pointer;
             transition: all 0.3s ease;
+            font-weight: 500;
+            backdrop-filter: blur(10px);
         }
         
         .btn-small:hover {
-            background: rgba(255, 255, 255, 0.1);
+            background: rgba(255, 255, 255, 0.2);
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
         }
         
         .btn-danger:hover {
@@ -163,19 +305,161 @@
         }
         
         .home-link {
-            position: absolute;
+            position: fixed;
             top: 2rem;
             left: 2rem;
             color: white;
             text-decoration: none;
-            padding: 0.5rem 1rem;
-            background: rgba(255, 255, 255, 0.1);
-            border-radius: 5px;
+            padding: 1rem 1.5rem;
+            background: rgba(255, 255, 255, 0.15);
+            border-radius: 15px;
             transition: all 0.3s ease;
+            z-index: 1000;
+            font-weight: 500;
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
         }
         
         .home-link:hover {
-            background: rgba(255, 255, 255, 0.2);
+            background: rgba(255, 255, 255, 0.25);
+            transform: translateY(-3px);
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
+        }
+        
+        .success-message {
+            background: linear-gradient(45deg, rgba(46, 213, 115, 0.2), rgba(0, 206, 201, 0.2));
+            border: 1px solid rgba(46, 213, 115, 0.3);
+            color: white;
+            padding: 1rem 1.5rem;
+            border-radius: 12px;
+            margin-bottom: 1rem;
+            text-align: center;
+            font-weight: 500;
+            backdrop-filter: blur(10px);
+        }
+        
+        .error-message {
+            background: linear-gradient(45deg, rgba(255, 107, 107, 0.2), rgba(238, 82, 83, 0.2));
+            border: 1px solid rgba(255, 107, 107, 0.3);
+            color: white;
+            padding: 1rem 1.5rem;
+            border-radius: 12px;
+            margin-bottom: 1rem;
+            text-align: center;
+            font-weight: 500;
+            backdrop-filter: blur(10px);
+        }
+        
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+        
+        .stat-card {
+            background: linear-gradient(45deg, rgba(255, 255, 255, 0.15), rgba(255, 255, 255, 0.05));
+            padding: 1.5rem;
+            border-radius: 15px;
+            text-align: center;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            transition: all 0.3s ease;
+        }
+        
+        .stat-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
+        }
+        
+        .stat-number {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: white;
+            margin-bottom: 0.5rem;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+        }
+        
+        .stat-label {
+            color: rgba(255, 255, 255, 0.8);
+            font-weight: 500;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            font-size: 0.9rem;
+        }
+        
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        .loading {
+            text-align: center;
+            color: rgba(255, 255, 255, 0.8);
+            padding: 2rem;
+            font-size: 1.1rem;
+        }
+        
+        .loading::after {
+            content: '';
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            margin-left: 10px;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            border-top-color: white;
+            animation: spin 1s linear infinite;
+        }
+        
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+        
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .admin-container {
+                padding: 1rem 0.5rem;
+            }
+            
+            .admin-header h1 {
+                font-size: 2.2rem;
+            }
+            
+            .admin-nav {
+                flex-direction: column;
+                gap: 0.5rem;
+            }
+            
+            .admin-nav button {
+                padding: 0.75rem 1.5rem;
+            }
+            
+            .section-card {
+                padding: 1.5rem;
+            }
+            
+            .post-meta {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+            
+            .home-link {
+                top: 1rem;
+                left: 1rem;
+                padding: 0.75rem 1rem;
+            }
+            
+            .stats-grid {
+                grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            }
         }
     </style>
 </head>
@@ -183,75 +467,96 @@
     <a href="/" class="home-link">← Ana Sayfa</a>
     
     <div class="admin-container">
-        <h1 style="text-align: center; color: white; margin-bottom: 2rem;">Admin Panel</h1>
+        <div class="admin-header">
+            <h1>⚙️ Admin Panel</h1>
+            <p>Blog yönetimi ve içerik düzenleme merkezi</p>
+        </div>
         
         <div class="admin-nav">
-            <button onclick="showSection('posts')" class="active">Yazılar</button>
-            <button onclick="showSection('new-post')">Yeni Yazı</button>
-            <button onclick="showSection('settings')">Ayarlar</button>
+            <button onclick="showSection('dashboard')" class="active">📊 Dashboard</button>
+            <button onclick="showSection('posts')">📝 Yazılar</button>
+            <button onclick="showSection('new-post')">✨ Yeni Yazı</button>
+            <button onclick="showSection('settings')">⚙️ Ayarlar</button>
+        </div>
+        
+        <!-- Dashboard -->
+        <div id="dashboard" class="admin-section active">
+            <div class="section-card">
+                <h2 class="section-title">📊 Dashboard</h2>
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-number" id="total-posts">-</div>
+                        <div class="stat-label">Toplam Yazı</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-number" id="this-month">-</div>
+                        <div class="stat-label">Bu Ay</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-number" id="total-words">-</div>
+                        <div class="stat-label">Toplam Kelime</div>
+                    </div>
+                </div>
+            </div>
         </div>
         
         <!-- Yazılar Listesi -->
-        <div id="posts" class="admin-section active">
-            <h2 style="color: white; margin-bottom: 1rem;">Mevcut Yazılar</h2>
-            <div class="posts-list" id="posts-list">
-                <div class="post-item">
-                    <div class="post-title">Örnek Blog Yazısı</div>
-                    <div class="post-excerpt">Bu bir örnek blog yazısı içeriğidir. Gerçek içerik veritabanından gelecek...</div>
-                    <div class="post-meta">
-                        <span>25 Ocak 2025</span>
-                        <div class="post-actions">
-                            <button class="btn-small">Düzenle</button>
-                            <button class="btn-small btn-danger">Sil</button>
-                        </div>
-                    </div>
+        <div id="posts" class="admin-section">
+            <div class="section-card">
+                <h2 class="section-title">📝 Mevcut Yazılar</h2>
+                <div class="posts-list" id="posts-list">
+                    <div class="loading">Yazılar yükleniyor</div>
                 </div>
             </div>
         </div>
         
         <!-- Yeni Yazı -->
         <div id="new-post" class="admin-section">
-            <h2 style="color: white; margin-bottom: 1rem;">Yeni Yazı Ekle</h2>
-            <form class="post-form" id="post-form">
-                <div class="form-group">
-                    <label for="title">Başlık</label>
-                    <input type="text" id="title" name="title" placeholder="Yazı başlığını girin..." required>
-                </div>
-                
-                <div class="form-group">
-                    <label for="excerpt">Özet</label>
-                    <input type="text" id="excerpt" name="excerpt" placeholder="Kısa özet...">
-                </div>
-                
-                <div class="form-group">
-                    <label for="content">İçerik</label>
-                    <textarea id="content" name="content" placeholder="Yazı içeriğini girin..." required></textarea>
-                </div>
-                
-                <div class="form-group">
-                    <label for="tags">Etiketler</label>
-                    <input type="text" id="tags" name="tags" placeholder="etiket1, etiket2, etiket3">
-                </div>
-                
-                <button type="submit" class="btn">Yazıyı Yayınla</button>
-            </form>
+            <div class="section-card">
+                <h2 class="section-title">✨ Yeni Yazı Ekle</h2>
+                <form class="post-form" id="post-form">
+                    <div class="form-group">
+                        <label for="title">📝 Başlık</label>
+                        <input type="text" id="title" name="title" placeholder="Yazı başlığını girin..." required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="excerpt">💭 Özet</label>
+                        <input type="text" id="excerpt" name="excerpt" placeholder="Kısa bir özet yazın...">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="content">📄 İçerik</label>
+                        <textarea id="content" name="content" placeholder="Yazı içeriğini buraya yazın..." required></textarea>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="tags">🏷️ Etiketler</label>
+                        <input type="text" id="tags" name="tags" placeholder="etiket1, etiket2, etiket3">
+                    </div>
+                    
+                    <button type="submit" class="btn">🚀 Yazıyı Yayınla</button>
+                </form>
+            </div>
         </div>
         
         <!-- Ayarlar -->
         <div id="settings" class="admin-section">
-            <h2 style="color: white; margin-bottom: 1rem;">Site Ayarları</h2>
-            <div class="post-form">
-                <div class="form-group">
-                    <label for="site-title">Site Başlığı</label>
-                    <input type="text" id="site-title" value="Gamze Bıçakçı | Kişisel Portfolyo">
+            <div class="section-card">
+                <h2 class="section-title">⚙️ Site Ayarları</h2>
+                <div class="post-form">
+                    <div class="form-group">
+                        <label for="site-title">🌟 Site Başlığı</label>
+                        <input type="text" id="site-title" value="Gamze Bıçakçı | Kişisel Portfolyo">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="site-description">📝 Site Açıklaması</label>
+                        <textarea id="site-description">Yazmaya, üretmeye ve ilham olmaya gönül vermiş bir reklamcılık öğrencisi</textarea>
+                    </div>
+                    
+                    <button type="button" class="btn">💾 Ayarları Kaydet</button>
                 </div>
-                
-                <div class="form-group">
-                    <label for="site-description">Site Açıklaması</label>
-                    <textarea id="site-description">Yazmaya, üretmeye ve ilham olmaya gönül vermiş bir reklamcılık öğrencisi</textarea>
-                </div>
-                
-                <button type="button" class="btn">Ayarları Kaydet</button>
             </div>
         </div>
     </div>
@@ -274,6 +579,56 @@
             
             // Add active to clicked button
             event.target.classList.add('active');
+            
+            // Load specific data if needed
+            if (sectionId === 'posts') {
+                loadPosts();
+            } else if (sectionId === 'dashboard') {
+                loadDashboard();
+            }
+        }
+
+        // Show message
+        function showMessage(message, type = 'success') {
+            const messageDiv = document.createElement('div');
+            messageDiv.className = type === 'success' ? 'success-message' : 'error-message';
+            messageDiv.textContent = message;
+            
+            const form = document.getElementById('post-form');
+            form.parentNode.insertBefore(messageDiv, form);
+            
+            setTimeout(() => {
+                messageDiv.remove();
+            }, 5000);
+        }
+
+        // Load dashboard stats
+        async function loadDashboard() {
+            try {
+                const response = await fetch('/api/posts');
+                const posts = await response.json();
+                
+                // Calculate stats
+                const totalPosts = posts.length;
+                const thisMonth = posts.filter(post => {
+                    const postDate = new Date(post.created_at);
+                    const now = new Date();
+                    return postDate.getMonth() === now.getMonth() && 
+                           postDate.getFullYear() === now.getFullYear();
+                }).length;
+                
+                const totalWords = posts.reduce((total, post) => {
+                    return total + (post.content ? post.content.split(' ').length : 0);
+                }, 0);
+                
+                // Update UI
+                document.getElementById('total-posts').textContent = totalPosts;
+                document.getElementById('this-month').textContent = thisMonth;
+                document.getElementById('total-words').textContent = totalWords.toLocaleString();
+                
+            } catch (error) {
+                console.error('Dashboard yüklenemedi:', error);
+            }
         }
 
         // Load posts
@@ -284,32 +639,37 @@
                 const postsContainer = document.getElementById('posts-list');
                 
                 if (posts.length === 0) {
-                    postsContainer.innerHTML = '<p style="color: rgba(255,255,255,0.7); text-align: center;">Henüz yazı yok. İlk yazını ekle!</p>';
+                    postsContainer.innerHTML = '<p style="color: rgba(255,255,255,0.7); text-align: center; padding: 2rem;">🌟 Henüz yazı yok. İlk yazını ekle!</p>';
                     return;
                 }
                 
                 postsContainer.innerHTML = posts.map(post => `
                     <div class="post-item">
                         <div class="post-title">${post.title}</div>
-                        <div class="post-excerpt">${post.excerpt || post.content.substring(0, 100) + '...'}</div>
+                        <div class="post-excerpt">${post.excerpt || (post.content ? post.content.substring(0, 100) + '...' : 'İçerik yok')}</div>
                         <div class="post-meta">
-                            <span>${new Date(post.created_at).toLocaleDateString('tr-TR')}</span>
+                            <span>📅 ${new Date(post.created_at).toLocaleDateString('tr-TR')} ${post.tags ? `• 🏷️ ${post.tags}` : ''}</span>
                             <div class="post-actions">
-                                <button class="btn-small" onclick="editPost(${post.id})">Düzenle</button>
-                                <button class="btn-small btn-danger" onclick="deletePost(${post.id})">Sil</button>
+                                <button class="btn-small" onclick="editPost(${post.id})">✏️ Düzenle</button>
+                                <button class="btn-small btn-danger" onclick="deletePost(${post.id})">🗑️ Sil</button>
                             </div>
                         </div>
                     </div>
                 `).join('');
             } catch (error) {
                 console.error('Posts yüklenemedi:', error);
-                document.getElementById('posts-list').innerHTML = '<p style="color: red;">Yazılar yüklenirken hata oluştu.</p>';
+                document.getElementById('posts-list').innerHTML = '<p style="color: red; text-align: center; padding: 2rem;">⚠️ Yazılar yüklenirken hata oluştu.</p>';
             }
         }
 
         // Add new post
         document.getElementById('post-form').addEventListener('submit', async (e) => {
             e.preventDefault();
+            
+            const submitBtn = e.target.querySelector('button[type="submit"]');
+            const originalText = submitBtn.textContent;
+            submitBtn.textContent = '⏳ Yayınlanıyor...';
+            submitBtn.disabled = true;
             
             const formData = new FormData(e.target);
             const postData = {
@@ -329,47 +689,50 @@
                 });
 
                 if (response.ok) {
-                    alert('Yazı başarıyla eklendi!');
+                    showMessage('✅ Yazı başarıyla yayınlandı!', 'success');
                     e.target.reset();
-                    showSection('posts');
-                    loadPosts();
+                    loadDashboard(); // Refresh stats
                 } else {
-                    alert('Yazı eklenirken hata oluştu.');
+                    showMessage('❌ Yazı eklenirken hata oluştu.', 'error');
                 }
             } catch (error) {
                 console.error('Error:', error);
-                alert('Bağlantı hatası oluştu.');
+                showMessage('❌ Bağlantı hatası oluştu.', 'error');
+            } finally {
+                submitBtn.textContent = originalText;
+                submitBtn.disabled = false;
             }
         });
 
         // Delete post
         async function deletePost(id) {
-            if (confirm('Bu yazıyı silmek istediğinizden emin misiniz?')) {
+            if (confirm('🗑️ Bu yazıyı silmek istediğinizden emin misiniz?')) {
                 try {
                     const response = await fetch(`/api/posts/${id}`, {
                         method: 'DELETE'
                     });
                     
                     if (response.ok) {
-                        alert('Yazı silindi!');
+                        showMessage('✅ Yazı başarıyla silindi!', 'success');
                         loadPosts();
+                        loadDashboard();
                     } else {
-                        alert('Yazı silinirken hata oluştu.');
+                        showMessage('❌ Yazı silinirken hata oluştu.', 'error');
                     }
                 } catch (error) {
                     console.error('Error:', error);
-                    alert('Bağlantı hatası oluştu.');
+                    showMessage('❌ Bağlantı hatası oluştu.', 'error');
                 }
             }
         }
 
         // Edit post (basit implementation)
         function editPost(id) {
-            alert('Düzenleme özelliği yakında eklenecek!');
+            showMessage('✏️ Düzenleme özelliği yakında eklenecek!', 'success');
         }
 
-        // Load posts on page load
-        loadPosts();
+        // Load dashboard on page load
+        loadDashboard();
     </script>
 </body>
 </html>
