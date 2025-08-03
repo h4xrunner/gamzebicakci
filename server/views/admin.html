@@ -1,0 +1,375 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Panel - Gamze Bıçakçı</title>
+    <link rel="stylesheet" href="../assets/css/main.css">
+    <style>
+        .admin-container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 2rem;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 15px;
+            backdrop-filter: blur(10px);
+            margin-top: 2rem;
+        }
+        
+        .admin-nav {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 2rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+            padding-bottom: 1rem;
+        }
+        
+        .admin-nav button {
+            padding: 0.5rem 1rem;
+            background: transparent;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            color: white;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .admin-nav button:hover,
+        .admin-nav button.active {
+            background: rgba(255, 255, 255, 0.2);
+            border-color: rgba(255, 255, 255, 0.5);
+        }
+        
+        .admin-section {
+            display: none;
+        }
+        
+        .admin-section.active {
+            display: block;
+        }
+        
+        .post-form {
+            background: rgba(0, 0, 0, 0.2);
+            padding: 1.5rem;
+            border-radius: 10px;
+            margin-bottom: 2rem;
+        }
+        
+        .form-group {
+            margin-bottom: 1rem;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            color: white;
+            font-weight: bold;
+        }
+        
+        .form-group input,
+        .form-group textarea {
+            width: 100%;
+            padding: 0.75rem;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            border-radius: 5px;
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+            font-family: inherit;
+        }
+        
+        .form-group input::placeholder,
+        .form-group textarea::placeholder {
+            color: rgba(255, 255, 255, 0.7);
+        }
+        
+        .form-group textarea {
+            min-height: 150px;
+            resize: vertical;
+        }
+        
+        .btn {
+            padding: 0.75rem 2rem;
+            background: linear-gradient(45deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: all 0.3s ease;
+        }
+        
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+        }
+        
+        .posts-list {
+            background: rgba(0, 0, 0, 0.2);
+            padding: 1.5rem;
+            border-radius: 10px;
+        }
+        
+        .post-item {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 1rem;
+            margin-bottom: 1rem;
+            border-radius: 8px;
+            border-left: 4px solid #667eea;
+        }
+        
+        .post-title {
+            font-size: 1.2rem;
+            font-weight: bold;
+            margin-bottom: 0.5rem;
+            color: white;
+        }
+        
+        .post-excerpt {
+            color: rgba(255, 255, 255, 0.8);
+            margin-bottom: 0.5rem;
+        }
+        
+        .post-meta {
+            font-size: 0.9rem;
+            color: rgba(255, 255, 255, 0.6);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .post-actions {
+            display: flex;
+            gap: 0.5rem;
+        }
+        
+        .btn-small {
+            padding: 0.25rem 0.75rem;
+            font-size: 0.8rem;
+            background: transparent;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            color: white;
+            border-radius: 3px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .btn-small:hover {
+            background: rgba(255, 255, 255, 0.1);
+        }
+        
+        .btn-danger:hover {
+            background: rgba(255, 0, 0, 0.2);
+            border-color: rgba(255, 0, 0, 0.5);
+        }
+        
+        .home-link {
+            position: absolute;
+            top: 2rem;
+            left: 2rem;
+            color: white;
+            text-decoration: none;
+            padding: 0.5rem 1rem;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 5px;
+            transition: all 0.3s ease;
+        }
+        
+        .home-link:hover {
+            background: rgba(255, 255, 255, 0.2);
+        }
+    </style>
+</head>
+<body class="is-preload">
+    <a href="/" class="home-link">← Ana Sayfa</a>
+    
+    <div class="admin-container">
+        <h1 style="text-align: center; color: white; margin-bottom: 2rem;">Admin Panel</h1>
+        
+        <div class="admin-nav">
+            <button onclick="showSection('posts')" class="active">Yazılar</button>
+            <button onclick="showSection('new-post')">Yeni Yazı</button>
+            <button onclick="showSection('settings')">Ayarlar</button>
+        </div>
+        
+        <!-- Yazılar Listesi -->
+        <div id="posts" class="admin-section active">
+            <h2 style="color: white; margin-bottom: 1rem;">Mevcut Yazılar</h2>
+            <div class="posts-list" id="posts-list">
+                <div class="post-item">
+                    <div class="post-title">Örnek Blog Yazısı</div>
+                    <div class="post-excerpt">Bu bir örnek blog yazısı içeriğidir. Gerçek içerik veritabanından gelecek...</div>
+                    <div class="post-meta">
+                        <span>25 Ocak 2025</span>
+                        <div class="post-actions">
+                            <button class="btn-small">Düzenle</button>
+                            <button class="btn-small btn-danger">Sil</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Yeni Yazı -->
+        <div id="new-post" class="admin-section">
+            <h2 style="color: white; margin-bottom: 1rem;">Yeni Yazı Ekle</h2>
+            <form class="post-form" id="post-form">
+                <div class="form-group">
+                    <label for="title">Başlık</label>
+                    <input type="text" id="title" name="title" placeholder="Yazı başlığını girin..." required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="excerpt">Özet</label>
+                    <input type="text" id="excerpt" name="excerpt" placeholder="Kısa özet...">
+                </div>
+                
+                <div class="form-group">
+                    <label for="content">İçerik</label>
+                    <textarea id="content" name="content" placeholder="Yazı içeriğini girin..." required></textarea>
+                </div>
+                
+                <div class="form-group">
+                    <label for="tags">Etiketler</label>
+                    <input type="text" id="tags" name="tags" placeholder="etiket1, etiket2, etiket3">
+                </div>
+                
+                <button type="submit" class="btn">Yazıyı Yayınla</button>
+            </form>
+        </div>
+        
+        <!-- Ayarlar -->
+        <div id="settings" class="admin-section">
+            <h2 style="color: white; margin-bottom: 1rem;">Site Ayarları</h2>
+            <div class="post-form">
+                <div class="form-group">
+                    <label for="site-title">Site Başlığı</label>
+                    <input type="text" id="site-title" value="Gamze Bıçakçı | Kişisel Portfolyo">
+                </div>
+                
+                <div class="form-group">
+                    <label for="site-description">Site Açıklaması</label>
+                    <textarea id="site-description">Yazmaya, üretmeye ve ilham olmaya gönül vermiş bir reklamcılık öğrencisi</textarea>
+                </div>
+                
+                <button type="button" class="btn">Ayarları Kaydet</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Section navigation
+        function showSection(sectionId) {
+            // Hide all sections
+            document.querySelectorAll('.admin-section').forEach(section => {
+                section.classList.remove('active');
+            });
+            
+            // Remove active from all buttons
+            document.querySelectorAll('.admin-nav button').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            
+            // Show selected section
+            document.getElementById(sectionId).classList.add('active');
+            
+            // Add active to clicked button
+            event.target.classList.add('active');
+        }
+
+        // Load posts
+        async function loadPosts() {
+            try {
+                const response = await fetch('/api/posts');
+                const posts = await response.json();
+                const postsContainer = document.getElementById('posts-list');
+                
+                if (posts.length === 0) {
+                    postsContainer.innerHTML = '<p style="color: rgba(255,255,255,0.7); text-align: center;">Henüz yazı yok. İlk yazını ekle!</p>';
+                    return;
+                }
+                
+                postsContainer.innerHTML = posts.map(post => `
+                    <div class="post-item">
+                        <div class="post-title">${post.title}</div>
+                        <div class="post-excerpt">${post.excerpt || post.content.substring(0, 100) + '...'}</div>
+                        <div class="post-meta">
+                            <span>${new Date(post.created_at).toLocaleDateString('tr-TR')}</span>
+                            <div class="post-actions">
+                                <button class="btn-small" onclick="editPost(${post.id})">Düzenle</button>
+                                <button class="btn-small btn-danger" onclick="deletePost(${post.id})">Sil</button>
+                            </div>
+                        </div>
+                    </div>
+                `).join('');
+            } catch (error) {
+                console.error('Posts yüklenemedi:', error);
+                document.getElementById('posts-list').innerHTML = '<p style="color: red;">Yazılar yüklenirken hata oluştu.</p>';
+            }
+        }
+
+        // Add new post
+        document.getElementById('post-form').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const formData = new FormData(e.target);
+            const postData = {
+                title: formData.get('title'),
+                content: formData.get('content'),
+                excerpt: formData.get('excerpt'),
+                tags: formData.get('tags')
+            };
+
+            try {
+                const response = await fetch('/api/posts', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(postData)
+                });
+
+                if (response.ok) {
+                    alert('Yazı başarıyla eklendi!');
+                    e.target.reset();
+                    showSection('posts');
+                    loadPosts();
+                } else {
+                    alert('Yazı eklenirken hata oluştu.');
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                alert('Bağlantı hatası oluştu.');
+            }
+        });
+
+        // Delete post
+        async function deletePost(id) {
+            if (confirm('Bu yazıyı silmek istediğinizden emin misiniz?')) {
+                try {
+                    const response = await fetch(`/api/posts/${id}`, {
+                        method: 'DELETE'
+                    });
+                    
+                    if (response.ok) {
+                        alert('Yazı silindi!');
+                        loadPosts();
+                    } else {
+                        alert('Yazı silinirken hata oluştu.');
+                    }
+                } catch (error) {
+                    console.error('Error:', error);
+                    alert('Bağlantı hatası oluştu.');
+                }
+            }
+        }
+
+        // Edit post (basit implementation)
+        function editPost(id) {
+            alert('Düzenleme özelliği yakında eklenecek!');
+        }
+
+        // Load posts on page load
+        loadPosts();
+    </script>
+</body>
+</html>

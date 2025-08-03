@@ -1,0 +1,186 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+    <title>Blog - Gamze Bıçakçı</title>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
+    <link rel="stylesheet" href="../assets/css/main.css" />
+    <style>
+        .blog-container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+        
+        .blog-header {
+            text-align: center;
+            margin-bottom: 3rem;
+            background: rgba(255, 255, 255, 0.1);
+            padding: 2rem;
+            border-radius: 15px;
+            backdrop-filter: blur(10px);
+        }
+        
+        .blog-post {
+            background: rgba(255, 255, 255, 0.1);
+            margin-bottom: 2rem;
+            padding: 2rem;
+            border-radius: 15px;
+            backdrop-filter: blur(10px);
+            border-left: 4px solid #667eea;
+            transition: all 0.3s ease;
+        }
+        
+        .blog-post:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+        }
+        
+        .post-title {
+            font-size: 1.5rem;
+            font-weight: bold;
+            margin-bottom: 1rem;
+            color: white;
+        }
+        
+        .post-meta {
+            font-size: 0.9rem;
+            color: rgba(255, 255, 255, 0.7);
+            margin-bottom: 1rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        
+        .post-content {
+            color: rgba(255, 255, 255, 0.9);
+            line-height: 1.6;
+            margin-bottom: 1rem;
+        }
+        
+        .post-tags {
+            display: flex;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+        }
+        
+        .tag {
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+            padding: 0.25rem 0.75rem;
+            border-radius: 15px;
+            font-size: 0.8rem;
+        }
+        
+        .home-link {
+            position: fixed;
+            top: 2rem;
+            left: 2rem;
+            color: white;
+            text-decoration: none;
+            padding: 0.5rem 1rem;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 5px;
+            transition: all 0.3s ease;
+            z-index: 1000;
+        }
+        
+        .home-link:hover {
+            background: rgba(255, 255, 255, 0.2);
+        }
+        
+        .no-posts {
+            text-align: center;
+            color: rgba(255, 255, 255, 0.7);
+            font-style: italic;
+            padding: 3rem;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 15px;
+        }
+        
+        .loading {
+            text-align: center;
+            color: rgba(255, 255, 255, 0.7);
+            padding: 2rem;
+        }
+    </style>
+</head>
+<body class="is-preload">
+    <a href="/" class="home-link">← Ana Sayfa</a>
+    
+    <div class="blog-container">
+        <div class="blog-header">
+            <h1>Blog</h1>
+            <p>Düşüncelerim, deneyimlerim ve öğrendiklerim...</p>
+        </div>
+        
+        <div id="blog-posts">
+            <div class="loading">Yazılar yükleniyor...</div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="../assets/js/jquery.min.js"></script>
+    <script src="../assets/js/browser.min.js"></script>
+    <script src="../assets/js/breakpoints.min.js"></script>
+    <script src="../assets/js/util.js"></script>
+    <script src="../assets/js/main.js"></script>
+    
+    <script>
+        async function loadBlogPosts() {
+            try {
+                const response = await fetch('/api/posts');
+                const posts = await response.json();
+                const postsContainer = document.getElementById('blog-posts');
+                
+                if (posts.length === 0) {
+                    postsContainer.innerHTML = `
+                        <div class="no-posts">
+                            <h3>Henüz yazı yok</h3>
+                            <p>İlk blog yazısı yakında yayınlanacak!</p>
+                        </div>
+                    `;
+                    return;
+                }
+                
+                postsContainer.innerHTML = posts.map(post => {
+                    const date = new Date(post.created_at).toLocaleDateString('tr-TR', {
+                        year: 'numeric',
+                        month: 'long',
+                        day: 'numeric'
+                    });
+                    
+                    const tags = post.tags ? post.tags.split(',').map(tag => 
+                        `<span class="tag">${tag.trim()}</span>`
+                    ).join('') : '';
+                    
+                    return `
+                        <article class="blog-post">
+                            <h2 class="post-title">${post.title}</h2>
+                            <div class="post-meta">
+                                <span>📅 ${date}</span>
+                                ${post.author ? ` • ✍️ ${post.author}` : ''}
+                            </div>
+                            <div class="post-content">
+                                ${post.content.replace(/\n/g, '<br>')}
+                            </div>
+                            ${tags ? `<div class="post-tags">${tags}</div>` : ''}
+                        </article>
+                    `;
+                }).join('');
+                
+            } catch (error) {
+                console.error('Blog yazıları yüklenemedi:', error);
+                document.getElementById('blog-posts').innerHTML = `
+                    <div class="no-posts">
+                        <h3>Hata oluştu</h3>
+                        <p>Blog yazıları yüklenirken bir sorun oluştu. Lütfen daha sonra tekrar deneyin.</p>
+                    </div>
+                `;
+            }
+        }
+        
+        // Sayfa yüklendiğinde blog yazılarını getir
+        loadBlogPosts();
+    </script>
+</body>
+</html>
