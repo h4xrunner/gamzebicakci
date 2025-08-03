@@ -1,15 +1,18 @@
+require('dotenv').config();
+
 const express = require('express');
 const router = express.Router();
 const { Pool } = require('pg');
 
 // PostgreSQL bağlantı ayarları
 const pool = new Pool({
-  user: 'postgres',
-  host: 'localhost',
-  database: 'gamze_db',
-  password: '2344',
-  port: 5432,
+  user: process.env.DB_USER,
+  host: process.env.DB_HOST,
+  database: process.env.DB_NAME,
+  password: process.env.DB_PASS,
+  port: process.env.DB_PORT,
 });
+
 
 // Bağlantıyı test et
 pool.connect((err, client, release) => {
