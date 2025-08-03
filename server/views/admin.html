@@ -258,6 +258,13 @@
             text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
         }
         
+        .post-author {
+            font-size: 0.95rem;
+            color: rgba(255, 255, 255, 0.9);
+            margin-bottom: 0.75rem;
+            font-weight: 500;
+        }
+        
         .post-excerpt {
             color: rgba(255, 255, 255, 0.8);
             margin-bottom: 1rem;
@@ -388,6 +395,65 @@
             letter-spacing: 1px;
             font-size: 0.9rem;
         }
+
+        /* Edit Modal Styles */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            backdrop-filter: blur(5px);
+        }
+
+        .modal-content {
+            position: relative;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            margin: 2% auto;
+            padding: 0;
+            border-radius: 20px;
+            width: 90%;
+            max-width: 800px;
+            max-height: 90vh;
+            overflow-y: auto;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+        }
+
+        .modal-header {
+            background: rgba(255, 255, 255, 0.15);
+            padding: 1.5rem 2rem;
+            border-radius: 20px 20px 0 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .modal-title {
+            color: white;
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin: 0;
+        }
+
+        .close {
+            color: rgba(255, 255, 255, 0.8);
+            font-size: 2rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: color 0.3s ease;
+        }
+
+        .close:hover {
+            color: white;
+        }
+
+        .modal-body {
+            padding: 2rem;
+        }
         
         @keyframes fadeInUp {
             from {
@@ -460,11 +526,52 @@
             .stats-grid {
                 grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
             }
+
+            .modal-content {
+                width: 95%;
+                margin: 5% auto;
+            }
         }
     </style>
 </head>
 <body class="is-preload">
     <a href="/" class="home-link">← Ana Sayfa</a>
+    
+    <!-- Edit Modal -->
+    <div id="editModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 class="modal-title">✏️ Yazıyı Düzenle</h2>
+                <span class="close" onclick="closeEditModal()">&times;</span>
+            </div>
+            <div class="modal-body">
+                <form class="post-form" id="edit-form">
+                    <input type="hidden" id="edit-id">
+                    <div class="form-group">
+                        <label for="edit-author">👤 Yazar</label>
+                        <input type="text" id="edit-author" name="author" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="edit-title">📝 Başlık</label>
+                        <input type="text" id="edit-title" name="title" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="edit-excerpt">💭 Özet</label>
+                        <input type="text" id="edit-excerpt" name="excerpt">
+                    </div>
+                    <div class="form-group">
+                        <label for="edit-content">📄 İçerik</label>
+                        <textarea id="edit-content" name="content" required></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label for="edit-tags">🏷️ Etiketler</label>
+                        <input type="text" id="edit-tags" name="tags" placeholder="etiket1, etiket2, etiket3">
+                    </div>
+                    <button type="submit" class="btn">💾 Güncelle</button>
+                </form>
+            </div>
+        </div>
+    </div>
     
     <div class="admin-container">
         <div class="admin-header">
@@ -516,6 +623,11 @@
                 <h2 class="section-title">✨ Yeni Yazı Ekle</h2>
                 <form class="post-form" id="post-form">
                     <div class="form-group">
+                        <label for="author">👤 Yazar</label>
+                        <input type="text" id="author" name="author" placeholder="Yazarın adını girin..." value="Gamze Bıçakçı" required>
+                    </div>
+                    
+                    <div class="form-group">
                         <label for="title">📝 Başlık</label>
                         <input type="text" id="title" name="title" placeholder="Yazı başlığını girin..." required>
                     </div>
@@ -555,7 +667,17 @@
                         <textarea id="site-description">Yazmaya, üretmeye ve ilham olmaya gönül vermiş bir reklamcılık öğrencisi</textarea>
                     </div>
                     
-                    <button type="button" class="btn">💾 Ayarları Kaydet</button>
+                    <div class="form-group">
+                        <label for="default-author">👤 Varsayılan Yazar</label>
+                        <input type="text" id="default-author" value="Gamze Bıçakçı">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="author-bio">📝 Yazar Biyografisi</label>
+                        <textarea id="author-bio" placeholder="Yazar hakkında kısa bilgi...">Reklamcılık bölümü öğrencisi, yaratıcı içerik üreticisi ve sosyal medya uzmanı.</textarea>
+                    </div>
+                    
+                    <button type="button" class="btn" onclick="saveSettings()">💾 Ayarları Kaydet</button>
                 </div>
             </div>
         </div>
@@ -628,6 +750,10 @@
                 
             } catch (error) {
                 console.error('Dashboard yüklenemedi:', error);
+                // Show 0 if API fails
+                document.getElementById('total-posts').textContent = '0';
+                document.getElementById('this-month').textContent = '0';
+                document.getElementById('total-words').textContent = '0';
             }
         }
 
@@ -646,6 +772,7 @@
                 postsContainer.innerHTML = posts.map(post => `
                     <div class="post-item">
                         <div class="post-title">${post.title}</div>
+                        <div class="post-author">👤 ${post.author || 'Bilinmeyen Yazar'}</div>
                         <div class="post-excerpt">${post.excerpt || (post.content ? post.content.substring(0, 100) + '...' : 'İçerik yok')}</div>
                         <div class="post-meta">
                             <span>📅 ${new Date(post.created_at).toLocaleDateString('tr-TR')} ${post.tags ? `• 🏷️ ${post.tags}` : ''}</span>
@@ -673,6 +800,7 @@
             
             const formData = new FormData(e.target);
             const postData = {
+                author: formData.get('author'),
                 title: formData.get('title'),
                 content: formData.get('content'),
                 excerpt: formData.get('excerpt'),
@@ -691,6 +819,8 @@
                 if (response.ok) {
                     showMessage('✅ Yazı başarıyla yayınlandı!', 'success');
                     e.target.reset();
+                    // Reset author to default
+                    document.getElementById('author').value = 'Gamze Bıçakçı';
                     loadDashboard(); // Refresh stats
                 } else {
                     showMessage('❌ Yazı eklenirken hata oluştu.', 'error');
@@ -726,10 +856,125 @@
             }
         }
 
-        // Edit post (basit implementation)
-        function editPost(id) {
-            showMessage('✏️ Düzenleme özelliği yakında eklenecek!', 'success');
+        // Edit post
+        async function editPost(id) {
+            try {
+                const response = await fetch(`/api/posts/${id}`);
+                const post = await response.json();
+                
+                // Fill modal with post data
+                document.getElementById('edit-id').value = post.id;
+                document.getElementById('edit-author').value = post.author || '';
+                document.getElementById('edit-title').value = post.title || '';
+                document.getElementById('edit-excerpt').value = post.excerpt || '';
+                document.getElementById('edit-content').value = post.content || '';
+                document.getElementById('edit-tags').value = post.tags || '';
+                
+                // Show modal
+                document.getElementById('editModal').style.display = 'block';
+                
+            } catch (error) {
+                console.error('Error loading post:', error);
+                showMessage('❌ Yazı yüklenirken hata oluştu.', 'error');
+            }
         }
+
+        // Close edit modal
+        function closeEditModal() {
+            document.getElementById('editModal').style.display = 'none';
+        }
+
+        // Update post
+        document.getElementById('edit-form').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const submitBtn = e.target.querySelector('button[type="submit"]');
+            const originalText = submitBtn.textContent;
+            submitBtn.textContent = '⏳ Güncelleniyor...';
+            submitBtn.disabled = true;
+            
+            const postId = document.getElementById('edit-id').value;
+            const formData = new FormData(e.target);
+            const postData = {
+                author: formData.get('author'),
+                title: formData.get('title'),
+                content: formData.get('content'),
+                excerpt: formData.get('excerpt'),
+                tags: formData.get('tags')
+            };
+
+            try {
+                const response = await fetch(`/api/posts/${postId}`, {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(postData)
+                });
+
+                if (response.ok) {
+                    showMessage('✅ Yazı başarıyla güncellendi!', 'success');
+                    closeEditModal();
+                    loadPosts();
+                    loadDashboard();
+                } else {
+                    showMessage('❌ Yazı güncellenirken hata oluştu.', 'error');
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                showMessage('❌ Bağlantı hatası oluştu.', 'error');
+            } finally {
+                submitBtn.textContent = originalText;
+                submitBtn.disabled = false;
+            }
+        });
+
+        // Save settings
+        function saveSettings() {
+            const settings = {
+                siteTitle: document.getElementById('site-title').value,
+                siteDescription: document.getElementById('site-description').value,
+                defaultAuthor: document.getElementById('default-author').value,
+                authorBio: document.getElementById('author-bio').value
+            };
+
+            // Save to localStorage for demo purposes
+            localStorage.setItem('blogSettings', JSON.stringify(settings));
+            
+            // Update default author in new post form
+            document.getElementById('author').value = settings.defaultAuthor;
+            
+            showMessage('✅ Ayarlar başarıyla kaydedildi!', 'success');
+        }
+
+        // Load settings on page load
+        function loadSettings() {
+            const savedSettings = localStorage.getItem('blogSettings');
+            if (savedSettings) {
+                const settings = JSON.parse(savedSettings);
+                document.getElementById('site-title').value = settings.siteTitle || '';
+                document.getElementById('site-description').value = settings.siteDescription || '';
+                document.getElementById('default-author').value = settings.defaultAuthor || 'Gamze Bıçakçı';
+                document.getElementById('author-bio').value = settings.authorBio || '';
+                
+                // Update author field in new post form
+                document.getElementById('author').value = settings.defaultAuthor || 'Gamze Bıçakçı';
+            }
+        }
+
+        // Close modal when clicking outside
+        window.onclick = function(event) {
+            const modal = document.getElementById('editModal');
+            if (event.target == modal) {
+                closeEditModal();
+            }
+        }
+
+        // Initialize page
+        document.addEventListener('DOMContentLoaded', function() {
+            loadDashboard();
+            loadSettings();
+        });
 
         // Load dashboard on page load
         loadDashboard();
