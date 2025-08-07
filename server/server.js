@@ -75,3 +75,125 @@ app.listen(PORT, () => {
   console.log(`Blog: http://localhost:${PORT}/blog`);
   console.log(`Admin: http://localhost:${PORT}/admin`);
 });
+require('dotenv').config();
+const express = require('express');
+const cors = require('cors');
+const path = require('path');
+const session = require('express-session');
+const passport = require('passport');
+const LocalStrategy = require('passport-local').Strategy;
+const bcrypt = require('bcrypt');
+const { Pool } = require('pg');
+
+const app = express();
+
+// PostgreSQL bağlantısı
+const pool = new Pool({
+  user: process.env.DB_USER,
+  host: process.env.DB_HOST,
+  database: process.env.DB_NAME,
+  password: process.env.DB_PASS,
+  port: process.env.DB_PORT,
+});
+
+// Middleware
+app.use(cors());
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+
+// Session ayarları
+app.use(session({
+  secret: 'your-secret-key', // .env'ye taşınmalı
+  resave: false,
+  saveUninitialized: false,
+  cookie: { 
+    secure: process.env.NODE_ENV === 'production',
+    maxAge: 24 * 60 * 60 * 1000 // 24 saat
+  }
+}));
+
+// Passport ayarları
+app.use(passport.initialize());
+app.use(passport.session());
+
+passport.use(new LocalStrategy(async (username, password, done) => {
+  try {
+    const result = await pool.query('SELECT * FROM users WHERE username = $1', [username]);
+    const user = result.rows[0];
+
+    if (!user) {
+      return done(null, false, { message: 'Kullanıcı bulunamadı.' });
+    }
+
+    const validPassword = await bcrypt.compare(password, user.password_hash);
+    if (!validPassword) {
+      return done(null, false, { message: 'Hatalı şifre.' });
+    }
+
+    return done(null, user);
+  } catch (err) {
+    return done(err);
+  }
+}));
+
+passport.serializeUser((user, done) => {
+  done(null, user.id);
+});
+
+passport.deserializeUser(async (id, done) => {
+  try {
+    const result = await pool.query('SELECT * FROM users WHERE id = $1', [id]);
+    done(null, result.rows[0]);
+  } catch (err) {
+    done(err);
+  }
+});
+
+// Auth middleware
+const isAuthenticated = (req, res, next) => {
+  if (req.isAuthenticated()) {
+    return next();
+  }
+  res.redirect('/admin/login');
+};
+
+// Login sayfası route
+app.get('/admin/login', (req, res) => {
+  if (req.isAuthenticated()) {
+    return res.redirect('/admin');
+  }
+  res.sendFile(path.join(__dirname, 'views', 'login.html'));
+});
+
+// Login işlemi
+app.post('/admin/login', passport.authenticate('local', {
+  successRedirect: '/admin',
+  failureRedirect: '/admin/login',
+  failureFlash: true
+}));
+
+// Logout
+app.get('/admin/logout', (req, res) => {
+  req.logout(() => {
+    res.redirect('/');
+  });
+});
+
+// Admin paneli route'ları koruma
+app.get('/admin', isAuthenticated, (req, res) => {
+  res.sendFile(path.join(__dirname, 'views', 'admin.html'));
+});
+
+// İlk admin kullanıcısını oluşturma route'u (sadece bir kez kullanılmalı)
+app.post('/setup-admin', async (req, res) => {
+  try {
+    const hashedPassword = await bcrypt.hash('admin123', 10);
+    await pool.query(
+      'INSERT INTO users (username, password_hash) VALUES ($1, $2)',
+      ['admin', hashedPassword]
+    );
+    res.json({ message: 'Admin kullanıcısı oluşturuldu' });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
