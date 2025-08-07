@@ -1,41 +1,16 @@
 require('dotenv').config();
 
+// ========= TÜM IMPORT'LAR BAŞTA =========
 const express = require('express');
 const cors = require('cors');
 const path = require('path');
-const app = express();
-
-// Request logging
-app.use((req, res, next) => {
-  console.log(`${new Date().toISOString()} - ${req.method} ${req.url}`);
-  next();
-});
-
-app.use(cors());
-app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
-
-// Statik dosyaları serve et (ana dizindeki dosyalar için)
-app.use(express.static(path.join(__dirname, '..')));
-
-// Session ayarları (YENİ)
-app.use(session({
-  secret: process.env.SESSION_SECRET || 'your-secret-key',
-  resave: false,
-  saveUninitialized: false,
-  cookie: { 
-    secure: process.env.NODE_ENV === 'production',
-    maxAge: 24 * 60 * 60 * 1000 // 24 saat
-  }
-}));
-
-// ======= YENİ ÖZELLIKLER (AUTH SİSTEMİ) =======
 const session = require('express-session');
 const passport = require('passport');
 const LocalStrategy = require('passport-local').Strategy;
 const bcrypt = require('bcrypt');
 const { Pool } = require('pg');
 
+const app = express();
 
 // PostgreSQL bağlantısı
 const pool = new Pool({
@@ -46,6 +21,7 @@ const pool = new Pool({
   port: process.env.DB_PORT,
 });
 
+// ========= MIDDLEWARE CONFIGURATION =========
 // Request logging
 app.use((req, res, next) => {
   console.log(`${new Date().toISOString()} - ${req.method} ${req.url}`);
@@ -56,21 +32,12 @@ app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-// Statik dosyaları serve et (ana dizindeki dosyalar için)
+// Statik dosyaları serve et
 app.use(express.static(path.join(__dirname, '..')));
-
-// API endpoint - güvenli şekilde yükle
-try {
-  const postsRouter = require('./routes/posts');
-  app.use('/api/posts', postsRouter);
-  console.log('Posts router başarıyla yüklendi');
-} catch (error) {
-  console.error('Posts router yüklenemedi:', error.message);
-}
 
 // Session ayarları
 app.use(session({
-  secret: process.env.SESSION_SECRET || 'your-secret-key', // .env'den al
+  secret: process.env.SESSION_SECRET || 'your-secret-key',
   resave: false,
   saveUninitialized: false,
   cookie: { 
@@ -83,6 +50,7 @@ app.use(session({
 app.use(passport.initialize());
 app.use(passport.session());
 
+// ========= PASSPORT CONFIGURATION =========
 passport.use(new LocalStrategy(async (username, password, done) => {
   try {
     const result = await pool.query('SELECT * FROM users WHERE username = $1', [username]);
@@ -116,7 +84,7 @@ passport.deserializeUser(async (id, done) => {
   }
 });
 
-// Auth middleware (YENİ)
+// ========= AUTH MIDDLEWARE =========
 const isAuthenticated = (req, res, next) => {
   if (req.isAuthenticated()) {
     return next();
@@ -124,12 +92,18 @@ const isAuthenticated = (req, res, next) => {
   res.redirect('/admin/login');
 };
 
-// Admin routes (GELİŞTİRİLDİ - Artık korumalı)
-app.get('/admin', isAuthenticated, (req, res) => {
-  res.sendFile(path.join(__dirname, 'views', 'admin.html'));
-});
+// ========= API ROUTES =========
+// API endpoint - güvenli şekilde yükle
+try {
+  const postsRouter = require('./routes/posts');
+  app.use('/api/posts', postsRouter);
+  console.log('Posts router başarıyla yüklendi');
+} catch (error) {
+  console.error('Posts router yüklenemedi:', error.message);
+}
 
-// Login sayfası route (YENİ)
+// ========= AUTH ROUTES =========
+// Login sayfası
 app.get('/admin/login', (req, res) => {
   if (req.isAuthenticated()) {
     return res.redirect('/admin');
@@ -137,41 +111,27 @@ app.get('/admin/login', (req, res) => {
   res.sendFile(path.join(__dirname, 'views', 'login.html'));
 });
 
-// Login işlemi (YENİ)
+// Login işlemi
 app.post('/admin/login', passport.authenticate('local', {
   successRedirect: '/admin',
   failureRedirect: '/admin/login',
   failureFlash: false
 }));
 
-// Logout (YENİ)
+// Logout
 app.get('/admin/logout', (req, res) => {
   req.logout(() => {
     res.redirect('/');
   });
 });
 
-// Blog sayfası
-app.get('/blog', (req, res) => {
-  res.sendFile(path.join(__dirname, 'views', 'blog.html'));
+// ========= PROTECTED ROUTES =========
+// Admin paneli (korumalı)
+app.get('/admin', isAuthenticated, (req, res) => {
+  res.sendFile(path.join(__dirname, 'views', 'admin.html'));
 });
 
-// Ana sayfa route'u
-app.get('/', (req, res) => {
-  console.log('Ana sayfa isteği işleniyor...');
-  res.sendFile(path.join(__dirname, '..', 'index.html'));
-});
-
-// Test endpoint
-app.get('/test', (req, res) => {
-  res.json({ 
-    status: 'Server çalışıyor!', 
-    timestamp: new Date(),
-    message: 'Test başarılı'
-  });
-});
-
-// İlk admin kullanıcısını oluşturma (YENİ)
+// İlk admin kullanıcısını oluşturma
 app.post('/setup-admin', async (req, res) => {
   try {
     const hashedPassword = await bcrypt.hash('admin123', 10);
@@ -185,6 +145,28 @@ app.post('/setup-admin', async (req, res) => {
   }
 });
 
+// ========= PUBLIC ROUTES =========
+// Ana sayfa
+app.get('/', (req, res) => {
+  console.log('Ana sayfa isteği işleniyor...');
+  res.sendFile(path.join(__dirname, '..', 'index.html'));
+});
+
+// Blog sayfası
+app.get('/blog', (req, res) => {
+  res.sendFile(path.join(__dirname, 'views', 'blog.html'));
+});
+
+// Test endpoint
+app.get('/test', (req, res) => {
+  res.json({ 
+    status: 'Server çalışıyor!', 
+    timestamp: new Date(),
+    message: 'Test başarılı'
+  });
+});
+
+// ========= ERROR HANDLERS =========
 // 404 handler
 app.use((req, res) => {
   console.log(`404 - Bulunamadı: ${req.url}`);
@@ -197,6 +179,7 @@ app.use((err, req, res, next) => {
   res.status(500).send('Sunucu hatası');
 });
 
+// ========= SERVER START =========
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
   console.log(`Sunucu http://localhost:${PORT} adresinde çalışıyor`);
