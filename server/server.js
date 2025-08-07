@@ -5,87 +5,36 @@ const cors = require('cors');
 const path = require('path');
 const app = express();
 
-app.use(cors());
-app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
-
 // Request logging
 app.use((req, res, next) => {
   console.log(`${new Date().toISOString()} - ${req.method} ${req.url}`);
   next();
 });
 
+app.use(cors());
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+
 // Statik dosyaları serve et (ana dizindeki dosyalar için)
 app.use(express.static(path.join(__dirname, '..')));
 
-// API endpoint - güvenli şekilde yükle
-try {
-  const postsRouter = require('./routes/posts');
-  app.use('/api/posts', postsRouter);
-  console.log('Posts router başarıyla yüklendi');
-} catch (error) {
-  console.error('Posts router yüklenemedi:', error.message);
-}
+// Session ayarları (YENİ)
+app.use(session({
+  secret: process.env.SESSION_SECRET || 'your-secret-key',
+  resave: false,
+  saveUninitialized: false,
+  cookie: { 
+    secure: process.env.NODE_ENV === 'production',
+    maxAge: 24 * 60 * 60 * 1000 // 24 saat
+  }
+}));
 
-// Admin routes
-app.get('/admin', (req, res) => {
-  res.sendFile(path.join(__dirname, 'views', 'admin.html'));
-});
-
-app.get('/admin/login', (req, res) => {
-  res.sendFile(path.join(__dirname, 'views', 'login.html'));
-});
-
-// Blog sayfası
-app.get('/blog', (req, res) => {
-  res.sendFile(path.join(__dirname, 'views', 'blog.html'));
-});
-
-// Ana sayfa route'u
-app.get('/', (req, res) => {
-  console.log('Ana sayfa isteği işleniyor...');
-  res.sendFile(path.join(__dirname, '..', 'index.html'));
-});
-
-// Test endpoint
-app.get('/test', (req, res) => {
-  res.json({ 
-    status: 'Server çalışıyor!', 
-    timestamp: new Date(),
-    message: 'Test başarılı'
-  });
-});
-
-// 404 handler
-app.use((req, res) => {
-  console.log(`404 - Bulunamadı: ${req.url}`);
-  res.status(404).send('Sayfa bulunamadı');
-});
-
-// Error handler
-app.use((err, req, res, next) => {
-  console.error('Server hatası:', err);
-  res.status(500).send('Sunucu hatası');
-});
-
-const PORT = 3000;
-app.listen(PORT, () => {
-  console.log(`Sunucu http://localhost:${PORT} adresinde çalışıyor`);
-  console.log(`Ana sayfa: http://localhost:${PORT}`);
-  console.log(`Blog: http://localhost:${PORT}/blog`);
-  console.log(`Admin: http://localhost:${PORT}/admin`);
-});
-require('dotenv').config();
-const express = require('express');
-const cors = require('cors');
-const path = require('path');
+// ======= YENİ ÖZELLIKLER (AUTH SİSTEMİ) =======
 const session = require('express-session');
 const passport = require('passport');
 const LocalStrategy = require('passport-local').Strategy;
 const bcrypt = require('bcrypt');
 const { Pool } = require('pg');
-
-const app = express();
 
 // PostgreSQL bağlantısı
 const pool = new Pool({
@@ -96,14 +45,9 @@ const pool = new Pool({
   port: process.env.DB_PORT,
 });
 
-// Middleware
-app.use(cors());
-app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
-
 // Session ayarları
 app.use(session({
-  secret: 'your-secret-key', // .env'ye taşınmalı
+  secret: process.env.SESSION_SECRET || 'your-secret-key', // .env'den al
   resave: false,
   saveUninitialized: false,
   cookie: { 
@@ -149,7 +93,7 @@ passport.deserializeUser(async (id, done) => {
   }
 });
 
-// Auth middleware
+// Auth middleware (YENİ)
 const isAuthenticated = (req, res, next) => {
   if (req.isAuthenticated()) {
     return next();
@@ -157,7 +101,12 @@ const isAuthenticated = (req, res, next) => {
   res.redirect('/admin/login');
 };
 
-// Login sayfası route
+// Admin routes (GELİŞTİRİLDİ - Artık korumalı)
+app.get('/admin', isAuthenticated, (req, res) => {
+  res.sendFile(path.join(__dirname, 'views', 'admin.html'));
+});
+
+// Login sayfası route (YENİ)
 app.get('/admin/login', (req, res) => {
   if (req.isAuthenticated()) {
     return res.redirect('/admin');
@@ -165,35 +114,70 @@ app.get('/admin/login', (req, res) => {
   res.sendFile(path.join(__dirname, 'views', 'login.html'));
 });
 
-// Login işlemi
+// Login işlemi (YENİ)
 app.post('/admin/login', passport.authenticate('local', {
   successRedirect: '/admin',
   failureRedirect: '/admin/login',
-  failureFlash: true
+  failureFlash: false
 }));
 
-// Logout
+// Logout (YENİ)
 app.get('/admin/logout', (req, res) => {
   req.logout(() => {
     res.redirect('/');
   });
 });
 
-// Admin paneli route'ları koruma
-app.get('/admin', isAuthenticated, (req, res) => {
-  res.sendFile(path.join(__dirname, 'views', 'admin.html'));
+// Blog sayfası
+app.get('/blog', (req, res) => {
+  res.sendFile(path.join(__dirname, 'views', 'blog.html'));
 });
 
-// İlk admin kullanıcısını oluşturma route'u (sadece bir kez kullanılmalı)
+// Ana sayfa route'u
+app.get('/', (req, res) => {
+  console.log('Ana sayfa isteği işleniyor...');
+  res.sendFile(path.join(__dirname, '..', 'index.html'));
+});
+
+// Test endpoint
+app.get('/test', (req, res) => {
+  res.json({ 
+    status: 'Server çalışıyor!', 
+    timestamp: new Date(),
+    message: 'Test başarılı'
+  });
+});
+
+// İlk admin kullanıcısını oluşturma (YENİ)
 app.post('/setup-admin', async (req, res) => {
   try {
     const hashedPassword = await bcrypt.hash('admin123', 10);
     await pool.query(
-      'INSERT INTO users (username, password_hash) VALUES ($1, $2)',
+      'INSERT INTO users (username, password_hash) VALUES ($1, $2) ON CONFLICT (username) DO NOTHING',
       ['admin', hashedPassword]
     );
     res.json({ message: 'Admin kullanıcısı oluşturuldu' });
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
+});
+
+// 404 handler
+app.use((req, res) => {
+  console.log(`404 - Bulunamadı: ${req.url}`);
+  res.status(404).send('Sayfa bulunamadı');
+});
+
+// Error handler
+app.use((err, req, res, next) => {
+  console.error('Server hatası:', err);
+  res.status(500).send('Sunucu hatası');
+});
+
+const PORT = process.env.PORT || 3000;
+app.listen(PORT, () => {
+  console.log(`Sunucu http://localhost:${PORT} adresinde çalışıyor`);
+  console.log(`Ana sayfa: http://localhost:${PORT}`);
+  console.log(`Blog: http://localhost:${PORT}/blog`);
+  console.log(`Admin: http://localhost:${PORT}/admin`);
 });
