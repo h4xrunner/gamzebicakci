@@ -36,6 +36,7 @@ const LocalStrategy = require('passport-local').Strategy;
 const bcrypt = require('bcrypt');
 const { Pool } = require('pg');
 
+
 // PostgreSQL bağlantısı
 const pool = new Pool({
   user: process.env.DB_USER,
@@ -44,6 +45,28 @@ const pool = new Pool({
   password: process.env.DB_PASS,
   port: process.env.DB_PORT,
 });
+
+// Request logging
+app.use((req, res, next) => {
+  console.log(`${new Date().toISOString()} - ${req.method} ${req.url}`);
+  next();
+});
+
+app.use(cors());
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+
+// Statik dosyaları serve et (ana dizindeki dosyalar için)
+app.use(express.static(path.join(__dirname, '..')));
+
+// API endpoint - güvenli şekilde yükle
+try {
+  const postsRouter = require('./routes/posts');
+  app.use('/api/posts', postsRouter);
+  console.log('Posts router başarıyla yüklendi');
+} catch (error) {
+  console.error('Posts router yüklenemedi:', error.message);
+}
 
 // Session ayarları
 app.use(session({
