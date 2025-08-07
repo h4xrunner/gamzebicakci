@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Kurulumu - Gamze Bıçakçı</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            font-family: 'Inter', sans-serif;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .setup-container {
+            background: rgba(255, 255, 255, 0.15);
+            padding: 3rem;
+            border-radius: 25px;
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+            width: 100%;
+            max-width: 400px;
+            margin: 2rem;
+        }
+        
+        .setup-header {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+        
+        .setup-header h1 {
+            font-size: 2rem;
+            color: white;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+        }
+        
+        .setup-btn {
+            padding: 1rem;
+            background: linear-gradient(45deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-weight: 600;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            width: 100%;
+        }
+        
+        .setup-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+        }
+        
+        #message {
+            margin-top: 1rem;
+            padding: 1rem;
+            border-radius: 12px;
+            text-align: center;
+            color: white;
+        }
+        
+        .success {
+            background: rgba(46, 213, 115, 0.2);
+        }
+        
+        .error {
+            background: rgba(255, 71, 87, 0.2);
+        }
+    </style>
+</head>
+<body>
+    <div class="setup-container">
+        <div class="setup-header">
+            <h1>🛠️ Admin Kurulumu</h1>
+        </div>
+        
+        <button onclick="setupAdmin()" class="setup-btn">Admin Hesabı Oluştur</button>
+        <div id="message"></div>
+    </div>
+
+    <script>
+        async function setupAdmin() {
+            const messageDiv = document.getElementById('message');
+            const button = document.querySelector('.setup-btn');
+            
+            try {
+                button.disabled = true;
+                button.textContent = 'Kuruluyor...';
+                
+                const response = await fetch('/setup-admin', {
+                    method: 'POST'
+                });
+                
+                const data = await response.json();
+                
+                messageDiv.textContent = data.message;
+                messageDiv.className = data.error ? 'error' : 'success';
+                
+                if (!data.error) {
+                    setTimeout(() => {
+                        window.location.href = '/admin/login';
+                    }, 2000);
+                }
+            } catch (error) {
+                messageDiv.textContent = 'Bir hata oluştu: ' + error.message;
+                messageDiv.className = 'error';
+            } finally {
+                button.disabled = false;
+                button.textContent = 'Admin Hesabı Oluştur';
+            }
+        }
+    </script>
+</body>
+</html>

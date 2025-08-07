@@ -132,20 +132,53 @@ app.get('/admin', isAuthenticated, (req, res) => {
 });
 
 // İlk admin kullanıcısını oluşturma
+// İlk admin kullanıcısını oluşturma
 app.post('/setup-admin', async (req, res) => {
-  try {
-    const hashedPassword = await bcrypt.hash('admin123', 10);
-    await pool.query(
-      'INSERT INTO users (username, password_hash) VALUES ($1, $2) ON CONFLICT (username) DO NOTHING',
-      ['admin', hashedPassword]
-    );
-    res.json({ message: 'Admin kullanıcısı oluşturuldu' });
-  } catch (err) {
-    res.status(500).json({ error: err.message });
-  }
+    try {
+        // Önce users tablosunun varlığını kontrol et
+        await pool.query(`
+            CREATE TABLE IF NOT EXISTS users (
+                id SERIAL PRIMARY KEY,
+                username VARCHAR(50) UNIQUE NOT NULL,
+                password_hash VARCHAR(255) NOT NULL,
+                created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+            )
+        `);
+
+        // Mevcut admin kullanıcısını kontrol et
+        const checkResult = await pool.query('SELECT * FROM users WHERE username = $1', ['admin']);
+        
+        if (checkResult.rows.length > 0) {
+            return res.json({ message: 'Admin kullanıcısı zaten mevcut' });
+        }
+
+        // Admin kullanıcısı yoksa yeni oluştur
+        const hashedPassword = await bcrypt.hash('admin123', 10);
+        const insertResult = await pool.query(
+            'INSERT INTO users (username, password_hash) VALUES ($1, $2) RETURNING id',
+            ['admin', hashedPassword]
+        );
+        
+        res.json({ 
+            message: 'Admin kullanıcısı başarıyla oluşturuldu! Yönlendiriliyorsunuz...',
+            id: insertResult.rows[0].id 
+        });
+    } catch (err) {
+        console.error('Admin oluşturma hatası:', err);
+        res.status(500).json({ 
+            error: true,
+            message: 'Admin oluşturulurken bir hata oluştu: ' + err.message 
+        });
+    }
 });
 
 // ========= PUBLIC ROUTES =========
+
+// Setup sayfası route'u
+app.get('/setup', (req, res) => {
+    res.sendFile(path.join(__dirname, 'views', 'setup.html'));
+});
+
 // Ana sayfa
 app.get('/', (req, res) => {
   console.log('Ana sayfa isteği işleniyor...');
