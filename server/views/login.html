@@ -111,6 +111,16 @@
         .home-link:hover {
             background: rgba(255, 255, 255, 0.25);
         }
+
+        #error-message {
+            color: #ff6b6b;
+            background: rgba(255,107,107,0.1);
+            padding: 1rem;
+            border-radius: 12px;
+            margin-bottom: 1rem;
+            display: none;
+            text-align: center;
+        }
         
         @media (max-width: 480px) {
             .login-container {
@@ -133,10 +143,13 @@
             <h1>👋 Admin Girişi</h1>
         </div>
         
+        <div id="error-message"></div>
+        
+        <!-- Normal form kullanımına geçtik -->
         <form class="login-form" action="/admin/login" method="POST">
             <div class="form-group">
                 <label for="username">Kullanıcı Adı</label>
-                <input type="text" id="admin" name="admin123" required>
+                <input type="text" id="username" name="username" required>
             </div>
             
             <div class="form-group">
