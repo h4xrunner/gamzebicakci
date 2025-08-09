@@ -479,7 +479,8 @@
             document.getElementById('posts-list').innerHTML = '<div class="error-message">Yazılar yüklenemedi.</div>';
         }
     }
-    // Post oluşturma (fotoğraf destekli ve gelişmiş alanlarla)
+    
+    // Post oluşturma (DÜZELTİLMİŞ - sadece /api/upload/image kullanıyor)
     document.getElementById('post-form').addEventListener('submit', async (e) => {
         e.preventDefault();
         const btn = e.target.querySelector('button[type="submit"]');
@@ -488,35 +489,28 @@
         const formData = new FormData(e.target);
         let imageUrl = '';
         const imgFile = formData.get('image');
+        
+        // Sadece yeni upload sistemi kullanılıyor
         if (imgFile && imgFile.size > 0) {
             try {
-                // Cloudinary'ye direkt upload
                 const uploadFormData = new FormData();
-uploadFormData.append('image', imgFile);
-const uploadRes = await fetch('/api/upload/image', {
-    method: 'POST',
-    body: uploadFormData
-});
-const uploadData = await uploadRes.json();
-if (uploadData.url) {
-    imageUrl = uploadData.url;
-    showMessage('✅ Resim başarıyla yüklendi!');
-} else {
-    showMessage('❌ Resim yüklenemedi: ' + (uploadData.error || 'Bilinmeyen hata'), 'error');
-}
-                
-                const cloudinaryData = await cloudinaryResponse.json();
-                
-                if (cloudinaryData.secure_url) {
-                    imageUrl = cloudinaryData.secure_url;
+                uploadFormData.append('image', imgFile);
+                const uploadRes = await fetch('/api/upload/image', {
+                    method: 'POST',
+                    body: uploadFormData
+                });
+                const uploadData = await uploadRes.json();
+                if (uploadData.url) {
+                    imageUrl = uploadData.url;
                     showMessage('✅ Resim başarıyla yüklendi!');
                 } else {
-                    showMessage('❌ Resim yüklenemedi: ' + (cloudinaryData.error?.message || 'Bilinmeyen hata'), 'error');
+                    showMessage('❌ Resim yüklenemedi: ' + (uploadData.error || 'Bilinmeyen hata'), 'error');
                 }
             } catch (error) {
                 showMessage('❌ Resim yükleme hatası: ' + error.message, 'error');
             }
         }
+        
         // Post datası hazırla
         const postData = {
             author: formData.get('author'),
@@ -631,7 +625,7 @@ if (uploadData.url) {
         }
     }
 
-    // Düzenleme Form Submit
+    // Düzenleme Form Submit (DÜZELTİLMİŞ - sadece /api/upload/image kullanıyor)
     document.getElementById('edit-form').addEventListener('submit', async function(e) {
         e.preventDefault();
         const btn = e.target.querySelector('button[type="submit"]');
@@ -642,9 +636,9 @@ if (uploadData.url) {
         let imageUrl = '';
         const imgFile = document.getElementById('edit-image').files[0];
         
+        // Yeni resim yüklendiyse
         if (imgFile) {
             try {
-                // Cloudinary'ye direkt upload
                 const uploadFormData = new FormData();
                 uploadFormData.append('image', imgFile);
                 const uploadRes = await fetch('/api/upload/image', {
@@ -652,18 +646,11 @@ if (uploadData.url) {
                     body: uploadFormData
                 });
                 const uploadData = await uploadRes.json();
-if (uploadData.url) {
-    imageUrl = uploadData.url;
-    showMessage('✅ Resim başarıyla yüklendi!');
-} else {
-    showMessage('❌ Resim yüklenemedi: ' + (uploadData.error || 'Bilinmeyen hata'), 'error');
-}
-                
-                if (cloudinaryData.secure_url) {
-                    imageUrl = cloudinaryData.secure_url;
+                if (uploadData.url) {
+                    imageUrl = uploadData.url;
                     showMessage('✅ Resim başarıyla güncellendi!');
                 } else {
-                    showMessage('❌ Resim güncellenemedi: ' + (cloudinaryData.error?.message || 'Bilinmeyen hata'), 'error');
+                    showMessage('❌ Resim güncellenemedi: ' + (uploadData.error || 'Bilinmeyen hata'), 'error');
                 }
             } catch (error) {
                 showMessage('❌ Resim güncelleme hatası: ' + error.message, 'error');
