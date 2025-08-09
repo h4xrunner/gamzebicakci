@@ -220,3 +220,5 @@ app.listen(PORT, () => {
   console.log(`Blog: http://localhost:${PORT}/blog`);
   console.log(`Admin: http://localhost:${PORT}/admin`);
 });
+const uploadRouter = require('./routes/upload');
+app.use('/api/upload', uploadRouter);
