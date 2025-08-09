@@ -37,17 +37,70 @@ router.get('/', async (req, res) => {
 // Yeni post ekle
 router.post('/', async (req, res) => {
   try {
-    const { title, content, excerpt, tags, author } = req.body;
+    const {
+      title, content, excerpt, tags, author,
+      category, status, publish_at, featured,
+      comments_enabled, language, password, image
+    } = req.body;
     
     const result = await pool.query(
-      'INSERT INTO posts (title, content, excerpt, tags, author, created_at) VALUES ($1, $2, $3, $4, $5, NOW()) RETURNING *',
-      [title, content, excerpt, tags, author || 'Gamze Bıçakçı']
+      `INSERT INTO posts
+        (title, content, excerpt, tags, author, category, status, publish_at, featured, comments_enabled, language, password, image, created_at)
+       VALUES
+        ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,NOW())
+       RETURNING *`,
+      [
+        title, content, excerpt, tags, author || 'Gamze Bıçakçı',
+        category, status || 'public', publish_at, featured || false,
+        comments_enabled !== false, language || 'tr', password, image
+      ]
     );
-    
     res.status(201).json(result.rows[0]);
   } catch (err) {
     console.error(err);
     res.status(500).json({ error: 'Post eklenirken hata oluştu' });
+  }
+});
+
+// Post güncelle
+router.put('/:id', async (req, res) => {
+  try {
+    const { id } = req.params;
+    const {
+      title, content, excerpt, tags, author,
+      category, status, publish_at, featured,
+      comments_enabled, language, password, image
+    } = req.body;
+    const result = await pool.query(
+      `UPDATE posts SET
+        title = $1,
+        content = $2,
+        excerpt = $3,
+        tags = $4,
+        author = $5,
+        category = $6,
+        status = $7,
+        publish_at = $8,
+        featured = $9,
+        comments_enabled = $10,
+        language = $11,
+        password = $12,
+        image = $13,
+        updated_at = NOW()
+      WHERE id = $14 RETURNING *`,
+      [
+        title, content, excerpt, tags, author,
+        category, status, publish_at, featured,
+        comments_enabled, language, password, image, id
+      ]
+    );
+    if (result.rows.length === 0) {
+      return res.status(404).json({ error: 'Post bulunamadı' });
+    }
+    res.json(result.rows[0]);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: 'Post güncellenirken hata oluştu' });
   }
 });
 
@@ -65,28 +118,6 @@ router.get('/:id', async (req, res) => {
   } catch (err) {
     console.error(err);
     res.status(500).json({ error: 'Veritabanı hatası' });
-  }
-});
-
-// Post güncelle
-router.put('/:id', async (req, res) => {
-  try {
-    const { id } = req.params;
-    const { title, content, excerpt, tags, author } = req.body;
-    
-    const result = await pool.query(
-      'UPDATE posts SET title = $1, content = $2, excerpt = $3, tags = $4, author = $5, updated_at = NOW() WHERE id = $6 RETURNING *',
-      [title, content, excerpt, tags, author, id]
-    );
-    
-    if (result.rows.length === 0) {
-      return res.status(404).json({ error: 'Post bulunamadı' });
-    }
-    
-    res.json(result.rows[0]);
-  } catch (err) {
-    console.error(err);
-    res.status(500).json({ error: 'Post güncellenirken hata oluştu' });
   }
 });
 
