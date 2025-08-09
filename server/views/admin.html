@@ -15,7 +15,7 @@
         .home-link { left: 2rem; }
         .logout-link { right: 2rem; }
         .home-link:hover, .logout-link:hover { background: rgba(255,255,255,0.25); transform: translateY(-3px);}
-        .admin-container { max-width: 1000px; margin: 0 auto; padding: 3rem 1rem 2rem 1rem;}
+        .admin-container { max-width: 1100px; margin: 0 auto; padding: 3rem 1rem 2rem 1rem;}
         .admin-header { text-align: center; margin-bottom: 3rem; background: rgba(255,255,255,0.15); padding: 2rem; border-radius: 25px; backdrop-filter: blur(20px); border: 1px solid rgba(255,255,255,0.2); box-shadow: 0 20px 40px rgba(0,0,0,0.1);}
         .admin-header h1 { font-size: 2.5rem; font-weight: 700; color: white; margin-bottom: 0.5rem;}
         .admin-header p { font-size: 1.1rem; color: rgba(255,255,255,0.85); font-weight: 300;}
@@ -47,6 +47,11 @@
         .success-message, .error-message { padding: 1rem; border-radius: 10px; text-align: center; margin-bottom: 1rem; font-weight: 600;}
         .success-message { background: linear-gradient(45deg, rgba(46,213,115,0.15),rgba(0,206,201,0.15)); color: #fff;}
         .error-message { background: linear-gradient(45deg, rgba(255,107,107,0.15),rgba(238,82,83,0.15)); color: #fff;}
+        /* Modal */
+        #edit-modal { display:none; position:fixed; z-index:9999; top:0; left:0; width:100vw; height:100vh; background:rgba(0,0,0,0.5); align-items:center; justify-content:center;}
+        #edit-modal .edit-modal-content { background:white; max-width:520px; width:97vw; padding:2rem 1.2rem; border-radius:16px; box-shadow:0 12px 40px rgba(0,0,0,0.25); position:relative;}
+        #edit-modal .close-btn { position:absolute; top:1rem; right:1rem; background:none; border:none; font-size:1.7rem; cursor:pointer; color:#444;}
+        #edit-modal h3 { color:#333; margin-bottom:1.2rem;}
         @media (max-width: 768px) {
             .admin-header h1 { font-size: 1.4rem;}
             .admin-container { padding: 1rem 0.1rem;}
@@ -190,6 +195,79 @@
         </div>
     </section>
 </div>
+
+<!-- DÜZENLEME MODALI -->
+<div id="edit-modal">
+    <div class="edit-modal-content">
+        <button type="button" onclick="closeEditModal()" class="close-btn">✖</button>
+        <form id="edit-form">
+            <h3>Yazıyı Düzenle</h3>
+            <input type="hidden" id="edit-id">
+            <div class="form-group">
+                <label for="edit-author">Yazar</label>
+                <input type="text" id="edit-author" name="author" required>
+            </div>
+            <div class="form-group">
+                <label for="edit-title">Başlık</label>
+                <input type="text" id="edit-title" name="title" required>
+            </div>
+            <div class="form-group">
+                <label for="edit-excerpt">Özet</label>
+                <input type="text" id="edit-excerpt" name="excerpt">
+            </div>
+            <div class="form-group">
+                <label for="edit-content">İçerik</label>
+                <textarea id="edit-content" name="content" required></textarea>
+            </div>
+            <div class="form-group">
+                <label for="edit-tags">Etiketler</label>
+                <input type="text" id="edit-tags" name="tags">
+            </div>
+            <div class="form-group">
+                <label for="edit-category">Kategori</label>
+                <input type="text" id="edit-category" name="category">
+            </div>
+            <div class="form-group">
+                <label for="edit-status">Durum</label>
+                <select id="edit-status" name="status">
+                    <option value="public">Herkese Açık</option>
+                    <option value="private">Gizli</option>
+                    <option value="draft">Taslak</option>
+                    <option value="scheduled">Planlı Yayın</option>
+                </select>
+            </div>
+            <div class="form-group" id="edit-publish-at-group" style="display:none;">
+                <label for="edit-publish_at">Yayınlanma Tarihi</label>
+                <input type="datetime-local" id="edit-publish_at" name="publish_at">
+            </div>
+            <div class="form-group">
+                <label><input type="checkbox" id="edit-featured" name="featured"> Öne Çıkar</label>
+            </div>
+            <div class="form-group">
+                <label><input type="checkbox" id="edit-comments_enabled" name="comments_enabled"> Yorumlara Açık</label>
+            </div>
+            <div class="form-group">
+                <label for="edit-language">Dil</label>
+                <select id="edit-language" name="language">
+                    <option value="tr">Türkçe</option>
+                    <option value="en">İngilizce</option>
+                    <option value="other">Diğer</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="edit-password">Şifre (Opsiyonel)</label>
+                <input type="text" id="edit-password" name="password">
+            </div>
+            <div class="form-group">
+                <label for="edit-image">Kapak Fotoğrafı</label>
+                <input type="file" id="edit-image" name="image" accept="image/*">
+                <img id="edit-image-preview" style="display:none;" alt="Fotoğraf önizleme">
+            </div>
+            <button type="submit" class="btn">Kaydet</button>
+        </form>
+    </div>
+</div>
+
 <script>
     // Tab navigation
     function showTab(tabId) {
@@ -205,7 +283,7 @@
         document.getElementById('publish-at-group').style.display =
             this.value === 'scheduled' ? 'block' : 'none';
     });
-    // Image preview
+    // Image preview (ekleme)
     document.getElementById('image').addEventListener('change', function() {
         const file = this.files[0];
         const preview = document.getElementById('image-preview');
@@ -332,6 +410,7 @@
             btn.disabled = false;
         }
     });
+
     // Delete post
     async function deletePost(id) {
         if (!confirm('Bu yazı silinsin mi?')) return;
@@ -348,10 +427,96 @@
             showMessage('❌ Bağlantı hatası.', 'error');
         }
     }
-    // Edit post (modal kullanılabilir, burada sadeleştirilmiş)
-    async function editPost(id) {
-        alert("Düzenleme fonksiyonu henüz eklenmedi.");
+
+    // Düzenle Modalı Aç/Kapat
+    function closeEditModal() {
+        document.getElementById('edit-modal').style.display = 'none';
     }
+    document.getElementById('edit-status').addEventListener('change', function() {
+        document.getElementById('edit-publish-at-group').style.display =
+            this.value === 'scheduled' ? 'block' : 'none';
+    });
+    document.getElementById('edit-image').addEventListener('change', function() {
+        const file = this.files[0];
+        const preview = document.getElementById('edit-image-preview');
+        if (file) {
+            preview.src = URL.createObjectURL(file);
+            preview.style.display = 'block';
+        } else {
+            preview.style.display = 'none';
+        }
+    });
+
+    // Postu Düzenle (Modal aç)
+    async function editPost(id) {
+        const res = await fetch(`/api/posts/${id}`);
+        const post = await res.json();
+        document.getElementById('edit-id').value = post.id;
+        document.getElementById('edit-author').value = post.author || '';
+        document.getElementById('edit-title').value = post.title || '';
+        document.getElementById('edit-excerpt').value = post.excerpt || '';
+        document.getElementById('edit-content').value = post.content || '';
+        document.getElementById('edit-tags').value = post.tags || '';
+        document.getElementById('edit-category').value = post.category || '';
+        document.getElementById('edit-status').value = post.status || 'public';
+        document.getElementById('edit-publish_at').value = post.publish_at ? post.publish_at.slice(0,16) : '';
+        document.getElementById('edit-publish-at-group').style.display = post.status === 'scheduled' ? 'block' : 'none';
+        document.getElementById('edit-featured').checked = !!post.featured;
+        document.getElementById('edit-comments_enabled').checked = !!post.comments_enabled;
+        document.getElementById('edit-language').value = post.language || 'tr';
+        document.getElementById('edit-password').value = post.password || '';
+        if (post.image) {
+            document.getElementById('edit-image-preview').src = post.image;
+            document.getElementById('edit-image-preview').style.display = 'block';
+        } else {
+            document.getElementById('edit-image-preview').style.display = 'none';
+        }
+        document.getElementById('edit-modal').style.display = 'flex';
+    }
+
+    // Düzenleme Form Submit
+    document.getElementById('edit-form').addEventListener('submit', async function(e) {
+        e.preventDefault();
+        const id = document.getElementById('edit-id').value;
+        let imageUrl = '';
+        const imgFile = document.getElementById('edit-image').files[0];
+        if (imgFile) {
+            const imgForm = new FormData();
+            imgForm.append('image', imgFile);
+            const uploadRes = await fetch('/api/upload/image', { method: 'POST', body: imgForm });
+            const uploadData = await uploadRes.json();
+            if (uploadData.url) imageUrl = uploadData.url;
+        }
+        const data = {
+            author: document.getElementById('edit-author').value,
+            title: document.getElementById('edit-title').value,
+            excerpt: document.getElementById('edit-excerpt').value,
+            content: document.getElementById('edit-content').value,
+            tags: document.getElementById('edit-tags').value,
+            category: document.getElementById('edit-category').value,
+            status: document.getElementById('edit-status').value,
+            publish_at: document.getElementById('edit-status').value === 'scheduled' ? document.getElementById('edit-publish_at').value : null,
+            featured: document.getElementById('edit-featured').checked,
+            comments_enabled: document.getElementById('edit-comments_enabled').checked,
+            language: document.getElementById('edit-language').value,
+            password: document.getElementById('edit-password').value,
+            image: imageUrl || document.getElementById('edit-image-preview').src
+        };
+        const r = await fetch(`/api/posts/${id}`, {
+            method: 'PUT',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(data)
+        });
+        if (r.ok) {
+            showMessage("✅ Yazı güncellendi!");
+            closeEditModal();
+            loadPosts();
+            loadDashboard();
+        } else {
+            showMessage("❌ Güncellenemedi!", "error");
+        }
+    });
+
     // Settings
     function saveSettings() {
         const s = {
