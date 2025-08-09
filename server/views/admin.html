@@ -491,14 +491,19 @@
         if (imgFile && imgFile.size > 0) {
             try {
                 // Cloudinary'ye direkt upload
-                const cloudinaryFormData = new FormData();
-                cloudinaryFormData.append('file', imgFile);
-                cloudinaryFormData.append('upload_preset', 'gamzebicakci_images'); // Buraya kendi preset'inizi yazın
-                
-                const cloudinaryResponse = await fetch('https://api.cloudinary.com/v1_1/dk49zlfug/image/upload', {
-                    method: 'POST',
-                    body: cloudinaryFormData
-                });
+                const uploadFormData = new FormData();
+uploadFormData.append('image', imgFile);
+const uploadRes = await fetch('/api/upload/image', {
+    method: 'POST',
+    body: uploadFormData
+});
+const uploadData = await uploadRes.json();
+if (uploadData.url) {
+    imageUrl = uploadData.url;
+    showMessage('✅ Resim başarıyla yüklendi!');
+} else {
+    showMessage('❌ Resim yüklenemedi: ' + (uploadData.error || 'Bilinmeyen hata'), 'error');
+}
                 
                 const cloudinaryData = await cloudinaryResponse.json();
                 
@@ -640,16 +645,19 @@
         if (imgFile) {
             try {
                 // Cloudinary'ye direkt upload
-                const cloudinaryFormData = new FormData();
-                cloudinaryFormData.append('file', imgFile);
-                cloudinaryFormData.append('upload_preset', 'gamzebicakci_images'); // Buraya kendi preset'inizi yazın
-                
-                const cloudinaryResponse = await fetch('https://api.cloudinary.com/v1_1/dk49zlfug/image/upload', {
+                const uploadFormData = new FormData();
+                uploadFormData.append('image', imgFile);
+                const uploadRes = await fetch('/api/upload/image', {
                     method: 'POST',
-                    body: cloudinaryFormData
+                    body: uploadFormData
                 });
-                
-                const cloudinaryData = await cloudinaryResponse.json();
+                const uploadData = await uploadRes.json();
+if (uploadData.url) {
+    imageUrl = uploadData.url;
+    showMessage('✅ Resim başarıyla yüklendi!');
+} else {
+    showMessage('❌ Resim yüklenemedi: ' + (uploadData.error || 'Bilinmeyen hata'), 'error');
+}
                 
                 if (cloudinaryData.secure_url) {
                     imageUrl = cloudinaryData.secure_url;
