@@ -642,9 +642,9 @@
                 // Cloudinary'ye direkt upload
                 const cloudinaryFormData = new FormData();
                 cloudinaryFormData.append('file', imgFile);
-                cloudinaryFormData.append('upload_preset', 'your_upload_preset'); // Buraya kendi preset'inizi yazın
+                cloudinaryFormData.append('upload_preset', 'gamzebicakci_images'); // Buraya kendi preset'inizi yazın
                 
-                const cloudinaryResponse = await fetch('https://api.cloudinary.com/v1_1/your_cloud_name/image/upload', {
+                const cloudinaryResponse = await fetch('https://api.cloudinary.com/v1_1/dk49zlfug/image/upload', {
                     method: 'POST',
                     body: cloudinaryFormData
                 });
