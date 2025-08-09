@@ -50,7 +50,7 @@
         .blog-post {
             background: rgba(255, 255, 255, 0.12);
             margin-bottom: 2.5rem;
-            padding: 2.5rem;
+            padding: 0;
             border-radius: 20px;
             backdrop-filter: blur(20px);
             border: 1px solid rgba(255, 255, 255, 0.15);
@@ -69,12 +69,26 @@
             height: 4px;
             background: linear-gradient(90deg, #ff6b6b, #4ecdc4, #45b7d1, #96ceb4);
             border-radius: 20px 20px 0 0;
+            z-index: 2;
         }
         
         .blog-post:hover {
             transform: translateY(-10px) scale(1.02);
             box-shadow: 0 25px 50px rgba(0, 0, 0, 0.2);
             background: rgba(255, 255, 255, 0.18);
+        }
+        
+        .post-image {
+            width: 100%;
+            height: 250px;
+            object-fit: cover;
+            border-radius: 20px 20px 0 0;
+            margin-bottom: 0;
+            display: block;
+        }
+        
+        .post-content-wrapper {
+            padding: 2.5rem;
         }
         
         .post-title {
@@ -96,6 +110,7 @@
             align-items: center;
             gap: 1rem;
             font-weight: 400;
+            flex-wrap: wrap;
         }
         
         .meta-item {
@@ -245,6 +260,47 @@
             border: 1px solid rgba(255, 255, 255, 0.1);
         }
         
+        .featured-badge {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            background: linear-gradient(45deg, #ffd700, #ffed4e);
+            color: #333;
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            z-index: 3;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+        }
+        
+        .post-status {
+            position: absolute;
+            top: 1rem;
+            left: 1rem;
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            z-index: 3;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+        }
+        
+        .status-private {
+            background: linear-gradient(45deg, #ff6b6b, #ff8787);
+            color: white;
+        }
+        
+        .status-draft {
+            background: linear-gradient(45deg, #95a5a6, #bdc3c7);
+            color: white;
+        }
+        
+        .status-scheduled {
+            background: linear-gradient(45deg, #3498db, #74b9ff);
+            color: white;
+        }
+        
         /* Responsive Design */
         @media (max-width: 768px) {
             .blog-container {
@@ -255,9 +311,8 @@
                 font-size: 2.2rem;
             }
             
-            .blog-post {
+            .post-content-wrapper {
                 padding: 1.5rem;
-                margin-bottom: 1.5rem;
             }
             
             .post-title {
@@ -274,6 +329,10 @@
                 top: 1rem;
                 left: 1rem;
                 padding: 0.75rem 1rem;
+            }
+            
+            .post-image {
+                height: 200px;
             }
         }
         
@@ -293,6 +352,16 @@
                 opacity: 1;
                 transform: translateY(0);
             }
+        }
+        
+        /* Image lazy loading effect */
+        .post-image {
+            transition: opacity 0.3s ease;
+            background: linear-gradient(135deg, rgba(255,255,255,0.1), rgba(255,255,255,0.05));
+        }
+        
+        .post-image.loading {
+            opacity: 0.7;
         }
     </style>
 </head>
@@ -331,13 +400,33 @@
             ).join('');
         }
         
+        function getStatusBadge(status, publishAt) {
+            switch(status) {
+                case 'private':
+                    return '<div class="post-status status-private">🔒 Gizli</div>';
+                case 'draft':
+                    return '<div class="post-status status-draft">📝 Taslak</div>';
+                case 'scheduled':
+                    const scheduleDate = publishAt ? new Date(publishAt).toLocaleDateString('tr-TR') : '';
+                    return `<div class="post-status status-scheduled">⏰ Planlandı ${scheduleDate}</div>`;
+                default:
+                    return '';
+            }
+        }
+        
         async function loadBlogPosts() {
             try {
                 const response = await fetch('/api/posts');
                 const posts = await response.json();
                 const postsContainer = document.getElementById('blog-posts');
                 
-                if (posts.length === 0) {
+                // Filter only public posts for blog display
+                const publicPosts = posts.filter(post => 
+                    post.status === 'public' || 
+                    (post.status === 'scheduled' && new Date(post.publish_at) <= new Date())
+                );
+                
+                if (publicPosts.length === 0) {
                     postsContainer.innerHTML = `
                         <div class="no-posts">
                             <h3>🌟 Henüz yazı yok</h3>
@@ -347,7 +436,7 @@
                     return;
                 }
                 
-                postsContainer.innerHTML = posts.map((post, index) => {
+                postsContainer.innerHTML = publicPosts.map((post, index) => {
                     const date = new Date(post.created_at).toLocaleDateString('tr-TR', {
                         year: 'numeric',
                         month: 'long',
@@ -358,39 +447,60 @@
                         `<span class="tag">${tag.trim()}</span>`
                     ).join('') : '';
                     
-                    const readTime = calculateReadTime(post.content);
-                    const formattedContent = formatContent(post.content);
+                    const readTime = calculateReadTime(post.content || '');
+                    const formattedContent = formatContent(post.content || '');
                     
                     return `
                         <article class="blog-post" style="animation-delay: ${index * 0.1}s">
-                            <h2 class="post-title">${post.title}</h2>
+                            ${post.featured ? '<div class="featured-badge">⭐ Öne Çıkan</div>' : ''}
+                            ${getStatusBadge(post.status, post.publish_at)}
                             
-                            ${post.excerpt ? `<div class="post-excerpt">"${post.excerpt}"</div>` : ''}
+                            ${post.image ? `
+                                <img src="${post.image}" 
+                                     alt="${post.title}" 
+                                     class="post-image loading"
+                                     onload="this.classList.remove('loading')"
+                                     onerror="this.style.display='none'">
+                            ` : ''}
                             
-                            <div class="post-meta">
-                                <div class="meta-item">
-                                    <span>📅</span>
-                                    <span>${date}</span>
+                            <div class="post-content-wrapper">
+                                <h2 class="post-title">${post.title}</h2>
+                                
+                                ${post.excerpt ? `<div class="post-excerpt">"${post.excerpt}"</div>` : ''}
+                                
+                                <div class="post-meta">
+                                    <div class="meta-item">
+                                        <span>📅</span>
+                                        <span>${date}</span>
+                                    </div>
+                                    ${post.author ? `
+                                    <div class="meta-item">
+                                        <span>✍️</span>
+                                        <span>${post.author}</span>
+                                    </div>` : ''}
+                                    <div class="meta-item">
+                                        <span>⏱️</span>
+                                        <span>${readTime}</span>
+                                    </div>
+                                    ${post.category ? `
+                                    <div class="meta-item">
+                                        <span>🗂️</span>
+                                        <span>${post.category}</span>
+                                    </div>` : ''}
                                 </div>
-                                ${post.author ? `
-                                <div class="meta-item">
-                                    <span>✍️</span>
-                                    <span>${post.author}</span>
-                                </div>` : ''}
-                                <div class="meta-item">
-                                    <span>⏱️</span>
-                                    <span>${readTime}</span>
+                                
+                                <div class="post-content">
+                                    ${formattedContent}
                                 </div>
+                                
+                                ${tags ? `<div class="post-tags">${tags}</div>` : ''}
                             </div>
-                            
-                            <div class="post-content">
-                                ${formattedContent}
-                            </div>
-                            
-                            ${tags ? `<div class="post-tags">${tags}</div>` : ''}
                         </article>
                     `;
                 }).join('');
+                
+                // Add intersection observer for animations
+                observeElements();
                 
             } catch (error) {
                 console.error('Blog yazıları yüklenemedi:', error);
@@ -403,9 +513,6 @@
             }
         }
         
-        // Sayfa yüklendiğinde blog yazılarını getir
-        loadBlogPosts();
-        
         // Smooth scroll animation for new posts
         function observeElements() {
             const observer = new IntersectionObserver((entries) => {
@@ -414,6 +521,8 @@
                         entry.target.style.animationPlayState = 'running';
                     }
                 });
+            }, {
+                threshold: 0.1
             });
             
             document.querySelectorAll('.blog-post').forEach(el => {
@@ -421,8 +530,8 @@
             });
         }
         
-        // Call observer after posts are loaded
-        setTimeout(observeElements, 500);
+        // Sayfa yüklendiğinde blog yazılarını getir
+        loadBlogPosts();
     </script>
 </body>
 </html>
