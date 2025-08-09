@@ -489,12 +489,28 @@
         let imageUrl = '';
         const imgFile = formData.get('image');
         if (imgFile && imgFile.size > 0) {
-            // Cloudinary/upload endpointine gönder
-            const imgForm = new FormData();
-            imgForm.append('image', imgFile);
-            const uploadRes = await fetch('/api/upload/image', { method: 'POST', body: imgForm });
-            const uploadData = await uploadRes.json();
-            if (uploadData.url) imageUrl = uploadData.url;
+            try {
+                // Cloudinary'ye direkt upload
+                const cloudinaryFormData = new FormData();
+                cloudinaryFormData.append('file', imgFile);
+                cloudinaryFormData.append('upload_preset', 'gamzebicakci_images'); // Buraya kendi preset'inizi yazın
+                
+                const cloudinaryResponse = await fetch('https://api.cloudinary.com/v1_1/dk49zlfug/image/upload', {
+                    method: 'POST',
+                    body: cloudinaryFormData
+                });
+                
+                const cloudinaryData = await cloudinaryResponse.json();
+                
+                if (cloudinaryData.secure_url) {
+                    imageUrl = cloudinaryData.secure_url;
+                    showMessage('✅ Resim başarıyla yüklendi!');
+                } else {
+                    showMessage('❌ Resim yüklenemedi: ' + (cloudinaryData.error?.message || 'Bilinmeyen hata'), 'error');
+                }
+            } catch (error) {
+                showMessage('❌ Resim yükleme hatası: ' + error.message, 'error');
+            }
         }
         // Post datası hazırla
         const postData = {
@@ -623,13 +639,26 @@
         
         if (imgFile) {
             try {
-                const imgForm = new FormData();
-                imgForm.append('image', imgFile);
-                const uploadRes = await fetch('/api/upload/image', { method: 'POST', body: imgForm });
-                const uploadData = await uploadRes.json();
-                if (uploadData.url) imageUrl = uploadData.url;
-            } catch {
-                showMessage('❌ Resim yüklenemedi.', 'error');
+                // Cloudinary'ye direkt upload
+                const cloudinaryFormData = new FormData();
+                cloudinaryFormData.append('file', imgFile);
+                cloudinaryFormData.append('upload_preset', 'your_upload_preset'); // Buraya kendi preset'inizi yazın
+                
+                const cloudinaryResponse = await fetch('https://api.cloudinary.com/v1_1/your_cloud_name/image/upload', {
+                    method: 'POST',
+                    body: cloudinaryFormData
+                });
+                
+                const cloudinaryData = await cloudinaryResponse.json();
+                
+                if (cloudinaryData.secure_url) {
+                    imageUrl = cloudinaryData.secure_url;
+                    showMessage('✅ Resim başarıyla güncellendi!');
+                } else {
+                    showMessage('❌ Resim güncellenemedi: ' + (cloudinaryData.error?.message || 'Bilinmeyen hata'), 'error');
+                }
+            } catch (error) {
+                showMessage('❌ Resim güncelleme hatası: ' + error.message, 'error');
             }
         }
         
