@@ -199,6 +199,15 @@ app.get('/test', (req, res) => {
   });
 });
 
+// ========= UPLOAD ROUTES =========
+try {
+  const uploadRouter = require('./routes/upload');
+  app.use('/api/upload', uploadRouter);
+  console.log('Upload router başarıyla yüklendi');
+} catch (error) {
+  console.error('Upload router yüklenemedi:', error.message);
+}
+
 // ========= ERROR HANDLERS =========
 // 404 handler
 app.use((req, res) => {
@@ -211,15 +220,6 @@ app.use((err, req, res, next) => {
   console.error('Server hatası:', err);
   res.status(500).send('Sunucu hatası');
 });
-
-// ========= UPLOAD ROUTES =========
-try {
-  const uploadRouter = require('./routes/upload');
-  app.use('/api/upload', uploadRouter);
-  console.log('Upload router başarıyla yüklendi');
-} catch (error) {
-  console.error('Upload router yüklenemedi:', error.message);
-}
 
 // ========= SERVER START =========
 const PORT = process.env.PORT || 3000;
