@@ -20,7 +20,7 @@ router.post('/image', parser.single('image'), (req, res) => {
   }
   console.log('File object:', req.file); // Debug için
   res.json({ 
-    url: req.file.secure_url || req.file.url, 
+    url: req.file.path, 
     public_id: req.file.filename 
   });
 });
