@@ -212,6 +212,15 @@ app.use((err, req, res, next) => {
   res.status(500).send('Sunucu hatası');
 });
 
+// ========= UPLOAD ROUTES =========
+try {
+  const uploadRouter = require('./routes/upload');
+  app.use('/api/upload', uploadRouter);
+  console.log('Upload router başarıyla yüklendi');
+} catch (error) {
+  console.error('Upload router yüklenemedi:', error.message);
+}
+
 // ========= SERVER START =========
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
@@ -220,5 +229,3 @@ app.listen(PORT, () => {
   console.log(`Blog: http://localhost:${PORT}/blog`);
   console.log(`Admin: http://localhost:${PORT}/admin`);
 });
-const uploadRouter = require('./routes/upload');
-app.use('/api/upload', uploadRouter);
