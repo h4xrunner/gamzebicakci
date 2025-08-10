@@ -419,7 +419,7 @@
             margin-top: 2rem;
         }
 
-        .form-group {
+        .form-group, .form-item {
             display: flex;
             gap: 1rem;
         }
@@ -449,7 +449,7 @@
             resize: vertical;
         }
 
-        .comment-form button {
+        .comment-form button, .comment-btn {
             align-self: flex-start;
             padding: 0.8rem 1.5rem;
             background: linear-gradient(45deg, #4ecdc4, #45b7d1);
@@ -463,7 +463,7 @@
             box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
         }
 
-        .comment-form button:hover {
+        .comment-form button:hover, .comment-btn:hover {
             background: linear-gradient(45deg, #45b7d1, #4ecdc4);
             transform: translateY(-2px);
             box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
@@ -477,6 +477,17 @@
             border-radius: 10px;
             border: 1px solid rgba(255, 255, 255, 0.1);
             text-align: center;
+        }
+
+        .comments-disabled {
+            color: rgba(255, 255, 255, 0.6);
+            font-style: italic;
+            padding: 1rem;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 8px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            text-align: center;
+            font-size: 0.9rem;
         }
     </style>
 </head>
@@ -552,67 +563,16 @@
                 }
                 
                 postsContainer.innerHTML = publicPosts.map((post, index) => {
-                    const date = new Date(post.created_at).toLocaleDateString('tr-TR', {
-                        year: 'numeric',
-                        month: 'long',
-                        day: 'numeric'
-                    });
-                    
-                    const tags = post.tags ? post.tags.split(',').map(tag => 
-                        `<span class="tag">${tag.trim()}</span>`
-                    ).join('') : '';
-                    
-                    const readTime = calculateReadTime(post.content || '');
-                    const formattedContent = formatContent(post.content || '');
-                    
-                    return `
-                        <article class="blog-post" style="animation-delay: ${index * 0.1}s">
-                            ${post.featured ? '<div class="featured-badge">⭐ Öne Çıkan</div>' : ''}
-                            ${getStatusBadge(post.status, post.publish_at)}
-                            
-                            ${post.image ? `
-                                <img src="${post.image}" 
-                                     alt="${post.title}" 
-                                     class="post-image loading"
-                                     onload="this.classList.remove('loading')"
-                                     onerror="this.style.display='none'">
-                            ` : ''}
-                            
-                            <div class="post-content-wrapper">
-                                <h2 class="post-title">${post.title}</h2>
-                                
-                                ${post.excerpt ? `<div class="post-excerpt">"${post.excerpt}"</div>` : ''}
-                                
-                                <div class="post-meta">
-                                    <div class="meta-item">
-                                        <span>📅</span>
-                                        <span>${date}</span>
-                                    </div>
-                                    ${post.author ? `
-                                    <div class="meta-item">
-                                        <span>✍️</span>
-                                        <span>${post.author}</span>
-                                    </div>` : ''}
-                                    <div class="meta-item">
-                                        <span>⏱️</span>
-                                        <span>${readTime}</span>
-                                    </div>
-                                    ${post.category ? `
-                                    <div class="meta-item">
-                                        <span>🗂️</span>
-                                        <span>${post.category}</span>
-                                    </div>` : ''}
-                                </div>
-                                
-                                <div class="post-content">
-                                    ${formattedContent}
-                                </div>
-                                
-                                ${tags ? `<div class="post-tags">${tags}</div>` : ''}
-                            </div>
-                        </article>
-                    `;
+                    post.index = index; // index ekle
+                    return renderPost(post);
                 }).join('');
+                
+                // Her post için yorumları yükle
+                publicPosts.forEach(post => {
+                    if (post.comments_enabled) {
+                        loadComments(post.id);
+                    }
+                });
                 
                 // Add intersection observer for animations
                 observeElements();
@@ -707,6 +667,19 @@
 
         // Post render fonksiyonunu güncelle
         function renderPost(post) {
+            const date = new Date(post.created_at).toLocaleDateString('tr-TR', {
+                year: 'numeric',
+                month: 'long',
+                day: 'numeric'
+            });
+            
+            const tags = post.tags ? post.tags.split(',').map(tag => 
+                `<span class="tag">${tag.trim()}</span>`
+            ).join('') : '';
+            
+            const readTime = calculateReadTime(post.content || '');
+            const formattedContent = formatContent(post.content || '');
+            
             return `
                 <article class="blog-post" style="animation-delay: ${post.index * 0.1}s">
                     ${post.featured ? '<div class="featured-badge">⭐ Öne Çıkan</div>' : ''}
@@ -728,11 +701,7 @@
                         <div class="post-meta">
                             <div class="meta-item">
                                 <span>📅</span>
-                                <span>${new Date(post.created_at).toLocaleDateString('tr-TR', {
-                                    year: 'numeric',
-                                    month: 'long',
-                                    day: 'numeric'
-                                })}</span>
+                                <span>${date}</span>
                             </div>
                             ${post.author ? `
                             <div class="meta-item">
@@ -741,7 +710,7 @@
                             </div>` : ''}
                             <div class="meta-item">
                                 <span>⏱️</span>
-                                <span>${calculateReadTime(post.content || '')}</span>
+                                <span>${readTime}</span>
                             </div>
                             ${post.category ? `
                             <div class="meta-item">
@@ -751,18 +720,14 @@
                         </div>
                         
                         <div class="post-content">
-                            ${formatContent(post.content || '')}
+                            ${formattedContent}
                         </div>
                         
-                        ${post.tags ? `
-                            <div class="post-tags">
-                                ${post.tags.split(',').map(tag => `<span class="tag">${tag.trim()}</span>`).join('')}
-                            </div>
-                        ` : ''}
+                        ${tags ? `<div class="post-tags">${tags}</div>` : ''}
                         
                         <!-- Yorum Sistemi -->
                         <div class="comments-section">
-                            <h3>Yorumlar</h3>
+                            <h3>💬 Yorumlar</h3>
                             <div id="comments-${post.id}"></div>
                             
                             ${post.comments_enabled ? `
@@ -770,15 +735,15 @@
                                     <div class="form-group">
                                         <input type="text" name="author" placeholder="Adınız *" required>
                                     </div>
-                                    <div class="form-group">
+                                    <div class="form-item">
                                         <input type="email" name="email" placeholder="E-posta (opsiyonel)">
                                     </div>
                                     <div class="form-group">
                                         <textarea name="content" placeholder="Yorumunuz *" required></textarea>
                                     </div>
-                                    <button type="submit" class="button primary">Yorum Ekle</button>
+                                    <button type="submit" class="comment-btn">💬 Yorum Ekle</button>
                                 </form>
-                            ` : '<p class="comments-disabled">Bu yazıya yorum yapılamaz.</p>'}
+                            ` : '<p class="comments-disabled">🔒 Bu yazıya yorum yapılamaz.</p>'}
                         </div>
                     </div>
                 </article>
