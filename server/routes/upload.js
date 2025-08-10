@@ -18,7 +18,11 @@ router.post('/image', parser.single('image'), (req, res) => {
   if (!req.file) {
     return res.status(400).json({ error: 'Dosya bulunamadı.' });
   }
-  res.json({ url: req.file.path, public_id: req.file.filename });
+  console.log('File object:', req.file); // Debug için
+  res.json({ 
+    url: req.file.secure_url || req.file.url, 
+    public_id: req.file.filename 
+  });
 });
 
 module.exports = router;

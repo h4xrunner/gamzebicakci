@@ -500,10 +500,13 @@
                     body: uploadFormData
                 });
                 const uploadData = await uploadRes.json();
+                console.log('Upload response:', uploadData); // Debug için
                 if (uploadData.url) {
                     imageUrl = uploadData.url;
+                    console.log('Image URL set to:', imageUrl); // Debug için
                     showMessage('✅ Resim başarıyla yüklendi!');
                 } else {
+                    console.log('Upload failed:', uploadData); // Debug için
                     showMessage('❌ Resim yüklenemedi: ' + (uploadData.error || 'Bilinmeyen hata'), 'error');
                 }
             } catch (error) {
@@ -527,6 +530,7 @@
             password: formData.get('password'),
             image: imageUrl
         };
+        console.log('Post data being sent:', postData); // Debug için
         try {
             const r = await fetch('/api/posts', {
                 method: 'POST',
