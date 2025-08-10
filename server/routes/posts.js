@@ -23,8 +23,23 @@ pool.connect((err, client, release) => {
   release();
 });
 
-// Tüm postları getir
+// Tüm postları getir (sadece public olanları)
 router.get('/', async (req, res) => {
+  try {
+    const result = await pool.query(`
+      SELECT * FROM posts 
+      WHERE status = 'public' OR (status = 'scheduled' AND publish_at <= NOW())
+      ORDER BY created_at DESC
+    `);
+    res.json(result.rows);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: 'Veritabanı hatası' });
+  }
+});
+
+// Admin için tüm postları getir
+router.get('/admin', async (req, res) => {
   try {
     const result = await pool.query('SELECT * FROM posts ORDER BY created_at DESC');
     res.json(result.rows);
@@ -135,6 +150,94 @@ router.delete('/:id', async (req, res) => {
   } catch (err) {
     console.error(err);
     res.status(500).json({ error: 'Post silinirken hata oluştu' });
+  }
+});
+
+// ========= YORUM SİSTEMİ =========
+// Yorum ekleme
+router.post('/:postId/comments', async (req, res) => {
+  try {
+    const { postId } = req.params;
+    const { author, content, email } = req.body;
+    
+    // Post'un var olduğunu ve yorumlara açık olduğunu kontrol et
+    const postCheck = await pool.query(
+      'SELECT id, comments_enabled FROM posts WHERE id = $1',
+      [postId]
+    );
+    
+    if (postCheck.rows.length === 0) {
+      return res.status(404).json({ error: 'Yazı bulunamadı' });
+    }
+    
+    if (!postCheck.rows[0].comments_enabled) {
+      return res.status(403).json({ error: 'Bu yazıya yorum yapılamaz' });
+    }
+    
+    const result = await pool.query(
+      'INSERT INTO comments (post_id, author, content, email, created_at) VALUES ($1, $2, $3, $4, NOW()) RETURNING *',
+      [postId, author, content, email]
+    );
+    
+    res.json(result.rows[0]);
+  } catch (err) {
+    console.error('Yorum ekleme hatası:', err);
+    res.status(500).json({ error: 'Yorum eklenirken hata oluştu' });
+  }
+});
+
+// Yorumları getirme
+router.get('/:postId/comments', async (req, res) => {
+  try {
+    const { postId } = req.params;
+    
+    const result = await pool.query(
+      'SELECT * FROM comments WHERE post_id = $1 ORDER BY created_at DESC',
+      [postId]
+    );
+    
+    res.json(result.rows);
+  } catch (err) {
+    console.error('Yorumları getirme hatası:', err);
+    res.status(500).json({ error: 'Yorumlar getirilirken hata oluştu' });
+  }
+});
+
+// Tüm yorumları getirme (admin için)
+router.get('/comments/all', async (req, res) => {
+  try {
+    const result = await pool.query(`
+      SELECT c.*, p.title as post_title 
+      FROM comments c 
+      JOIN posts p ON c.post_id = p.id 
+      ORDER BY c.created_at DESC
+    `);
+    
+    res.json(result.rows);
+  } catch (err) {
+    console.error('Tüm yorumları getirme hatası:', err);
+    res.status(500).json({ error: 'Yorumlar getirilirken hata oluştu' });
+  }
+});
+
+// Yorum silme (admin için)
+router.delete('/comments/:commentId', async (req, res) => {
+  try {
+    const { commentId } = req.params;
+    
+    const result = await pool.query(
+      'DELETE FROM comments WHERE id = $1 RETURNING *',
+      [commentId]
+    );
+    
+    if (result.rows.length === 0) {
+      return res.status(404).json({ error: 'Yorum bulunamadı' });
+    }
+    
+    res.json({ message: 'Yorum başarıyla silindi' });
+  } catch (err) {
+    console.error('Yorum silme hatası:', err);
+    res.status(500).json({ error: 'Yorum silinirken hata oluştu' });
   }
 });
 

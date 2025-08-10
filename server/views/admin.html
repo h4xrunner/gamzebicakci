@@ -36,6 +36,106 @@
         .btn { padding: 1rem 2.5rem; background: linear-gradient(45deg,#667eea 0%,#764ba2 100%); color: white; border: none; border-radius: 13px; cursor: pointer; font-weight: 600; font-size: 1rem; transition: all 0.3s; box-shadow: 0 8px 24px rgba(0,0,0,0.12);}
         .btn:hover { background: linear-gradient(45deg, #7289f4 0%, #8e5bb8 100%); transform: translateY(-2px);}
         .posts-list { margin-top: 1rem;}
+
+        /* Yorum yönetimi stilleri */
+        .comments-list {
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+            margin-top: 1rem;
+        }
+
+        .comment-item {
+            background: rgba(255, 255, 255, 0.09);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            padding: 1.5rem;
+            backdrop-filter: blur(10px);
+        }
+
+        .comment-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 1rem;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+
+        .comment-author {
+            display: flex;
+            flex-direction: column;
+            gap: 0.3rem;
+        }
+
+        .comment-author strong {
+            color: white;
+            font-size: 1.1rem;
+        }
+
+        .comment-author small {
+            color: rgba(255, 255, 255, 0.7);
+            font-size: 0.9rem;
+        }
+
+        .comment-meta {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-end;
+            gap: 0.3rem;
+            text-align: right;
+        }
+
+        .post-title {
+            color: #4ecdc4;
+            font-size: 0.9rem;
+            font-weight: 600;
+        }
+
+        .date {
+            color: rgba(255, 255, 255, 0.6);
+            font-size: 0.8rem;
+        }
+
+        .comment-content {
+            color: rgba(255, 255, 255, 0.9);
+            line-height: 1.6;
+            margin-bottom: 1rem;
+            padding: 1rem;
+            background: rgba(255, 255, 255, 0.03);
+            border-radius: 10px;
+            border-left: 3px solid #4ecdc4;
+        }
+
+        .comment-actions {
+            display: flex;
+            gap: 1rem;
+            justify-content: flex-end;
+        }
+
+        .btn-delete {
+            background: linear-gradient(45deg, #ff6b6b, #ee5a52);
+            color: white;
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            transition: all 0.3s ease;
+        }
+
+        .btn-delete:hover {
+            background: linear-gradient(45deg, #ee5a52, #ff6b6b);
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(255, 107, 107, 0.3);
+        }
+
+        .no-comments {
+            color: rgba(255, 255, 255, 0.7);
+            text-align: center;
+            padding: 2rem;
+            font-style: italic;
+        }
         .post-item { background: rgba(255,255,255,0.09); border-radius: 12px; padding: 1.1rem 1rem; margin-bottom: 1.2rem; border-left: 4px solid #667eea; display: flex; gap: 1.2rem; align-items: flex-start; position: relative;}
         .post-image-thumb { width: 84px; height: 60px; object-fit: cover; border-radius: 7px; margin-right: 0.7rem; background: #fff;}
         .post-meta { font-size: 0.91rem; color: rgba(255,255,255,0.7); margin-top: 0.2rem;}
@@ -195,9 +295,10 @@
     </div>
     <nav class="tabs-nav">
         <button class="tab-btn active" onclick="showTab('dashboard')">📊 Dashboard</button>
-        <button class="tab-btn" onclick="showTab('posts')">📝 Yazılar</button>
-        <button class="tab-btn" onclick="showTab('new-post')">✨ Yeni Yazı</button>
-        <button class="tab-btn" onclick="showTab('settings')">⚙️ Ayarlar</button>
+                    <button class="tab-btn" onclick="showTab('posts')">📝 Yazılar</button>
+            <button class="tab-btn" onclick="showTab('new-post')">✨ Yeni Yazı</button>
+            <button class="tab-btn" onclick="showTab('comments')">💬 Yorumlar</button>
+            <button class="tab-btn" onclick="showTab('settings')">⚙️ Ayarlar</button>
     </nav>
     <section id="dashboard" class="tab-section active">
         <div class="section-card">
@@ -222,7 +323,7 @@
         <div class="section-card">
             <h2 class="section-title">📝 Mevcut Yazılar</h2>
             <div class="posts-list" id="posts-list">
-                <div style="color:rgba(255,255,255,0.8);text-align:center;padding:2rem;">Yazılar yükleniyor...</div>
+                <div style="color:rgba(255,255,70,0.7);text-align:center;padding:2rem;">Yazılar yükleniyor...</div>
             </div>
         </div>
     </section>
@@ -294,6 +395,16 @@
             </form>
         </div>
     </section>
+    <!-- Yorum Yönetimi -->
+    <section id="comments" class="tab-section">
+        <div class="section-card">
+            <h2 class="section-title">💬 Yorum Yönetimi</h2>
+            <div class="comments-list" id="comments-list">
+                <div style="color:rgba(255,255,70,0.7);text-align:center;padding:2rem;">Yorumlar yükleniyor...</div>
+            </div>
+        </div>
+    </section>
+
     <section id="settings" class="tab-section">
         <div class="section-card">
             <h2 class="section-title">⚙️ Ayarlar</h2>
@@ -447,7 +558,7 @@
     // Posts list
     async function loadPosts() {
         try {
-            const r = await fetch('/api/posts');
+            const r = await fetch('/api/posts/admin');
             const posts = await r.json();
             const postsList = document.getElementById('posts-list');
             if (!posts.length) {

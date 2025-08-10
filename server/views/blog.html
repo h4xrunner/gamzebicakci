@@ -363,6 +363,121 @@
         .post-image.loading {
             opacity: 0.7;
         }
+
+        /* Yorum sistemi stilleri */
+        .comments-section {
+            margin-top: 3rem;
+            padding-top: 2rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.15);
+        }
+
+        .comments-section h3 {
+            font-size: 1.5rem;
+            color: white;
+            margin-bottom: 1.5rem;
+            text-align: left;
+        }
+
+        .comment {
+            background: rgba(255, 255, 255, 0.08);
+            padding: 1.5rem;
+            border-radius: 15px;
+            margin-bottom: 1.5rem;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+        }
+
+        .comment-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 0.8rem;
+            color: rgba(255, 255, 255, 0.9);
+        }
+
+        .comment-header strong {
+            font-size: 1rem;
+            color: white;
+        }
+
+        .comment-header small {
+            font-size: 0.8rem;
+            color: rgba(255, 255, 255, 0.7);
+        }
+
+        .comment-content {
+            font-size: 1rem;
+            color: rgba(255, 255, 255, 0.9);
+            line-height: 1.6;
+            text-align: justify;
+        }
+
+        .comment-form {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+            margin-top: 2rem;
+        }
+
+        .form-group {
+            display: flex;
+            gap: 1rem;
+        }
+
+        .form-group input,
+        .form-group textarea {
+            flex: 1;
+            padding: 0.8rem 1rem;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 10px;
+            background: rgba(255, 255, 255, 0.05);
+            color: white;
+            font-size: 0.95rem;
+            font-family: 'Inter', sans-serif;
+            transition: all 0.3s ease;
+        }
+
+        .form-group input:focus,
+        .form-group textarea:focus {
+            border-color: rgba(255, 255, 255, 0.4);
+            background: rgba(255, 255, 255, 0.1);
+            box-shadow: 0 0 10px rgba(255, 255, 255, 0.1);
+        }
+
+        .form-group textarea {
+            min-height: 100px;
+            resize: vertical;
+        }
+
+        .comment-form button {
+            align-self: flex-start;
+            padding: 0.8rem 1.5rem;
+            background: linear-gradient(45deg, #4ecdc4, #45b7d1);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .comment-form button:hover {
+            background: linear-gradient(45deg, #45b7d1, #4ecdc4);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+        }
+
+        .no-comments {
+            color: rgba(255, 255, 255, 0.7);
+            font-style: italic;
+            padding: 1.5rem;
+            background: rgba(255, 255, 255, 0.08);
+            border-radius: 10px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            text-align: center;
+        }
     </style>
 </head>
 <body class="is-preload">
@@ -530,6 +645,146 @@
             });
         }
         
+        // Yorum sistemi
+        function loadComments(postId) {
+            fetch(`/api/posts/${postId}/comments`)
+                .then(response => response.json())
+                .then(comments => {
+                    const commentsContainer = document.getElementById(`comments-${postId}`);
+                    if (comments.length === 0) {
+                        commentsContainer.innerHTML = '<p class="no-comments">Henüz yorum yapılmamış. İlk yorumu siz yapın!</p>';
+                        return;
+                    }
+                    
+                    commentsContainer.innerHTML = comments.map(comment => `
+                        <div class="comment">
+                            <div class="comment-header">
+                                <strong>${comment.author}</strong>
+                                <small>${new Date(comment.created_at).toLocaleDateString('tr-TR')}</small>
+                            </div>
+                            <div class="comment-content">${comment.content}</div>
+                        </div>
+                    `).join('');
+                })
+                .catch(error => console.error('Yorumlar yüklenemedi:', error));
+        }
+
+        function addComment(postId) {
+            const form = document.getElementById(`comment-form-${postId}`);
+            const formData = new FormData(form);
+            
+            const commentData = {
+                author: formData.get('author'),
+                email: formData.get('email'),
+                content: formData.get('content')
+            };
+            
+            if (!commentData.author || !commentData.content) {
+                alert('Ad ve yorum alanları zorunludur!');
+                return;
+            }
+            
+            fetch(`/api/posts/${postId}/comments`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(commentData)
+            })
+            .then(response => response.json())
+            .then(result => {
+                if (result.error) {
+                    alert('Hata: ' + result.error);
+                } else {
+                    form.reset();
+                    loadComments(postId);
+                    alert('Yorumunuz başarıyla eklendi!');
+                }
+            })
+            .catch(error => {
+                console.error('Yorum ekleme hatası:', error);
+                alert('Yorum eklenirken hata oluştu!');
+            });
+        }
+
+        // Post render fonksiyonunu güncelle
+        function renderPost(post) {
+            return `
+                <article class="blog-post" style="animation-delay: ${post.index * 0.1}s">
+                    ${post.featured ? '<div class="featured-badge">⭐ Öne Çıkan</div>' : ''}
+                    ${getStatusBadge(post.status, post.publish_at)}
+                    
+                    ${post.image ? `
+                        <img src="${post.image}" 
+                             alt="${post.title}" 
+                             class="post-image loading"
+                             onload="this.classList.remove('loading')"
+                             onerror="this.style.display='none'">
+                    ` : ''}
+                    
+                    <div class="post-content-wrapper">
+                        <h2 class="post-title">${post.title}</h2>
+                        
+                        ${post.excerpt ? `<div class="post-excerpt">"${post.excerpt}"</div>` : ''}
+                        
+                        <div class="post-meta">
+                            <div class="meta-item">
+                                <span>📅</span>
+                                <span>${new Date(post.created_at).toLocaleDateString('tr-TR', {
+                                    year: 'numeric',
+                                    month: 'long',
+                                    day: 'numeric'
+                                })}</span>
+                            </div>
+                            ${post.author ? `
+                            <div class="meta-item">
+                                <span>✍️</span>
+                                <span>${post.author}</span>
+                            </div>` : ''}
+                            <div class="meta-item">
+                                <span>⏱️</span>
+                                <span>${calculateReadTime(post.content || '')}</span>
+                            </div>
+                            ${post.category ? `
+                            <div class="meta-item">
+                                <span>🗂️</span>
+                                <span>${post.category}</span>
+                            </div>` : ''}
+                        </div>
+                        
+                        <div class="post-content">
+                            ${formatContent(post.content || '')}
+                        </div>
+                        
+                        ${post.tags ? `
+                            <div class="post-tags">
+                                ${post.tags.split(',').map(tag => `<span class="tag">${tag.trim()}</span>`).join('')}
+                            </div>
+                        ` : ''}
+                        
+                        <!-- Yorum Sistemi -->
+                        <div class="comments-section">
+                            <h3>Yorumlar</h3>
+                            <div id="comments-${post.id}"></div>
+                            
+                            ${post.comments_enabled ? `
+                                <form id="comment-form-${post.id}" class="comment-form" onsubmit="event.preventDefault(); addComment(${post.id});">
+                                    <div class="form-group">
+                                        <input type="text" name="author" placeholder="Adınız *" required>
+                                    </div>
+                                    <div class="form-group">
+                                        <input type="email" name="email" placeholder="E-posta (opsiyonel)">
+                                    </div>
+                                    <div class="form-group">
+                                        <textarea name="content" placeholder="Yorumunuz *" required></textarea>
+                                    </div>
+                                    <button type="submit" class="button primary">Yorum Ekle</button>
+                                </form>
+                            ` : '<p class="comments-disabled">Bu yazıya yorum yapılamaz.</p>'}
+                        </div>
+                    </div>
+                </article>
+            `;
+        }
+
         // Sayfa yüklendiğinde blog yazılarını getir
         loadBlogPosts();
     </script>
