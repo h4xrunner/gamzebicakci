@@ -407,25 +407,74 @@
 
     <section id="settings" class="tab-section">
         <div class="section-card">
-            <h2 class="section-title">⚙️ Ayarlar</h2>
-            <form class="settings-form">
+            <h2 class="section-title">⚙️ Site Ayarları</h2>
+            <form class="settings-form" id="settings-form">
                 <div class="form-group">
-                    <label for="site-title">Site Başlığı</label>
-                    <input type="text" id="site-title" value="Gamze Bıçakçı | Kişisel Portfolyo">
+                    <label for="site-title">🌐 Site Başlığı (Sekme Adı)</label>
+                    <input type="text" id="site-title" name="site_title" placeholder="Site başlığı...">
                 </div>
                 <div class="form-group">
-                    <label for="site-description">Site Açıklaması</label>
-                    <textarea id="site-description" style="min-height: 100px;">Yazmaya, üretmeye ve ilham olmaya gönül vermiş bir reklamcılık öğrencisi</textarea>
+                    <label for="site-description">📝 Site Açıklaması (Meta Description)</label>
+                    <textarea id="site-description" name="site_description" style="min-height: 100px;" placeholder="Site açıklaması..."></textarea>
+                </div>
+                
+                <h3 style="color: white; margin: 2rem 0 1rem 0; border-bottom: 1px solid rgba(255,255,255,0.2); padding-bottom: 0.5rem;">👤 Yazar Bilgileri</h3>
+                
+                <div class="form-group">
+                    <label for="default-author">✍️ Varsayılan Yazar</label>
+                    <input type="text" id="default-author" name="default_author" placeholder="Varsayılan yazar adı...">
                 </div>
                 <div class="form-group">
-                    <label for="default-author">Varsayılan Yazar</label>
-                    <input type="text" id="default-author" value="Gamze Bıçakçı">
+                    <label for="author-bio">📖 Yazar Biyografisi</label>
+                    <textarea id="author-bio" name="author_bio" style="min-height: 100px;" placeholder="Yazar hakkında kısa bilgi..."></textarea>
+                </div>
+                
+                <h3 style="color: white; margin: 2rem 0 1rem 0; border-bottom: 1px solid rgba(255,255,255,0.2); padding-bottom: 0.5rem;">🏠 Ana Sayfa Ayarları</h3>
+                
+                <div class="form-group">
+                    <label for="hero-title">🎯 Ana Başlık</label>
+                    <input type="text" id="hero-title" name="hero_title" placeholder="Ana sayfa ana başlığı...">
                 </div>
                 <div class="form-group">
-                    <label for="author-bio">Yazar Biyografisi</label>
-                    <textarea id="author-bio" style="min-height: 100px;">Reklamcılık öğrencisi, yaratıcı içerik üreticisi.</textarea>
+                    <label for="hero-subtitle">🎨 Alt Başlık</label>
+                    <input type="text" id="hero-subtitle" name="hero_subtitle" placeholder="Ana sayfa alt başlığı...">
                 </div>
-                <button type="button" class="btn" onclick="saveSettings()">💾 Kaydet</button>
+                <div class="form-group">
+                    <label for="hero-description">📄 Ana Sayfa Açıklaması</label>
+                    <textarea id="hero-description" name="hero_description" style="min-height: 100px;" placeholder="Ana sayfa açıklaması..."></textarea>
+                </div>
+                
+                <h3 style="color: white; margin: 2rem 0 1rem 0; border-bottom: 1px solid rgba(255,255,255,0.2); padding-bottom: 0.5rem;">📧 İletişim & Sosyal Medya</h3>
+                
+                <div class="form-group">
+                    <label for="contact-email">📧 İletişim E-posta</label>
+                    <input type="email" id="contact-email" name="contact_email" placeholder="İletişim e-posta adresi...">
+                </div>
+                
+                <div class="form-group">
+                    <label for="instagram-link">📱 Instagram</label>
+                    <input type="url" id="instagram-link" name="instagram_link" placeholder="Instagram profil linki...">
+                </div>
+                <div class="form-group">
+                    <label for="twitter-link">🐦 Twitter</label>
+                    <input type="url" id="twitter-link" name="twitter_link" placeholder="Twitter profil linki...">
+                </div>
+                <div class="form-group">
+                    <label for="linkedin-link">💼 LinkedIn</label>
+                    <input type="url" id="linkedin-link" name="linkedin_link" placeholder="LinkedIn profil linki...">
+                </div>
+                
+                <h3 style="color: white; margin: 2rem 0 1rem 0; border-bottom: 1px solid rgba(255,255,255,0.2); padding-bottom: 0.5rem;">🎨 Görsel Ayarlar</h3>
+                
+                <div class="form-group">
+                    <label for="theme-color">🎨 Tema Rengi</label>
+                    <input type="color" id="theme-color" name="theme_color" value="#667eea">
+                </div>
+                
+                <div class="form-group" style="margin-top: 2rem;">
+                    <button type="submit" class="btn">💾 Ayarları Kaydet</button>
+                    <button type="button" class="btn" onclick="resetSettings()" style="margin-left: 1rem; background: rgba(255,255,255,0.1);">🔄 Sıfırla</button>
+                </div>
             </form>
         </div>
     </section>
@@ -811,34 +860,105 @@
     });
 
     // Settings
-    function saveSettings() {
-        const s = {
-            siteTitle: document.getElementById('site-title').value,
-            siteDescription: document.getElementById('site-description').value,
-            defaultAuthor: document.getElementById('default-author').value,
-            authorBio: document.getElementById('author-bio').value
-        };
-        // Note: localStorage is not supported in Claude artifacts, this is for demo purposes
-        // In a real implementation, this would save to a backend API
-        showMessage('⚠️ Ayarlar demo modunda - gerçek uygulamada API\'ye kaydedilecek');
-        document.getElementById('author').value = s.defaultAuthor;
+    async function saveSettings() {
+        const btn = document.querySelector('#settings-form button[type="submit"]');
+        const originalText = btn.textContent;
+        btn.textContent = '⏳ Kaydediliyor...';
+        btn.disabled = true;
+        
+        try {
+            const formData = new FormData(document.getElementById('settings-form'));
+            const settings = {
+                site_title: formData.get('site_title'),
+                site_description: formData.get('site_description'),
+                default_author: formData.get('default_author'),
+                author_bio: formData.get('author_bio'),
+                hero_title: formData.get('hero_title'),
+                hero_subtitle: formData.get('hero_subtitle'),
+                hero_description: formData.get('hero_description'),
+                contact_email: formData.get('contact_email'),
+                social_links: JSON.stringify({
+                    instagram: formData.get('instagram_link'),
+                    twitter: formData.get('twitter_link'),
+                    linkedin: formData.get('linkedin_link')
+                }),
+                theme_color: formData.get('theme_color')
+            };
+            
+            const response = await fetch('/api/settings', {
+                method: 'PUT',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(settings)
+            });
+            
+            if (response.ok) {
+                const result = await response.json();
+                showMessage('✅ Ayarlar başarıyla kaydedildi!');
+                
+                // Yeni yazı formundaki yazar alanını güncelle
+                document.getElementById('author').value = settings.default_author;
+                
+                // Ana sayfayı yenile (eğer açıksa)
+                if (window.opener && !window.opener.closed) {
+                    window.opener.location.reload();
+                }
+            } else {
+                showMessage('❌ Ayarlar kaydedilemedi!', 'error');
+            }
+        } catch (error) {
+            console.error('Ayarlar kaydedilirken hata:', error);
+            showMessage('❌ Bağlantı hatası!', 'error');
+        } finally {
+            btn.textContent = originalText;
+            btn.disabled = false;
+        }
     }
     
-    function loadSettings() {
-        // Note: localStorage is not supported in Claude artifacts
-        // In a real implementation, this would load from a backend API
-        const defaultSettings = {
-            siteTitle: 'Gamze Bıçakçı | Kişisel Portfolyo',
-            siteDescription: 'Yazmaya, üretmeye ve ilham olmaya gönül vermiş bir reklamcılık öğrencisi',
-            defaultAuthor: 'Gamze Bıçakçı',
-            authorBio: 'Reklamcılık öğrencisi, yaratıcı içerik üreticisi.'
-        };
-        
-        document.getElementById('site-title').value = defaultSettings.siteTitle;
-        document.getElementById('site-description').value = defaultSettings.siteDescription;
-        document.getElementById('default-author').value = defaultSettings.defaultAuthor;
-        document.getElementById('author-bio').value = defaultSettings.authorBio;
-        document.getElementById('author').value = defaultSettings.defaultAuthor;
+    async function loadSettings() {
+        try {
+            const response = await fetch('/api/settings');
+            if (response.ok) {
+                const settings = await response.json();
+                
+                // Form alanlarını doldur
+                document.getElementById('site-title').value = settings.site_title || '';
+                document.getElementById('site-description').value = settings.site_description || '';
+                document.getElementById('default-author').value = settings.default_author || '';
+                document.getElementById('author-bio').value = settings.author_bio || '';
+                document.getElementById('hero-title').value = settings.hero_title || '';
+                document.getElementById('hero-subtitle').value = settings.hero_subtitle || '';
+                document.getElementById('hero-description').value = settings.hero_description || '';
+                document.getElementById('contact-email').value = settings.contact_email || '';
+                document.getElementById('theme-color').value = settings.theme_color || '#667eea';
+                
+                // Sosyal medya linklerini doldur
+                if (settings.social_links) {
+                    const socialLinks = typeof settings.social_links === 'string' 
+                        ? JSON.parse(settings.social_links) 
+                        : settings.social_links;
+                    
+                    document.getElementById('instagram-link').value = socialLinks.instagram || '';
+                    document.getElementById('twitter-link').value = socialLinks.twitter || '';
+                    document.getElementById('linkedin-link').value = socialLinks.linkedin || '';
+                }
+                
+                // Yeni yazı formundaki yazar alanını güncelle
+                document.getElementById('author').value = settings.default_author || '';
+                
+            } else {
+                showMessage('❌ Ayarlar yüklenemedi!', 'error');
+            }
+        } catch (error) {
+            console.error('Ayarlar yüklenirken hata:', error);
+            showMessage('❌ Bağlantı hatası!', 'error');
+        }
+    }
+    
+    function resetSettings() {
+        if (confirm('Tüm ayarları varsayılan değerlere sıfırlamak istediğinizden emin misiniz?')) {
+            loadSettings();
+            showMessage('🔄 Ayarlar varsayılan değerlere sıfırlandı');
+        }
     }
     
     // ESC tuşu ile modal kapatma
@@ -846,6 +966,12 @@
         if (e.key === 'Escape' && document.getElementById('edit-modal').style.display === 'flex') {
             closeEditModal();
         }
+    });
+    
+    // Settings form submit
+    document.getElementById('settings-form').addEventListener('submit', function(e) {
+        e.preventDefault();
+        saveSettings();
     });
     
     document.addEventListener('DOMContentLoaded', function() {

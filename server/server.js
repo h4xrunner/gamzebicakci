@@ -102,6 +102,14 @@ try {
   console.error('Posts router yüklenemedi:', error.message);
 }
 
+try {
+  const settingsRouter = require('./routes/settings');
+  app.use('/api/settings', settingsRouter);
+  console.log('Settings router başarıyla yüklendi');
+} catch (error) {
+  console.error('Settings router yüklenemedi:', error.message);
+}
+
 // ========= AUTH ROUTES =========
 // Login sayfası
 app.get('/admin/login', (req, res) => {
