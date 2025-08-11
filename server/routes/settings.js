@@ -30,7 +30,12 @@ router.get('/', async (req, res) => {
         social_links: JSON.stringify({
           instagram: 'https://instagram.com/gamzebicakci',
           twitter: 'https://twitter.com/gamzebicakci',
-          linkedin: 'https://linkedin.com/in/gamzebicakci'
+          linkedin: 'https://linkedin.com/in/gamzebicakci',
+          youtube: '',
+          facebook: '',
+          tiktok: '',
+          snapchat: '',
+          pinterest: ''
         }),
         theme_color: '#667eea',
         created_at: new Date(),

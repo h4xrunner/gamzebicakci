@@ -24,6 +24,8 @@
             --text-light: #718096;
             --glass-bg: rgba(255, 255, 255, 0.1);
             --glass-border: rgba(255, 255, 255, 0.2);
+            --accent-color: #667eea;
+            --accent-hover: #5a67d8;
         }
 
         body {
@@ -304,6 +306,7 @@
             justify-content: center;
             gap: 1rem;
             margin: 2rem 0;
+            flex-wrap: wrap;
         }
 
         .social-link {
@@ -318,11 +321,38 @@
             text-decoration: none;
             transition: all 0.3s ease;
             border: 1px solid rgba(255, 255, 255, 0.2);
+            font-size: 1.2rem;
         }
 
         .social-link:hover {
             background: rgba(255, 255, 255, 0.2);
             transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        }
+        
+        .social-link.instagram:hover {
+            background: linear-gradient(45deg, #f09433, #e6683c, #dc2743, #cc2366, #bc1888);
+            border-color: rgba(220, 39, 67, 0.5);
+        }
+        
+        .social-link.twitter:hover {
+            background: #1da1f2;
+            border-color: rgba(29, 161, 242, 0.5);
+        }
+        
+        .social-link.linkedin:hover {
+            background: #0077b5;
+            border-color: rgba(0, 119, 181, 0.5);
+        }
+        
+        .social-link.youtube:hover {
+            background: #ff0000;
+            border-color: rgba(255, 0, 0, 0.5);
+        }
+        
+        .social-link.facebook:hover {
+            background: #1877f2;
+            border-color: rgba(24, 119, 242, 0.5);
         }
 
         /* Footer */
@@ -396,6 +426,11 @@
                 <a href="/blog" class="nav-pill">📝 Blog</a>
                 <a href="/admin" class="nav-pill">⚙️ Admin</a>
             </nav>
+            
+            <!-- Sosyal Medya Bağlantıları -->
+            <div class="social-links" id="social-links" style="margin-top: 2rem;">
+                <!-- Sosyal medya linkleri dinamik olarak yüklenecek -->
+            </div>
         </div>
     </section>
 
@@ -515,9 +550,14 @@
                         document.getElementById('hero-description').style.display = 'none';
                     }
                     
-                    // Tema rengini güncelle
+                    // Tema rengini güncelle ve tüm siteye uygula
                     if (settings.theme_color) {
-                        document.documentElement.style.setProperty('--primary-gradient', `linear-gradient(135deg, ${settings.theme_color} 0%, ${adjustColor(settings.theme_color, -20)} 100%)`);
+                        updateThemeColors(settings.theme_color);
+                    }
+                    
+                    // Sosyal medya linklerini yükle
+                    if (settings.social_links) {
+                        loadSocialLinks(settings.social_links);
                     }
                     
                 } else {
@@ -525,6 +565,94 @@
                 }
             } catch (error) {
                 console.error('Ayarlar yüklenirken hata:', error);
+            }
+        }
+        
+        // Tema renklerini tüm siteye uygula
+        function updateThemeColors(primaryColor) {
+            const root = document.documentElement;
+            
+            // Ana gradient'i güncelle
+            root.style.setProperty('--primary-gradient', `linear-gradient(135deg, ${primaryColor} 0%, ${adjustColor(primaryColor, -20)} 100%)`);
+            
+            // Diğer renkleri de güncelle
+            root.style.setProperty('--soft-gradient', `linear-gradient(135deg, ${adjustColor(primaryColor, 30)} 0%, ${adjustColor(primaryColor, -30)} 100%)`);
+            root.style.setProperty('--gentle-gradient', `linear-gradient(135deg, ${adjustColor(primaryColor, -40)} 0%, ${adjustColor(primaryColor, 40)} 100%)`);
+            root.style.setProperty('--accent-color', primaryColor);
+            root.style.setProperty('--accent-hover', adjustColor(primaryColor, -10));
+            
+            // Buton renklerini güncelle
+            const buttons = document.querySelectorAll('.submit-btn, .btn');
+            buttons.forEach(btn => {
+                btn.style.background = `linear-gradient(45deg, ${primaryColor} 0%, ${adjustColor(primaryColor, -20)} 100%)`;
+            });
+            
+            // Hover efektlerini güncelle
+            const style = document.createElement('style');
+            style.textContent = `
+                .submit-btn:hover {
+                    background: linear-gradient(45deg, ${adjustColor(primaryColor, 10)} 0%, ${adjustColor(primaryColor, -10)} 100%) !important;
+                }
+                .btn:hover {
+                    background: linear-gradient(45deg, ${adjustColor(primaryColor, 10)} 0%, ${adjustColor(primaryColor, -10)} 100%) !important;
+                }
+                .nav-pill:hover {
+                    background: rgba(255, 255, 255, 0.25) !important;
+                    border-color: ${primaryColor} !important;
+                }
+                .feature-card:hover {
+                    border-color: ${primaryColor} !important;
+                }
+                .section-card:hover {
+                    border-color: ${primaryColor} !important;
+                }
+            `;
+            document.head.appendChild(style);
+            
+            // Body background'ını güncelle
+            document.body.style.background = `linear-gradient(135deg, ${primaryColor} 0%, ${adjustColor(primaryColor, -20)} 100%)`;
+        }
+        
+        // Sosyal medya linklerini yükle
+        function loadSocialLinks(socialLinks) {
+            const socialContainer = document.getElementById('social-links');
+            if (!socialContainer) return;
+            
+            const links = typeof socialLinks === 'string' ? JSON.parse(socialLinks) : socialLinks;
+            let socialHTML = '';
+            
+            // Sosyal medya platformları ve ikonları
+            const platforms = {
+                instagram: { icon: '📱', name: 'Instagram' },
+                twitter: { icon: '🐦', name: 'Twitter' },
+                linkedin: { icon: '💼', name: 'LinkedIn' },
+                youtube: { icon: '🎬', name: 'YouTube' },
+                facebook: { icon: '📘', name: 'Facebook' },
+                tiktok: { icon: '🎵', name: 'TikTok' },
+                snapchat: { icon: '👻', name: 'Snapchat' },
+                pinterest: { icon: '📌', name: 'Pinterest' }
+            };
+            
+            // Her platform için link oluştur
+            Object.keys(platforms).forEach(platform => {
+                if (links[platform] && links[platform].trim() !== '') {
+                    socialHTML += `
+                        <a href="${links[platform]}" 
+                           target="_blank" 
+                           rel="noopener noreferrer"
+                           class="social-link ${platform}"
+                           title="${platforms[platform].name}">
+                            ${platforms[platform].icon}
+                        </a>
+                    `;
+                }
+            });
+            
+            if (socialHTML) {
+                socialContainer.innerHTML = socialHTML;
+                socialContainer.style.display = 'flex';
+            } else {
+                socialContainer.style.display = 'none';
             }
         }
         

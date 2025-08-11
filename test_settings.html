@@ -1,0 +1,328 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ayarlar Sistemi Test</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            min-height: 100vh;
+        }
+        .test-section {
+            background: rgba(255,255,255,0.1);
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 10px;
+            backdrop-filter: blur(10px);
+        }
+        .color-picker {
+            margin: 10px 0;
+        }
+        .social-links {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            margin: 10px 0;
+        }
+        .social-link {
+            padding: 10px 15px;
+            background: rgba(255,255,255,0.2);
+            border-radius: 5px;
+            text-decoration: none;
+            color: white;
+            transition: all 0.3s;
+        }
+        .social-link:hover {
+            background: rgba(255,255,255,0.3);
+            transform: translateY(-2px);
+        }
+        button {
+            background: #4CAF50;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            margin: 5px;
+        }
+        button:hover {
+            background: #45a049;
+        }
+        input, textarea {
+            width: 100%;
+            padding: 8px;
+            margin: 5px 0;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+    </style>
+</head>
+<body>
+    <h1>🎛️ Ayarlar Sistemi Test Sayfası</h1>
+    
+    <div class="test-section">
+        <h2>🌐 Site Ayarları</h2>
+        <div>
+            <label>Site Başlığı:</label>
+            <input type="text" id="site-title" placeholder="Site başlığı...">
+        </div>
+        <div>
+            <label>Site Açıklaması:</label>
+            <textarea id="site-description" placeholder="Site açıklaması..."></textarea>
+        </div>
+    </div>
+    
+    <div class="test-section">
+        <h2>👤 Yazar Bilgileri</h2>
+        <div>
+            <label>Varsayılan Yazar:</label>
+            <input type="text" id="default-author" placeholder="Yazar adı...">
+        </div>
+        <div>
+            <label>Yazar Biyografisi:</label>
+            <textarea id="author-bio" placeholder="Yazar hakkında..."></textarea>
+        </div>
+    </div>
+    
+    <div class="test-section">
+        <h2>🏠 Ana Sayfa Ayarları</h2>
+        <div>
+            <label>Ana Başlık:</label>
+            <input type="text" id="hero-title" placeholder="Ana başlık...">
+        </div>
+        <div>
+            <label>Alt Başlık:</label>
+            <input type="text" id="hero-subtitle" placeholder="Alt başlık...">
+        </div>
+        <div>
+            <label>Ana Sayfa Açıklaması:</label>
+            <textarea id="hero-description" placeholder="Ana sayfa açıklaması..."></textarea>
+        </div>
+    </div>
+    
+    <div class="test-section">
+        <h2>📧 İletişim & Sosyal Medya</h2>
+        <div>
+            <label>İletişim E-posta:</label>
+            <input type="email" id="contact-email" placeholder="E-posta...">
+        </div>
+        <div>
+            <label>Instagram:</label>
+            <input type="url" id="instagram-link" placeholder="Instagram linki...">
+        </div>
+        <div>
+            <label>Twitter:</label>
+            <input type="url" id="twitter-link" placeholder="Twitter linki...">
+        </div>
+        <div>
+            <label>LinkedIn:</label>
+            <input type="url" id="linkedin-link" placeholder="LinkedIn linki...">
+        </div>
+        <div>
+            <label>YouTube:</label>
+            <input type="url" id="youtube-link" placeholder="YouTube linki...">
+        </div>
+        <div>
+            <label>Facebook:</label>
+            <input type="url" id="facebook-link" placeholder="Facebook linki...">
+        </div>
+    </div>
+    
+    <div class="test-section">
+        <h2>🎨 Görsel Ayarlar</h2>
+        <div class="color-picker">
+            <label>Tema Rengi:</label>
+            <input type="color" id="theme-color" value="#667eea">
+        </div>
+    </div>
+    
+    <div class="test-section">
+        <button onclick="loadSettings()">📥 Ayarları Yükle</button>
+        <button onclick="saveSettings()">💾 Ayarları Kaydet</button>
+        <button onclick="resetSettings()">🔄 Sıfırla</button>
+        <button onclick="testTheme()">🎨 Temayı Test Et</button>
+    </div>
+    
+    <div class="test-section">
+        <h2>👀 Önizleme</h2>
+        <div id="preview">
+            <h3 id="preview-title">Site Başlığı</h3>
+            <p id="preview-description">Site açıklaması burada görünecek...</p>
+            <div id="preview-social" class="social-links">
+                <!-- Sosyal medya linkleri burada görünecek -->
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Ayarları yükle
+        async function loadSettings() {
+            try {
+                const response = await fetch('/api/settings');
+                if (response.ok) {
+                    const settings = await response.json();
+                    
+                    // Form alanlarını doldur
+                    document.getElementById('site-title').value = settings.site_title || '';
+                    document.getElementById('site-description').value = settings.site_description || '';
+                    document.getElementById('default-author').value = settings.default_author || '';
+                    document.getElementById('author-bio').value = settings.author_bio || '';
+                    document.getElementById('hero-title').value = settings.hero_title || '';
+                    document.getElementById('hero-subtitle').value = settings.hero_subtitle || '';
+                    document.getElementById('hero-description').value = settings.hero_description || '';
+                    document.getElementById('contact-email').value = settings.contact_email || '';
+                    document.getElementById('theme-color').value = settings.theme_color || '#667eea';
+                    
+                    // Sosyal medya linklerini doldur
+                    if (settings.social_links) {
+                        const links = typeof settings.social_links === 'string' 
+                            ? JSON.parse(settings.social_links) 
+                            : settings.social_links;
+                        
+                        document.getElementById('instagram-link').value = links.instagram || '';
+                        document.getElementById('twitter-link').value = links.twitter || '';
+                        document.getElementById('linkedin-link').value = links.linkedin || '';
+                        document.getElementById('youtube-link').value = links.youtube || '';
+                        document.getElementById('facebook-link').value = links.facebook || '';
+                    }
+                    
+                    updatePreview();
+                    alert('✅ Ayarlar yüklendi!');
+                } else {
+                    alert('❌ Ayarlar yüklenemedi!');
+                }
+            } catch (error) {
+                console.error('Hata:', error);
+                alert('❌ Bağlantı hatası!');
+            }
+        }
+        
+        // Ayarları kaydet
+        async function saveSettings() {
+            try {
+                const settings = {
+                    site_title: document.getElementById('site-title').value,
+                    site_description: document.getElementById('site-description').value,
+                    default_author: document.getElementById('default-author').value,
+                    author_bio: document.getElementById('author-bio').value,
+                    hero_title: document.getElementById('hero-title').value,
+                    hero_subtitle: document.getElementById('hero-subtitle').value,
+                    hero_description: document.getElementById('hero-description').value,
+                    contact_email: document.getElementById('contact-email').value,
+                    social_links: JSON.stringify({
+                        instagram: document.getElementById('instagram-link').value,
+                        twitter: document.getElementById('twitter-link').value,
+                        linkedin: document.getElementById('linkedin-link').value,
+                        youtube: document.getElementById('youtube-link').value,
+                        facebook: document.getElementById('facebook-link').value
+                    }),
+                    theme_color: document.getElementById('theme-color').value
+                };
+                
+                const response = await fetch('/api/settings', {
+                    method: 'PUT',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(settings)
+                });
+                
+                if (response.ok) {
+                    alert('✅ Ayarlar kaydedildi!');
+                    updatePreview();
+                } else {
+                    alert('❌ Ayarlar kaydedilemedi!');
+                }
+            } catch (error) {
+                console.error('Hata:', error);
+                alert('❌ Bağlantı hatası!');
+            }
+        }
+        
+        // Ayarları sıfırla
+        function resetSettings() {
+            if (confirm('Tüm ayarları varsayılan değerlere sıfırlamak istediğinizden emin misiniz?')) {
+                document.getElementById('site-title').value = 'Gamze Bıçakçı | Yaratıcı Portfolyo';
+                document.getElementById('site-description').value = 'Yazmaya, üretmeye ve ilham olmaya gönül vermiş bir reklamcılık öğrencisi';
+                document.getElementById('default-author').value = 'Gamze Bıçakçı';
+                document.getElementById('author-bio').value = 'Reklamcılık öğrencisi, yaratıcı içerik üreticisi.';
+                document.getElementById('hero-title').value = 'Gamze Bıçakçı';
+                document.getElementById('hero-subtitle').value = 'Yaratıcı Portfolyo';
+                document.getElementById('hero-description').value = 'Yazmaya, üretmeye ve ilham olmaya gönül vermiş bir reklamcılık öğrencisi';
+                document.getElementById('contact-email').value = 'gamze@example.com';
+                document.getElementById('instagram-link').value = 'https://instagram.com/gamzebicakci';
+                document.getElementById('twitter-link').value = 'https://twitter.com/gamzebicakci';
+                document.getElementById('linkedin-link').value = 'https://linkedin.com/in/gamzebicakci';
+                document.getElementById('youtube-link').value = '';
+                document.getElementById('facebook-link').value = '';
+                document.getElementById('theme-color').value = '#667eea';
+                
+                updatePreview();
+                alert('🔄 Ayarlar sıfırlandı!');
+            }
+        }
+        
+        // Temayı test et
+        function testTheme() {
+            const color = document.getElementById('theme-color').value;
+            document.body.style.background = `linear-gradient(135deg, ${color} 0%, ${adjustColor(color, -20)} 100%)`;
+            alert('🎨 Tema rengi uygulandı! Sayfayı yenileyerek geri alabilirsiniz.');
+        }
+        
+        // Renk tonunu ayarla
+        function adjustColor(color, amount) {
+            const hex = color.replace('#', '');
+            const r = Math.max(0, Math.min(255, parseInt(hex.substr(0, 2), 16) + amount));
+            const g = Math.max(0, Math.min(255, parseInt(hex.substr(2, 2), 16) + amount));
+            const b = Math.max(0, Math.min(255, parseInt(hex.substr(4, 2), 16) + amount));
+            return `#${r.toString(16).padStart(2, '0')}${g.toString(16).padStart(2, '0')}${b.toString(16).padStart(2, '0')}`;
+        }
+        
+        // Önizlemeyi güncelle
+        function updatePreview() {
+            document.getElementById('preview-title').textContent = document.getElementById('site-title').value || 'Site Başlığı';
+            document.getElementById('preview-description').textContent = document.getElementById('site-description').value || 'Site açıklaması burada görünecek...';
+            
+            // Sosyal medya linklerini güncelle
+            const socialContainer = document.getElementById('preview-social');
+            let socialHTML = '';
+            
+            const platforms = {
+                instagram: { icon: '📱', name: 'Instagram' },
+                twitter: { icon: '🐦', name: 'Twitter' },
+                linkedin: { icon: '💼', name: 'LinkedIn' },
+                youtube: { icon: '🎬', name: 'YouTube' },
+                facebook: { icon: '📘', name: 'Facebook' }
+            };
+            
+            Object.keys(platforms).forEach(platform => {
+                const link = document.getElementById(`${platform}-link`).value;
+                if (link && link.trim() !== '') {
+                    socialHTML += `
+                        <a href="${link}" target="_blank" class="social-link" title="${platforms[platform].name}">
+                            ${platforms[platform].icon}
+                        </a>
+                    `;
+                }
+            });
+            
+            socialContainer.innerHTML = socialHTML;
+        }
+        
+        // Form değişikliklerinde önizlemeyi güncelle
+        document.querySelectorAll('input, textarea').forEach(input => {
+            input.addEventListener('input', updatePreview);
+        });
+        
+        // Sayfa yüklendiğinde önizlemeyi güncelle
+        document.addEventListener('DOMContentLoaded', function() {
+            updatePreview();
+        });
+    </script>
+</body>
+</html>

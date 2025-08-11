@@ -463,6 +463,26 @@
                     <label for="linkedin-link">💼 LinkedIn</label>
                     <input type="url" id="linkedin-link" name="linkedin_link" placeholder="LinkedIn profil linki...">
                 </div>
+                <div class="form-group">
+                    <label for="youtube-link">🎬 YouTube</label>
+                    <input type="url" id="youtube-link" name="youtube_link" placeholder="YouTube kanal linki...">
+                </div>
+                <div class="form-group">
+                    <label for="facebook-link">📘 Facebook</label>
+                    <input type="url" id="facebook-link" name="facebook_link" placeholder="Facebook profil linki...">
+                </div>
+                <div class="form-group">
+                    <label for="tiktok-link">🎵 TikTok</label>
+                    <input type="url" id="tiktok-link" name="tiktok_link" placeholder="TikTok profil linki...">
+                </div>
+                <div class="form-group">
+                    <label for="snapchat-link">👻 Snapchat</label>
+                    <input type="url" id="snapchat-link" name="snapchat_link" placeholder="Snapchat kullanıcı adı...">
+                </div>
+                <div class="form-group">
+                    <label for="pinterest-link">📌 Pinterest</label>
+                    <input type="url" id="pinterest-link" name="pinterest_link" placeholder="Pinterest profil linki...">
+                </div>
                 
                 <h3 style="color: white; margin: 2rem 0 1rem 0; border-bottom: 1px solid rgba(255,255,255,0.2); padding-bottom: 0.5rem;">🎨 Görsel Ayarlar</h3>
                 
@@ -880,7 +900,12 @@
                 social_links: JSON.stringify({
                     instagram: formData.get('instagram_link'),
                     twitter: formData.get('twitter_link'),
-                    linkedin: formData.get('linkedin_link')
+                    linkedin: formData.get('linkedin_link'),
+                    youtube: formData.get('youtube_link'),
+                    facebook: formData.get('facebook_link'),
+                    tiktok: formData.get('tiktok_link'),
+                    snapchat: formData.get('snapchat_link'),
+                    pinterest: formData.get('pinterest_link')
                 }),
                 theme_color: formData.get('theme_color')
             };
@@ -940,6 +965,11 @@
                     document.getElementById('instagram-link').value = socialLinks.instagram || '';
                     document.getElementById('twitter-link').value = socialLinks.twitter || '';
                     document.getElementById('linkedin-link').value = socialLinks.linkedin || '';
+                    document.getElementById('youtube-link').value = socialLinks.youtube || '';
+                    document.getElementById('facebook-link').value = socialLinks.facebook || '';
+                    document.getElementById('tiktok-link').value = socialLinks.tiktok || '';
+                    document.getElementById('snapchat-link').value = socialLinks.snapchat || '';
+                    document.getElementById('pinterest-link').value = socialLinks.pinterest || '';
                 }
                 
                 // Yeni yazı formundaki yazar alanını güncelle

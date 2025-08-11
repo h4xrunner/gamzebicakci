@@ -9,7 +9,7 @@ CREATE TABLE IF NOT EXISTS site_settings (
     hero_subtitle VARCHAR(255) DEFAULT 'Yaratıcı Portfolyo',
     hero_description TEXT DEFAULT 'Yazmaya, üretmeye ve ilham olmaya gönül vermiş bir reklamcılık öğrencisi',
     contact_email VARCHAR(255) DEFAULT 'gamze@example.com',
-    social_links JSONB DEFAULT '{"instagram": "https://instagram.com/gamzebicakci", "twitter": "https://twitter.com/gamzebicakci", "linkedin": "https://linkedin.com/in/gamzebicakci"}',
+            social_links JSONB DEFAULT '{"instagram": "https://instagram.com/gamzebicakci", "twitter": "https://twitter.com/gamzebicakci", "linkedin": "https://linkedin.com/in/gamzebicakci", "youtube": "", "facebook": "", "tiktok": "", "snapchat": "", "pinterest": ""}',
     theme_color VARCHAR(7) DEFAULT '#667eea',
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
