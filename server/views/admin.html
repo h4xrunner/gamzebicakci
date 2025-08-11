@@ -930,12 +930,33 @@
                 
                 // Blog sayfasına tema güncelleme mesajı gönder
                 try {
-                    const blogWindow = window.open('', 'blog');
-                    if (blogWindow && !blogWindow.closed) {
-                        blogWindow.postMessage({ type: 'theme_updated', color: settings.theme_color }, '*');
-                    }
+                    // Tüm açık pencereleri kontrol et
+                    const windows = window.opener ? [window.opener] : [];
+                    
+                    // Blog sayfasını bul ve mesaj gönder
+                    windows.forEach(win => {
+                        try {
+                            if (win && !win.closed && win.location.pathname.includes('blog')) {
+                                console.log('📨 Blog sayfasına tema mesajı gönderiliyor:', settings.theme_color);
+                                win.postMessage({ 
+                                    type: 'theme_updated', 
+                                    color: settings.theme_color,
+                                    timestamp: Date.now()
+                                }, '*');
+                            }
+                        } catch (e) {
+                            console.log('Blog penceresi erişilemedi');
+                        }
+                    });
+                    
+                    // LocalStorage ile de tema güncelleme bilgisi gönder
+                    localStorage.setItem('theme_updated', JSON.stringify({
+                        color: settings.theme_color,
+                        timestamp: Date.now()
+                    }));
+                    
                 } catch (e) {
-                    console.log('Blog sayfası bulunamadı');
+                    console.log('Blog sayfası bulunamadı:', e);
                 }
             } else {
                 showMessage('❌ Ayarlar kaydedilemedi!', 'error');
