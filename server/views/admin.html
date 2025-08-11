@@ -923,9 +923,19 @@
                 // Yeni yazı formundaki yazar alanını güncelle
                 document.getElementById('author').value = settings.default_author;
                 
-                // Ana sayfayı yenile (eğer açıksa)
+                // Ana sayfa ve blog sayfasını yenile (eğer açıksa)
                 if (window.opener && !window.opener.closed) {
                     window.opener.location.reload();
+                }
+                
+                // Blog sayfasına tema güncelleme mesajı gönder
+                try {
+                    const blogWindow = window.open('', 'blog');
+                    if (blogWindow && !blogWindow.closed) {
+                        blogWindow.postMessage({ type: 'theme_updated', color: settings.theme_color }, '*');
+                    }
+                } catch (e) {
+                    console.log('Blog sayfası bulunamadı');
                 }
             } else {
                 showMessage('❌ Ayarlar kaydedilemedi!', 'error');

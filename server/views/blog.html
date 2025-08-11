@@ -1,16 +1,25 @@
 <!DOCTYPE HTML>
 <html>
 <head>
-    <title>Blog - Gamze Bıçakçı</title>
+    <title id="page-title">Blog - Gamze Bıçakçı</title>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
+    <meta name="description" id="page-description" content="Gamze Bıçakçı'nın blog yazıları ve düşünceleri">
     <link rel="stylesheet" href="../assets/css/main.css" />
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <style>
+        :root {
+            --primary-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            --accent-color: #667eea;
+            --accent-hover: #5a67d8;
+            --glass-bg: rgba(255, 255, 255, 0.15);
+            --glass-border: rgba(255, 255, 255, 0.2);
+        }
+        
         body {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: var(--primary-gradient);
             min-height: 100vh;
             font-family: 'Inter', sans-serif;
         }
@@ -24,11 +33,11 @@
         .blog-header {
             text-align: center;
             margin-bottom: 4rem;
-            background: rgba(255, 255, 255, 0.15);
+            background: var(--glass-bg);
             padding: 3rem 2rem;
             border-radius: 25px;
             backdrop-filter: blur(20px);
-            border: 1px solid rgba(255, 255, 255, 0.2);
+            border: 1px solid var(--glass-border);
             box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
         }
         
@@ -48,12 +57,12 @@
         }
         
         .blog-post {
-            background: rgba(255, 255, 255, 0.12);
+            background: var(--glass-bg);
             margin-bottom: 2.5rem;
             padding: 0;
             border-radius: 20px;
             backdrop-filter: blur(20px);
-            border: 1px solid rgba(255, 255, 255, 0.15);
+            border: 1px solid var(--glass-border);
             transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
             box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
             position: relative;
@@ -787,6 +796,112 @@
             `;
         }
 
+        // Site ayarlarını yükle ve tema sistemini uygula
+        async function loadSiteSettings() {
+            try {
+                const response = await fetch('/api/settings');
+                if (response.ok) {
+                    const settings = await response.json();
+                    
+                    // Sayfa başlığını güncelle
+                    if (settings.site_title) {
+                        document.getElementById('page-title').textContent = `Blog - ${settings.site_title.split('|')[0].trim()}`;
+                        document.title = `Blog - ${settings.site_title.split('|')[0].trim()}`;
+                    }
+                    
+                    // Meta description'ı güncelle
+                    if (settings.site_description) {
+                        document.getElementById('page-description').setAttribute('content', settings.site_description);
+                    }
+                    
+                    // Tema rengini güncelle ve tüm siteye uygula
+                    if (settings.theme_color) {
+                        updateThemeColors(settings.theme_color);
+                    }
+                    
+                } else {
+                    console.log('Ayarlar yüklenemedi, varsayılan değerler kullanılıyor');
+                }
+            } catch (error) {
+                console.error('Ayarlar yüklenirken hata:', error);
+            }
+        }
+        
+        // Tema renklerini tüm siteye uygula
+        function updateThemeColors(primaryColor) {
+            const root = document.documentElement;
+            
+            // Ana gradient'i güncelle
+            root.style.setProperty('--primary-gradient', `linear-gradient(135deg, ${primaryColor} 0%, ${adjustColor(primaryColor, -20)} 100%)`);
+            root.style.setProperty('--accent-color', primaryColor);
+            root.style.setProperty('--accent-hover', adjustColor(primaryColor, -10));
+            
+            // Glass efektlerini güncelle
+            const glassColor = adjustColor(primaryColor, 80);
+            root.style.setProperty('--glass-bg', `rgba(${parseInt(glassColor.slice(1,3), 16)}, ${parseInt(glassColor.slice(3,5), 16)}, ${parseInt(glassColor.slice(5,7), 16)}, 0.15)`);
+            root.style.setProperty('--glass-border', `rgba(${parseInt(glassColor.slice(1,3), 16)}, ${parseInt(glassColor.slice(3,5), 16)}, ${parseInt(glassColor.slice(5,7), 16)}, 0.2)`);
+            
+            // Body background'ını güncelle
+            document.body.style.background = `linear-gradient(135deg, ${primaryColor} 0%, ${adjustColor(primaryColor, -20)} 100%)`;
+            
+            // Blog post üst çizgilerini güncelle
+            const style = document.createElement('style');
+            style.textContent = `
+                .blog-post::before {
+                    background: linear-gradient(90deg, ${primaryColor}, ${adjustColor(primaryColor, 30)}, ${adjustColor(primaryColor, -30)}, ${adjustColor(primaryColor, 60)}) !important;
+                }
+                .comment-toggle-btn {
+                    background: linear-gradient(45deg, ${primaryColor} 0%, ${adjustColor(primaryColor, -20)} 100%) !important;
+                }
+                .comment-btn {
+                    background: linear-gradient(45deg, ${primaryColor} 0%, ${adjustColor(primaryColor, -20)} 100%) !important;
+                }
+                .comment-toggle-btn:hover {
+                    background: linear-gradient(45deg, ${adjustColor(primaryColor, 10)} 0%, ${adjustColor(primaryColor, -10)} 100%) !important;
+                }
+                .comment-btn:hover {
+                    background: linear-gradient(45deg, ${adjustColor(primaryColor, 10)} 0%, ${adjustColor(primaryColor, -10)} 100%) !important;
+                }
+                .blog-header {
+                    background: rgba(${parseInt(glassColor.slice(1,3), 16)}, ${parseInt(glassColor.slice(3,5), 16)}, ${parseInt(glassColor.slice(5,7), 16)}, 0.15) !important;
+                    border-color: rgba(${parseInt(glassColor.slice(1,3), 16)}, ${parseInt(glassColor.slice(3,5), 16)}, ${parseInt(glassColor.slice(5,7), 16)}, 0.2) !important;
+                }
+                .blog-post {
+                    background: rgba(${parseInt(glassColor.slice(1,3), 16)}, ${parseInt(glassColor.slice(3,5), 16)}, ${parseInt(glassColor.slice(5,7), 16)}, 0.12) !important;
+                    border-color: rgba(${parseInt(glassColor.slice(1,3), 16)}, ${parseInt(glassColor.slice(3,5), 16)}, ${parseInt(glassColor.slice(5,7), 16)}, 0.15) !important;
+                }
+            `;
+            document.head.appendChild(style);
+        }
+        
+        // Renk tonunu ayarla
+        function adjustColor(color, amount) {
+            const hex = color.replace('#', '');
+            const r = Math.max(0, Math.min(255, parseInt(hex.substr(0, 2), 16) + amount));
+            const g = Math.max(0, Math.min(255, parseInt(hex.substr(2, 2), 16) + amount));
+            const b = Math.max(0, Math.min(255, parseInt(hex.substr(4, 2), 16) + amount));
+            return `#${r.toString(16).padStart(2, '0')}${g.toString(16).padStart(2, '0')}${b.toString(16).padStart(2, '0')}`;
+        }
+        
+        // Sayfa yüklendiğinde ayarları yükle
+        document.addEventListener('DOMContentLoaded', function() {
+            loadSiteSettings();
+            
+            // Tema değişikliklerini dinle (admin panelinden gelen)
+            window.addEventListener('storage', function(e) {
+                if (e.key === 'theme_updated') {
+                    loadSiteSettings();
+                }
+            });
+            
+            // Admin panelinden gelen mesajları dinle
+            window.addEventListener('message', function(e) {
+                if (e.data && e.data.type === 'theme_updated') {
+                    loadSiteSettings();
+                }
+            });
+        });
+        
         // Sayfa yüklendiğinde blog yazılarını getir
         loadBlogPosts();
     </script>
