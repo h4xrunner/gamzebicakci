@@ -469,6 +469,27 @@
             box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
         }
 
+        .comment-toggle-btn {
+            align-self: flex-start;
+            padding: 0.8rem 1.5rem;
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            margin-bottom: 1rem;
+        }
+
+        .comment-toggle-btn:hover {
+            background: linear-gradient(45deg, #764ba2, #667eea);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+        }
+
         .no-comments {
             color: rgba(255, 255, 255, 0.7);
             font-style: italic;
@@ -665,6 +686,21 @@
             });
         }
 
+        function toggleCommentForm(postId) {
+            const form = document.getElementById(`comment-form-${postId}`);
+            const toggleBtn = event.target;
+            
+            if (form.style.display === 'none' || form.style.display === '') {
+                form.style.display = 'flex';
+                toggleBtn.textContent = '❌ Formu Kapat';
+                toggleBtn.style.background = 'linear-gradient(45deg, #ff6b6b, #ee5a52)';
+            } else {
+                form.style.display = 'none';
+                toggleBtn.textContent = '💬 Yorum Ekle';
+                toggleBtn.style.background = 'linear-gradient(45deg, #667eea, #764ba2)';
+            }
+        }
+
         // Post render fonksiyonunu güncelle
         function renderPost(post) {
             const date = new Date(post.created_at).toLocaleDateString('tr-TR', {
@@ -731,7 +767,8 @@
                             <div id="comments-${post.id}"></div>
                             
                             ${post.comments_enabled ? `
-                                <form id="comment-form-${post.id}" class="comment-form" onsubmit="event.preventDefault(); addComment(${post.id});">
+                                <button type="button" class="comment-toggle-btn" onclick="toggleCommentForm(${post.id})">💬 Yorum Ekle</button>
+                                <form id="comment-form-${post.id}" class="comment-form" style="display: none;" onsubmit="event.preventDefault(); addComment(${post.id});">
                                     <div class="form-group">
                                         <input type="text" name="author" placeholder="Adınız *" required>
                                     </div>
