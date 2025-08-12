@@ -66,7 +66,7 @@ router.post('/', async (req, res) => {
         
         const result = await pool.query(query, params);
         
-        res.status(201).json({ 
+        res.status(200).json({ 
             message: 'Misafir yazısı başarıyla eklendi',
             id: result.rows[0].id 
         });
