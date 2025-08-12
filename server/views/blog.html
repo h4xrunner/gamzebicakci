@@ -668,26 +668,105 @@
             box-shadow: 0 12px 35px rgba(0, 0, 0, 0.25);
         }
         
-        .success-message {
-            background: linear-gradient(45deg, rgba(46, 213, 115, 0.2), rgba(0, 206, 201, 0.2));
-            color: white;
-            padding: 1rem 1.5rem;
-            border-radius: 10px;
-            text-align: center;
-            margin-bottom: 1rem;
-            font-weight: 600;
-            border: 1px solid rgba(46, 213, 115, 0.3);
+
+        
+        /* Modern Toast Notification Sistemi */
+        .toast-container {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 9999;
+            pointer-events: none;
         }
         
-        .error-message {
-            background: linear-gradient(45deg, rgba(255, 107, 107, 0.2), rgba(238, 82, 83, 0.2));
-            color: white;
+        .toast-notification {
+            background: var(--glass-bg);
+            backdrop-filter: blur(20px);
+            border: 1px solid var(--glass-border);
+            border-radius: 15px;
             padding: 1rem 1.5rem;
-            border-radius: 10px;
-            text-align: center;
-            margin-bottom: 1rem;
+            margin-bottom: 10px;
+            color: white;
             font-weight: 600;
-            border: 1px solid rgba(255, 107, 107, 0.3);
+            font-size: 0.95rem;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            transform: translateX(400px);
+            opacity: 0;
+            transition: all 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+            pointer-events: auto;
+            max-width: 350px;
+            word-wrap: break-word;
+        }
+        
+        .toast-notification.show {
+            transform: translateX(0);
+            opacity: 1;
+        }
+        
+        .toast-notification.hide {
+            transform: translateX(400px);
+            opacity: 0;
+        }
+        
+        .toast-notification.success {
+            border-left: 4px solid #4ecdc4;
+            background: linear-gradient(135deg, rgba(78, 205, 196, 0.15), rgba(69, 183, 209, 0.15));
+        }
+        
+        .toast-notification.error {
+            border-left: 4px solid #ff6b6b;
+            background: linear-gradient(135deg, rgba(255, 107, 107, 0.15), rgba(238, 82, 83, 0.15));
+        }
+        
+        .toast-notification .toast-icon {
+            display: inline-block;
+            margin-right: 0.5rem;
+            font-size: 1.1rem;
+        }
+        
+        .toast-notification .toast-close {
+            position: absolute;
+            top: 8px;
+            right: 12px;
+            background: none;
+            border: none;
+            color: rgba(255, 255, 255, 0.7);
+            cursor: pointer;
+            font-size: 1.2rem;
+            padding: 0;
+            width: 24px;
+            height: 24px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            transition: all 0.3s ease;
+        }
+        
+        .toast-notification .toast-close:hover {
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+        }
+        
+        @media (max-width: 768px) {
+            .toast-container {
+                top: 10px;
+                right: 10px;
+                left: 10px;
+            }
+            
+            .toast-notification {
+                max-width: none;
+                transform: translateY(-100px);
+            }
+            
+            .toast-notification.show {
+                transform: translateY(0);
+            }
+            
+            .toast-notification.hide {
+                transform: translateY(-100px);
+            }
         }
         
         @media (max-width: 768px) {
@@ -708,6 +787,9 @@
     </style>
 </head>
 <body class="is-preload">
+    <!-- Toast Notification Container -->
+    <div class="toast-container" id="toast-container"></div>
+    
     <a href="/" class="home-link">← Ana Sayfa</a>
     
     <div class="blog-container">
@@ -1280,21 +1362,35 @@
         }
         
         function showGuestPostMessage(message, type) {
-            // Önceki mesajları temizle
-            const existingMessages = document.querySelectorAll('.success-message, .error-message');
-            existingMessages.forEach(msg => msg.remove());
+            const toastContainer = document.getElementById('toast-container');
             
-            const messageDiv = document.createElement('div');
-            messageDiv.className = type === 'success' ? 'success-message' : 'error-message';
-            messageDiv.textContent = message;
+            // Toast notification oluştur
+            const toast = document.createElement('div');
+            toast.className = `toast-notification ${type}`;
             
-            // Form'un üstüne mesajı ekle
-            const form = document.getElementById('guest-post-form');
-            form.insertBefore(messageDiv, form.firstChild);
+            const icon = type === 'success' ? '✅' : '❌';
+            toast.innerHTML = `
+                <span class="toast-icon">${icon}</span>
+                <span class="toast-message">${message}</span>
+                <button class="toast-close" onclick="this.parentElement.remove()">×</button>
+            `;
             
-            // 5 saniye sonra mesajı kaldır
+            // Toast'u container'a ekle
+            toastContainer.appendChild(toast);
+            
+            // Animasyonla göster
             setTimeout(() => {
-                messageDiv.remove();
+                toast.classList.add('show');
+            }, 100);
+            
+            // 5 saniye sonra otomatik kapat
+            setTimeout(() => {
+                toast.classList.add('hide');
+                setTimeout(() => {
+                    if (toast.parentElement) {
+                        toast.remove();
+                    }
+                }, 500);
             }, 5000);
         }
         
