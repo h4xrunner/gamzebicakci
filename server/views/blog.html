@@ -1252,8 +1252,6 @@
             submitBtn.disabled = true;
             
             try {
-                console.log('📤 Misafir yazısı gönderiliyor:', guestPostData);
-                
                 const response = await fetch('/api/guest-posts', {
                     method: 'POST',
                     headers: {
@@ -1262,24 +1260,18 @@
                     body: JSON.stringify(guestPostData)
                 });
                 
-                console.log('📥 Response status:', response.status);
-                console.log('📥 Response ok:', response.ok);
-                
                 const result = await response.json();
-                console.log('📥 Response data:', result);
                 
-                if (response.ok || response.status === 201) {
-                    console.log('✅ Başarılı response');
+                if (response.ok || response.status === 200) {
                     showGuestPostMessage('✅ Yazınız başarıyla gönderildi! Admin onayından geçtikten sonra blog\'da yayınlanacaktır.', 'success');
                     form.reset();
                     toggleGuestPostForm(); // Formu kapat
                 } else {
-                    console.log('❌ Hata response');
                     showGuestPostMessage(`❌ Hata: ${result.error || result.message || 'Bilinmeyen hata'}`, 'error');
                 }
             } catch (error) {
-                console.error('❌ Misafir yazı gönderme hatası:', error);
-                showGuestPostMessage('❌ Bağlantı hatası! Lütfen daha sonra tekrar deneyin.', 'error');
+                console.error('Misafir yazı gönderme hatası:', error);
+                // Bağlantı hatası mesajını kaldırdık
             } finally {
                 // Submit butonunu geri yükle
                 submitBtn.textContent = originalText;
