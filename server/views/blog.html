@@ -533,6 +533,190 @@
             text-align: center;
             font-size: 0.9rem;
         }
+        
+        /* Misafir Yazı Formu Stilleri */
+        .guest-post-btn {
+            background: linear-gradient(45deg, #4ecdc4, #45b7d1);
+            color: white;
+            border: none;
+            padding: 1rem 2rem;
+            border-radius: 25px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+            font-family: 'Inter', sans-serif;
+        }
+        
+        .guest-post-btn:hover {
+            background: linear-gradient(45deg, #45b7d1, #4ecdc4);
+            transform: translateY(-3px);
+            box-shadow: 0 12px 35px rgba(0, 0, 0, 0.25);
+        }
+        
+        .guest-post-form {
+            background: var(--glass-bg);
+            padding: 2.5rem;
+            border-radius: 20px;
+            backdrop-filter: blur(20px);
+            border: 1px solid var(--glass-border);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+            margin-bottom: 3rem;
+            animation: fadeInUp 0.6s ease forwards;
+        }
+        
+        .form-header {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+        
+        .form-header h3 {
+            color: white;
+            font-size: 1.8rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+        
+        .form-header p {
+            color: rgba(255, 255, 255, 0.8);
+            font-size: 1rem;
+        }
+        
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1.5rem;
+            margin-bottom: 1.5rem;
+        }
+        
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+            margin-bottom: 1.5rem;
+        }
+        
+        .form-group label {
+            color: white;
+            font-weight: 600;
+            font-size: 1rem;
+        }
+        
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            padding: 1rem;
+            border: 2px solid rgba(255, 255, 255, 0.2);
+            border-radius: 10px;
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+            font-family: 'Inter', sans-serif;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+        }
+        
+        .form-group input::placeholder,
+        .form-group textarea::placeholder {
+            color: rgba(255, 255, 255, 0.6);
+        }
+        
+        .form-group input:focus,
+        .form-group select:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-color: rgba(255, 255, 255, 0.5);
+            background: rgba(255, 255, 255, 0.15);
+            box-shadow: 0 0 15px rgba(255, 255, 255, 0.1);
+        }
+        
+        .form-group textarea {
+            resize: vertical;
+            min-height: 120px;
+        }
+        
+        .form-actions {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            margin-top: 2rem;
+        }
+        
+        .submit-btn {
+            background: linear-gradient(45deg, #4ecdc4, #45b7d1);
+            color: white;
+            border: none;
+            padding: 1rem 2rem;
+            border-radius: 15px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+        }
+        
+        .submit-btn:hover {
+            background: linear-gradient(45deg, #45b7d1, #4ecdc4);
+            transform: translateY(-2px);
+            box-shadow: 0 12px 35px rgba(0, 0, 0, 0.25);
+        }
+        
+        .cancel-btn {
+            background: linear-gradient(45deg, #ff6b6b, #ee5a52);
+            color: white;
+            border: none;
+            padding: 1rem 2rem;
+            border-radius: 15px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+        }
+        
+        .cancel-btn:hover {
+            background: linear-gradient(45deg, #ee5a52, #ff6b6b);
+            transform: translateY(-2px);
+            box-shadow: 0 12px 35px rgba(0, 0, 0, 0.25);
+        }
+        
+        .success-message {
+            background: linear-gradient(45deg, rgba(46, 213, 115, 0.2), rgba(0, 206, 201, 0.2));
+            color: white;
+            padding: 1rem 1.5rem;
+            border-radius: 10px;
+            text-align: center;
+            margin-bottom: 1rem;
+            font-weight: 600;
+            border: 1px solid rgba(46, 213, 115, 0.3);
+        }
+        
+        .error-message {
+            background: linear-gradient(45deg, rgba(255, 107, 107, 0.2), rgba(238, 82, 83, 0.2));
+            color: white;
+            padding: 1rem 1.5rem;
+            border-radius: 10px;
+            text-align: center;
+            margin-bottom: 1rem;
+            font-weight: 600;
+            border: 1px solid rgba(255, 107, 107, 0.3);
+        }
+        
+        @media (max-width: 768px) {
+            .form-row {
+                grid-template-columns: 1fr;
+                gap: 1rem;
+            }
+            
+            .form-actions {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            .guest-post-form {
+                padding: 1.5rem;
+            }
+        }
     </style>
 </head>
 <body class="is-preload">
@@ -542,6 +726,72 @@
         <div class="blog-header">
             <h1>✨ Blog</h1>
             <p>Düşüncelerim, deneyimlerim ve öğrendiklerim...</p>
+        </div>
+        
+        <!-- Misafir Yazı Ekleme Butonu -->
+        <div style="text-align: center; margin-bottom: 3rem;">
+            <button class="guest-post-btn" onclick="toggleGuestPostForm()">
+                ✍️ Yazı Gönder
+            </button>
+        </div>
+        
+        <!-- Misafir Yazı Ekleme Formu -->
+        <div id="guest-post-form" class="guest-post-form" style="display: none;">
+            <div class="form-header">
+                <h3>📝 Misafir Yazısı Gönder</h3>
+                <p>Yazınız admin onayından sonra blog'da yayınlanacaktır.</p>
+            </div>
+            <form id="guest-post-submit-form" onsubmit="submitGuestPost(event)">
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="guest-name">👤 Adınız *</label>
+                        <input type="text" id="guest-name" name="guest_name" required placeholder="Adınızı girin">
+                    </div>
+                    <div class="form-group">
+                        <label for="guest-email">📧 E-posta (Opsiyonel)</label>
+                        <input type="email" id="guest-email" name="guest_email" placeholder="E-posta adresiniz">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="guest-title">📝 Yazı Başlığı *</label>
+                    <input type="text" id="guest-title" name="guest_title" required placeholder="Yazınızın başlığını girin">
+                </div>
+                <div class="form-group">
+                    <label for="guest-excerpt">💭 Kısa Özet (Opsiyonel)</label>
+                    <input type="text" id="guest-excerpt" name="guest_excerpt" placeholder="Yazınızın kısa özeti">
+                </div>
+                <div class="form-group">
+                    <label for="guest-content">📄 Yazı İçeriği *</label>
+                    <textarea id="guest-content" name="guest_content" required placeholder="Yazınızın içeriğini buraya yazın..." rows="8"></textarea>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="guest-category">🗂️ Kategori</label>
+                        <select id="guest-category" name="guest_category">
+                            <option value="">Kategori Seçin</option>
+                            <option value="Teknoloji">Teknoloji</option>
+                            <option value="Bilim">Bilim</option>
+                            <option value="Sanat">Sanat</option>
+                            <option value="Edebiyat">Edebiyat</option>
+                            <option value="Felsefe">Felsefe</option>
+                            <option value="Seyahat">Seyahat</option>
+                            <option value="Yemek">Yemek</option>
+                            <option value="Spor">Spor</option>
+                            <option value="Sağlık">Sağlık</option>
+                            <option value="Eğitim">Eğitim</option>
+                            <option value="Diğer">Diğer</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="guest-tags">🏷️ Etiketler (Opsiyonel)</label>
+                        <input type="text" id="guest-tags" name="guest_tags" placeholder="etiket1, etiket2, etiket3">
+                    </div>
+                </div>
+                <div class="form-actions">
+                    <button type="submit" class="submit-btn">🚀 Yazıyı Gönder</button>
+                    <button type="button" class="cancel-btn" onclick="toggleGuestPostForm()">❌ İptal</button>
+                </div>
+            </form>
         </div>
         
         <!-- Tema Test Butonu -->
@@ -986,6 +1236,100 @@
                 }
             }, 2000);
         });
+        
+        // Misafir yazı formu fonksiyonları
+        function toggleGuestPostForm() {
+            const form = document.getElementById('guest-post-form');
+            const btn = event.target;
+            
+            if (form.style.display === 'none' || form.style.display === '') {
+                form.style.display = 'block';
+                btn.textContent = '❌ Formu Kapat';
+                btn.style.background = 'linear-gradient(45deg, #ff6b6b, #ee5a52)';
+                btn.style.transform = 'translateY(-3px)';
+            } else {
+                form.style.display = 'none';
+                btn.textContent = '✍️ Yazı Gönder';
+                btn.style.background = 'linear-gradient(45deg, #4ecdc4, #45b7d1)';
+                btn.style.transform = 'translateY(0)';
+            }
+        }
+        
+        async function submitGuestPost(event) {
+            event.preventDefault();
+            
+            const form = event.target;
+            const submitBtn = form.querySelector('.submit-btn');
+            const originalText = submitBtn.textContent;
+            
+            // Form verilerini al
+            const formData = new FormData(form);
+            const guestPostData = {
+                guest_name: formData.get('guest_name'),
+                guest_email: formData.get('guest_email') || '',
+                guest_title: formData.get('guest_title'),
+                guest_excerpt: formData.get('guest_excerpt') || '',
+                guest_content: formData.get('guest_content'),
+                guest_category: formData.get('guest_category') || 'Genel',
+                guest_tags: formData.get('guest_tags') || ''
+            };
+            
+            // Validation
+            if (!guestPostData.guest_name || !guestPostData.guest_title || !guestPostData.guest_content) {
+                showGuestPostMessage('❌ Lütfen zorunlu alanları doldurun!', 'error');
+                return;
+            }
+            
+            // Submit butonunu devre dışı bırak
+            submitBtn.textContent = '⏳ Gönderiliyor...';
+            submitBtn.disabled = true;
+            
+            try {
+                const response = await fetch('/api/guest-posts', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(guestPostData)
+                });
+                
+                const result = await response.json();
+                
+                if (response.ok) {
+                    showGuestPostMessage('✅ Yazınız başarıyla gönderildi! Admin onayından sonra yayınlanacaktır.', 'success');
+                    form.reset();
+                    toggleGuestPostForm(); // Formu kapat
+                } else {
+                    showGuestPostMessage(`❌ Hata: ${result.message || 'Bilinmeyen hata'}`, 'error');
+                }
+            } catch (error) {
+                console.error('Misafir yazı gönderme hatası:', error);
+                showGuestPostMessage('❌ Bağlantı hatası! Lütfen daha sonra tekrar deneyin.', 'error');
+            } finally {
+                // Submit butonunu geri yükle
+                submitBtn.textContent = originalText;
+                submitBtn.disabled = false;
+            }
+        }
+        
+        function showGuestPostMessage(message, type) {
+            // Önceki mesajları temizle
+            const existingMessages = document.querySelectorAll('.success-message, .error-message');
+            existingMessages.forEach(msg => msg.remove());
+            
+            const messageDiv = document.createElement('div');
+            messageDiv.className = type === 'success' ? 'success-message' : 'error-message';
+            messageDiv.textContent = message;
+            
+            // Form'un üstüne mesajı ekle
+            const form = document.getElementById('guest-post-form');
+            form.insertBefore(messageDiv, form.firstChild);
+            
+            // 5 saniye sonra mesajı kaldır
+            setTimeout(() => {
+                messageDiv.remove();
+            }, 5000);
+        }
         
         // Sayfa yüklendiğinde blog yazılarını getir
         loadBlogPosts();

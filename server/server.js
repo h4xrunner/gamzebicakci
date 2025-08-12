@@ -110,6 +110,14 @@ try {
   console.error('Settings router yüklenemedi:', error.message);
 }
 
+try {
+  const guestPostsRouter = require('./routes/guest-posts');
+  app.use('/api/guest-posts', guestPostsRouter);
+  console.log('Guest posts router başarıyla yüklendi');
+} catch (error) {
+  console.error('Guest posts router yüklenemedi:', error.message);
+}
+
 // ========= AUTH ROUTES =========
 // Login sayfası
 app.get('/admin/login', (req, res) => {

@@ -295,10 +295,11 @@
     </div>
     <nav class="tabs-nav">
         <button class="tab-btn active" onclick="showTab('dashboard')">📊 Dashboard</button>
-                    <button class="tab-btn" onclick="showTab('posts')">📝 Yazılar</button>
-            <button class="tab-btn" onclick="showTab('new-post')">✨ Yeni Yazı</button>
-            <button class="tab-btn" onclick="showTab('comments')">💬 Yorumlar</button>
-            <button class="tab-btn" onclick="showTab('settings')">⚙️ Ayarlar</button>
+        <button class="tab-btn" onclick="showTab('posts')">📝 Yazılar</button>
+        <button class="tab-btn" onclick="showTab('new-post')">✨ Yeni Yazı</button>
+        <button class="tab-btn" onclick="showTab('guest-posts')">👥 Misafir Yazıları</button>
+        <button class="tab-btn" onclick="showTab('comments')">💬 Yorumlar</button>
+        <button class="tab-btn" onclick="showTab('settings')">⚙️ Ayarlar</button>
     </nav>
     <section id="dashboard" class="tab-section active">
         <div class="section-card">
@@ -327,6 +328,17 @@
             </div>
         </div>
     </section>
+    
+    <!-- Misafir Yazıları -->
+    <section id="guest-posts" class="tab-section">
+        <div class="section-card">
+            <h2 class="section-title">👥 Misafir Yazıları</h2>
+            <div class="guest-posts-list" id="guest-posts-list">
+                <div style="color:rgba(255,255,70,0.7);text-align:center;padding:2rem;">Misafir yazıları yükleniyor...</div>
+            </div>
+        </div>
+    </section>
+    
     <section id="new-post" class="tab-section">
         <div class="section-card">
             <h2 class="section-title">✨ Yeni Yazı Ekle</h2>
@@ -593,6 +605,7 @@
         event.target.classList.add('active');
         if (tabId === 'posts') loadPosts();
         if (tabId === 'dashboard') loadDashboard();
+        if (tabId === 'guest-posts') loadGuestPosts();
     }
     // Durum seçilince planlı ise tarihi göster
     document.getElementById('status').addEventListener('change', function() {
@@ -669,6 +682,142 @@
             `).join('');
         } catch {
             document.getElementById('posts-list').innerHTML = '<div class="error-message">Yazılar yüklenemedi.</div>';
+        }
+    }
+    
+    // Misafir yazılarını yükle
+    async function loadGuestPosts() {
+        try {
+            const response = await fetch('/api/guest-posts');
+            const guestPosts = await response.json();
+            
+            const container = document.getElementById('guest-posts-list');
+            
+            if (guestPosts.length === 0) {
+                container.innerHTML = `
+                    <div style="color:rgba(255,255,70,0.7);text-align:center;padding:2rem;">
+                        Henüz misafir yazısı yok
+                    </div>
+                `;
+                return;
+            }
+            
+            container.innerHTML = guestPosts.map(post => `
+                <div class="guest-post-item" style="background:rgba(255,255,255,0.1);padding:1.5rem;border-radius:15px;margin-bottom:1rem;border:1px solid rgba(255,255,255,0.2);">
+                    <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:1rem;">
+                        <div>
+                            <h3 style="color:white;margin-bottom:0.5rem;">${post.guest_title}</h3>
+                            <p style="color:rgba(255,255,255,0.8);margin-bottom:0.5rem;">
+                                <strong>👤 ${post.guest_name}</strong> | 
+                                <strong>📧 ${post.guest_email || 'Belirtilmemiş'}</strong> | 
+                                <strong>🏷️ ${post.guest_category || 'Genel'}</strong>
+                            </p>
+                            <p style="color:rgba(255,255,255,0.7);font-size:0.9rem;">
+                                📅 ${new Date(post.submitted_at).toLocaleDateString('tr-TR')} | 
+                                📊 ${post.guest_content.split(' ').length} kelime
+                            </p>
+                        </div>
+                        <div style="display:flex;gap:0.5rem;">
+                            ${post.status === 'pending' ? `
+                                <button onclick="approveGuestPost(${post.id})" class="btn" style="background:#4CAF50;border:none;padding:0.5rem 1rem;border-radius:8px;color:white;cursor:pointer;">
+                                    ✅ Onayla
+                                </button>
+                                <button onclick="rejectGuestPost(${post.id})" class="btn" style="background:#f44336;border:none;padding:0.5rem 1rem;border-radius:8px;color:white;cursor:pointer;">
+                                    ❌ Reddet
+                                </button>
+                            ` : `
+                                <span style="padding:0.5rem 1rem;border-radius:8px;color:white;font-size:0.9rem;background:${post.status === 'approved' ? '#4CAF50' : '#f44336'};">
+                                    ${post.status === 'approved' ? '✅ Onaylandı' : '❌ Reddedildi'}
+                                </span>
+                            `}
+                        </div>
+                    </div>
+                    
+                    ${post.guest_excerpt ? `
+                        <div style="background:rgba(255,255,255,0.05);padding:1rem;border-radius:10px;margin-bottom:1rem;">
+                            <strong style="color:rgba(255,255,255,0.9);">📄 Özet:</strong>
+                            <p style="color:rgba(255,255,255,0.8);margin:0.5rem 0 0 0;">${post.guest_excerpt}</p>
+                        </div>
+                    ` : ''}
+                    
+                    <div style="background:rgba(255,255,255,0.05);padding:1rem;border-radius:10px;margin-bottom:1rem;">
+                        <strong style="color:rgba(255,255,255,0.9);">📖 İçerik:</strong>
+                        <p style="color:rgba(255,255,255,0.8);margin:0.5rem 0 0 0;line-height:1.6;text-align:justify;">
+                            ${post.guest_content.substring(0, 300)}${post.guest_content.length > 300 ? '...' : ''}
+                        </p>
+                    </div>
+                    
+                    ${post.guest_tags ? `
+                        <div style="margin-bottom:1rem;">
+                            <strong style="color:rgba(255,255,255,0.9);">🏷️ Etiketler:</strong>
+                            <p style="color:rgba(255,255,255,0.8);margin:0.5rem 0 0 0;">${post.guest_tags}</p>
+                        </div>
+                    ` : ''}
+                    
+                    ${post.status === 'rejected' && post.rejection_reason ? `
+                        <div style="background:rgba(244,67,54,0.1);padding:1rem;border-radius:10px;border:1px solid rgba(244,67,54,0.3);">
+                            <strong style="color:#f44336;">❌ Red Nedeni:</strong>
+                            <p style="color:rgba(255,255,255,0.8);margin:0.5rem 0 0 0;">${post.rejection_reason}</p>
+                        </div>
+                    ` : ''}
+                </div>
+            `).join('');
+            
+        } catch (error) {
+            console.error('Misafir yazıları yüklenemedi:', error);
+            document.getElementById('guest-posts-list').innerHTML = `
+                <div style="color:#f44336;text-align:center;padding:2rem;">
+                    Misafir yazıları yüklenirken hata oluştu
+                </div>
+            `;
+        }
+    }
+    
+    // Misafir yazısını onayla
+    async function approveGuestPost(id) {
+        if (!confirm('Bu yazıyı onaylamak istediğinizden emin misiniz?')) return;
+        
+        try {
+            const response = await fetch(`/api/guest-posts/${id}/approve`, {
+                method: 'PUT',
+                headers: { 'Content-Type': 'application/json' }
+            });
+            
+            if (response.ok) {
+                showMessage('✅ Yazı başarıyla onaylandı ve yayınlandı!');
+                loadGuestPosts();
+                loadDashboard();
+            } else {
+                const error = await response.json();
+                showMessage(`❌ Hata: ${error.message}`, 'error');
+            }
+        } catch (error) {
+            console.error('Yazı onaylama hatası:', error);
+            showMessage('❌ Bağlantı hatası!', 'error');
+        }
+    }
+    
+    // Misafir yazısını reddet
+    async function rejectGuestPost(id) {
+        const reason = prompt('Red nedeni (opsiyonel):');
+        
+        try {
+            const response = await fetch(`/api/guest-posts/${id}/reject`, {
+                method: 'PUT',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ reason: reason || 'Belirtilmedi' })
+            });
+            
+            if (response.ok) {
+                showMessage('❌ Yazı reddedildi');
+                loadGuestPosts();
+            } else {
+                const error = await response.json();
+                showMessage(`❌ Hata: ${error.message}`, 'error');
+            }
+        } catch (error) {
+            console.error('Yazı reddetme hatası:', error);
+            showMessage('❌ Bağlantı hatası!', 'error');
         }
     }
     
