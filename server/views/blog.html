@@ -49,19 +49,7 @@
             text-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
         }
         
-        .theme-test-btn {
-            position: fixed;
-            top: 20px;
-            right: 20px;
-            padding: 10px 15px;
-            background: #ff6b6b;
-            color: white;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-            z-index: 1000;
-            font-size: 12px;
-        }
+
         
         .blog-header p {
             font-size: 1.2rem;
@@ -739,7 +727,7 @@
         <div id="guest-post-form" class="guest-post-form" style="display: none;">
             <div class="form-header">
                 <h3>📝 Misafir Yazısı Gönder</h3>
-                <p>Yazınız admin onayından sonra blog'da yayınlanacaktır.</p>
+                <p>Yazınız admin onayından geçtikten sonra blog'da yayınlanacaktır.</p>
             </div>
             <form id="guest-post-submit-form" onsubmit="submitGuestPost(event)">
                 <div class="form-row">
@@ -794,8 +782,7 @@
             </form>
         </div>
         
-        <!-- Tema Test Butonu -->
-        <button class="theme-test-btn" onclick="testThemeChange()">🎨 Tema Test</button>
+
         
         <div id="blog-posts">
             <div class="loading">Yazılar yükleniyor</div>
@@ -1169,27 +1156,7 @@
             return `#${r.toString(16).padStart(2, '0')}${g.toString(16).padStart(2, '0')}${b.toString(16).padStart(2, '0')}`;
         }
         
-        // Tema test fonksiyonu
-        function testThemeChange() {
-            console.log('🧪 Tema test başlatılıyor...');
-            const testColors = ['#ff6b6b', '#4ecdc4', '#45b7d1', '#96ceb4', '#667eea'];
-            let currentIndex = 0;
-            
-            const interval = setInterval(() => {
-                const color = testColors[currentIndex];
-                console.log(`🎨 Test rengi uygulanıyor: ${color}`);
-                updateThemeColors(color);
-                currentIndex = (currentIndex + 1) % testColors.length;
-            }, 2000);
-            
-            // 10 saniye sonra durdur
-            setTimeout(() => {
-                clearInterval(interval);
-                console.log('🧪 Tema test tamamlandı');
-                // Varsayılan temayı geri yükle
-                loadSiteSettings();
-            }, 10000);
-        }
+
         
         // Sayfa yüklendiğinde ayarları yükle
         document.addEventListener('DOMContentLoaded', function() {
@@ -1303,7 +1270,7 @@
                 
                 if (response.ok || response.status === 201) {
                     console.log('✅ Başarılı response');
-                    showGuestPostMessage('✅ Yazınız başarıyla gönderildi! Admin onayından sonra yayınlanacaktır.', 'success');
+                    showGuestPostMessage('✅ Yazınız başarıyla gönderildi! Admin onayından geçtikten sonra blog\'da yayınlanacaktır.', 'success');
                     form.reset();
                     toggleGuestPostForm(); // Formu kapat
                 } else {
