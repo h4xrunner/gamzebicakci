@@ -322,49 +322,59 @@
             transition: all 0.3s ease;
             border: 1px solid rgba(255, 255, 255, 0.2);
             font-size: 1.2rem;
+            overflow: hidden; /* Taşan içeriği gizle */
         }
 
         .social-link:hover {
             background: rgba(255, 255, 255, 0.2);
-            transform: translateY(-3px);
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+            transform: translateY(-3px) scale(1.05);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+            border-color: rgba(255, 255, 255, 0.4);
         }
         
         .social-link.instagram:hover {
             background: linear-gradient(45deg, #f09433, #e6683c, #dc2743, #cc2366, #bc1888);
-            border-color: rgba(220, 39, 67, 0.5);
+            border-color: rgba(220, 39, 67, 0.8);
+            box-shadow: 0 8px 25px rgba(220, 39, 67, 0.4);
         }
         
         .social-link.twitter:hover {
             background: #1da1f2;
-            border-color: rgba(29, 161, 242, 0.5);
+            border-color: rgba(29, 161, 242, 0.8);
+            box-shadow: 0 8px 25px rgba(29, 161, 242, 0.4);
         }
         
         .social-link.linkedin:hover {
             background: #0077b5;
-            border-color: rgba(0, 119, 181, 0.5);
+            border-color: rgba(0, 119, 181, 0.8);
+            box-shadow: 0 8px 25px rgba(0, 119, 181, 0.4);
         }
         
         .social-link.youtube:hover {
             background: #ff0000;
-            border-color: rgba(255, 0, 0, 0.5);
+            border-color: rgba(255, 0, 0, 0.8);
+            box-shadow: 0 8px 25px rgba(255, 0, 0, 0.4);
         }
         
         .social-link.facebook:hover {
             background: #1877f2;
-            border-color: rgba(24, 119, 242, 0.5);
+            border-color: rgba(24, 119, 242, 0.8);
+            box-shadow: 0 8px 25px rgba(24, 119, 242, 0.4);
         }
         
         /* Sosyal medya logoları için stil */
         .social-link .social-logo {
-            width: 24px;
-            height: 24px;
-            filter: brightness(0) invert(1); /* Beyaz yap */
-            transition: filter 0.3s ease;
+            width: 28px;
+            height: 28px;
+            filter: none; /* Filtreyi kaldır */
+            transition: all 0.3s ease;
+            border-radius: 0; /* Köşeleri düz yap */
+            object-fit: contain; /* Oranı koru */
         }
         
         .social-link:hover .social-logo {
-            filter: brightness(0) invert(1); /* Hover'da da beyaz kalsın */
+            filter: none; /* Hover'da da filtre yok */
+            transform: scale(1.1); /* Hover'da büyüt */
         }
 
         /* Footer */
