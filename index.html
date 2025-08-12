@@ -354,6 +354,18 @@
             background: #1877f2;
             border-color: rgba(24, 119, 242, 0.5);
         }
+        
+        /* Sosyal medya logoları için stil */
+        .social-link .social-logo {
+            width: 24px;
+            height: 24px;
+            filter: brightness(0) invert(1); /* Beyaz yap */
+            transition: filter 0.3s ease;
+        }
+        
+        .social-link:hover .social-logo {
+            filter: brightness(0) invert(1); /* Hover'da da beyaz kalsın */
+        }
 
         /* Footer */
         .footer {
@@ -621,28 +633,65 @@
             const links = typeof socialLinks === 'string' ? JSON.parse(socialLinks) : socialLinks;
             let socialHTML = '';
             
-            // Sosyal medya platformları ve ikonları
+            // Sosyal medya platformları ve logoları
             const platforms = {
-                instagram: { icon: '📱', name: 'Instagram' },
-                twitter: { icon: '🐦', name: 'Twitter' },
-                linkedin: { icon: '💼', name: 'LinkedIn' },
-                youtube: { icon: '🎬', name: 'YouTube' },
-                facebook: { icon: '📘', name: 'Facebook' },
-                tiktok: { icon: '🎵', name: 'TikTok' },
-                snapchat: { icon: '👻', name: 'Snapchat' },
-                pinterest: { icon: '📌', name: 'Pinterest' }
+                instagram: { 
+                    logo: 'logos/icons8-instagram-48.png', 
+                    name: 'Instagram',
+                    fallback: '📱'
+                },
+                twitter: { 
+                    logo: 'logos/icons8-twitter-48.png', 
+                    name: 'Twitter',
+                    fallback: '🐦'
+                },
+                linkedin: { 
+                    logo: 'logos/icons8-linkedin-48.png', 
+                    name: 'LinkedIn',
+                    fallback: '💼'
+                },
+                facebook: { 
+                    logo: 'logos/icons8-facebook-48.png', 
+                    name: 'Facebook',
+                    fallback: '📘'
+                },
+                youtube: { 
+                    logo: null, 
+                    name: 'YouTube',
+                    fallback: '🎬'
+                },
+                tiktok: { 
+                    logo: null, 
+                    name: 'TikTok',
+                    fallback: '🎵'
+                },
+                snapchat: { 
+                    logo: null, 
+                    name: 'Snapchat',
+                    fallback: '👻'
+                },
+                pinterest: { 
+                    logo: null, 
+                    name: 'Pinterest',
+                    fallback: '📌'
+                }
             };
             
             // Her platform için link oluştur
             Object.keys(platforms).forEach(platform => {
                 if (links[platform] && links[platform].trim() !== '') {
+                    const platformData = platforms[platform];
+                    const iconContent = platformData.logo 
+                        ? `<img src="${platformData.logo}" alt="${platformData.name}" class="social-logo">`
+                        : `<span class="social-icon">${platformData.fallback}</span>`;
+                    
                     socialHTML += `
                         <a href="${links[platform]}" 
                            target="_blank" 
                            rel="noopener noreferrer"
                            class="social-link ${platform}"
-                           title="${platforms[platform].name}">
-                            ${platforms[platform].icon}
+                           title="${platformData.name}">
+                            ${iconContent}
                         </a>
                     `;
                 }
