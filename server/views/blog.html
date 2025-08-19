@@ -16,12 +16,58 @@
             --accent-hover: #5a67d8;
             --glass-bg: rgba(255, 255, 255, 0.15);
             --glass-border: rgba(255, 255, 255, 0.2);
+            --text-primary: white;
+            --text-secondary: rgba(255, 255, 255, 0.9);
+            --shadow: rgba(0, 0, 0, 0.1);
+        }
+
+        :root[data-theme="dark"] {
+            --primary-gradient: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+            --accent-color: #4ecdc4;
+            --accent-hover: #45b7d1;
+            --glass-bg: rgba(255, 255, 255, 0.05);
+            --glass-border: rgba(255, 255, 255, 0.1);
+            --text-primary: #ffffff;
+            --text-secondary: rgba(255, 255, 255, 0.8);
+            --shadow: rgba(0, 0, 0, 0.3);
         }
         
         body {
             background: var(--primary-gradient);
             min-height: 100vh;
             font-family: 'Inter', sans-serif;
+            transition: background 0.3s ease;
+        }
+        
+        /* Dark mode toggle butonu */
+        .theme-toggle {
+            position: fixed;
+            top: 2rem;
+            right: 2rem;
+            z-index: 1000;
+            background: var(--glass-bg);
+            border: 1px solid var(--glass-border);
+            border-radius: 50px;
+            padding: 0.8rem;
+            cursor: pointer;
+            backdrop-filter: blur(20px);
+            transition: all 0.3s ease;
+            box-shadow: 0 10px 30px var(--shadow);
+        }
+
+        .theme-toggle:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 15px 35px var(--shadow);
+        }
+
+        .theme-toggle .icon {
+            font-size: 1.2rem;
+            color: var(--text-primary);
+            transition: transform 0.3s ease;
+        }
+
+        .theme-toggle:hover .icon {
+            transform: rotate(180deg);
         }
         
         .blog-container {
@@ -38,13 +84,13 @@
             border-radius: 25px;
             backdrop-filter: blur(20px);
             border: 1px solid var(--glass-border);
-            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+            box-shadow: 0 20px 40px var(--shadow);
         }
         
         .blog-header h1 {
             font-size: 3rem;
             font-weight: 700;
-            color: white;
+            color: var(--text-primary);
             margin-bottom: 1rem;
             text-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
         }
@@ -53,7 +99,7 @@
         
         .blog-header p {
             font-size: 1.2rem;
-            color: rgba(255, 255, 255, 0.9);
+            color: var(--text-secondary);
             font-weight: 300;
             letter-spacing: 0.5px;
         }
@@ -66,7 +112,7 @@
             backdrop-filter: blur(20px);
             border: 1px solid var(--glass-border);
             transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            box-shadow: 0 10px 30px var(--shadow);
             position: relative;
             overflow: hidden;
         }
@@ -787,6 +833,11 @@
     </style>
 </head>
 <body class="is-preload">
+    <!-- Dark Mode Toggle -->
+    <button class="theme-toggle" id="theme-toggle" title="Tema Değiştir">
+        <span class="icon" id="theme-icon">🌙</span>
+    </button>
+
     <!-- Toast Notification Container -->
     <div class="toast-container" id="toast-container"></div>
     
@@ -1396,6 +1447,67 @@
         
         // Sayfa yüklendiğinde blog yazılarını getir
         loadBlogPosts();
+        
+        // Dark mode fonksiyonları
+        function setTheme(theme) {
+            const root = document.documentElement;
+            const themeIcon = document.getElementById('theme-icon');
+            
+            if (theme === 'dark') {
+                root.setAttribute('data-theme', 'dark');
+                themeIcon.textContent = '☀️';
+                localStorage.setItem('theme', 'dark');
+            } else {
+                root.removeAttribute('data-theme');
+                themeIcon.textContent = '🌙';
+                localStorage.setItem('theme', 'light');
+            }
+        }
+        
+        function toggleTheme() {
+            const currentTheme = localStorage.getItem('theme') || 'light';
+            const newTheme = currentTheme === 'light' ? 'dark' : 'light';
+            setTheme(newTheme);
+            
+            // Server'a tema ayarını kaydet
+            saveThemeToServer(newTheme === 'dark');
+        }
+        
+        async function saveThemeToServer(isDark) {
+            try {
+                const response = await fetch('/api/settings', {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        dark_mode: isDark
+                    })
+                });
+                
+                if (response.ok) {
+                    console.log('Tema ayarı kaydedildi');
+                }
+            } catch (error) {
+                console.error('Tema ayarı kaydedilemedi:', error);
+            }
+        }
+        
+        function loadTheme() {
+            const savedTheme = localStorage.getItem('theme');
+            if (savedTheme) {
+                setTheme(savedTheme);
+            }
+        }
+        
+        // Dark mode toggle event listener
+        const themeToggle = document.getElementById('theme-toggle');
+        if (themeToggle) {
+            themeToggle.addEventListener('click', toggleTheme);
+        }
+        
+        // Sayfa yüklendiğinde tema ayarını yükle
+        loadTheme();
     </script>
 </body>
 </html>

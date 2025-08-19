@@ -26,15 +26,36 @@
             --glass-border: rgba(255, 255, 255, 0.2);
             --accent-color: #667eea;
             --accent-hover: #5a67d8;
+            
+            /* Dark mode değişkenleri */
+            --bg-primary: #667eea;
+            --bg-secondary: #764ba2;
+            --card-bg: rgba(255, 255, 255, 0.15);
+            --card-border: rgba(255, 255, 255, 0.2);
+            --text-primary: white;
+            --text-secondary: rgba(255, 255, 255, 0.9);
+            --shadow: rgba(0, 0, 0, 0.1);
+        }
+
+        /* Dark mode CSS değişkenleri */
+        :root[data-theme="dark"] {
+            --bg-primary: #1a1a2e;
+            --bg-secondary: #16213e;
+            --card-bg: rgba(255, 255, 255, 0.05);
+            --card-border: rgba(255, 255, 255, 0.1);
+            --text-primary: #ffffff;
+            --text-secondary: rgba(255, 255, 255, 0.8);
+            --shadow: rgba(0, 0, 0, 0.3);
         }
 
         body {
             font-family: 'Inter', sans-serif;
             line-height: 1.7;
             color: var(--text-dark);
-            background: var(--primary-gradient);
+            background: linear-gradient(135deg, var(--bg-primary) 0%, var(--bg-secondary) 100%);
             min-height: 100vh;
             overflow-x: hidden;
+            transition: background 0.3s ease;
         }
 
         /* Modern Header */
@@ -50,12 +71,12 @@
         }
 
         .hero-content {
-            background: rgba(255, 255, 255, 0.15);
+            background: var(--card-bg);
             backdrop-filter: blur(20px);
             border-radius: 30px;
             padding: 4rem 3rem;
-            border: 1px solid var(--glass-border);
-            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.1);
+            border: 1px solid var(--card-border);
+            box-shadow: 0 25px 50px var(--shadow);
             max-width: 800px;
             transform: translateY(20px);
             animation: fadeInUp 1s ease forwards;
@@ -65,14 +86,14 @@
             font-family: 'Playfair Display', serif;
             font-size: clamp(2.5rem, 5vw, 4rem);
             font-weight: 600;
-            color: white;
+            color: var(--text-primary);
             margin-bottom: 1rem;
             text-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
         }
 
         .hero-subtitle {
             font-size: clamp(1.1rem, 2.5vw, 1.4rem);
-            color: rgba(255, 255, 255, 0.9);
+            color: var(--text-secondary);
             margin-bottom: 2.5rem;
             font-weight: 300;
             letter-spacing: 0.5px;
@@ -87,11 +108,11 @@
 
         .nav-pill {
             padding: 1rem 2rem;
-            background: rgba(255, 255, 255, 0.15);
-            color: white;
+            background: var(--card-bg);
+            color: var(--text-primary);
             text-decoration: none;
             border-radius: 50px;
-            border: 1px solid rgba(255, 255, 255, 0.2);
+            border: 1px solid var(--card-border);
             transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
             font-weight: 500;
             display: flex;
@@ -114,13 +135,13 @@
         }
 
         .section-card {
-            background: rgba(255, 255, 255, 0.12);
+            background: var(--card-bg);
             backdrop-filter: blur(20px);
             border-radius: 25px;
             padding: 3rem;
             margin-bottom: 3rem;
-            border: 1px solid rgba(255, 255, 255, 0.15);
-            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+            border: 1px solid var(--card-border);
+            box-shadow: 0 20px 40px var(--shadow);
             transition: all 0.4s ease;
         }
 
@@ -132,7 +153,7 @@
         .section-title {
             font-family: 'Playfair Display', serif;
             font-size: 2.5rem;
-            color: white;
+            color: var(--text-primary);
             margin-bottom: 1.5rem;
             text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
             text-align: center;
@@ -140,7 +161,7 @@
 
         .about-text {
             font-size: 1.1rem;
-            color: rgba(255, 255, 255, 0.9);
+            color: var(--text-secondary);
             text-align: center;
             line-height: 1.8;
             max-width: 800px;
@@ -156,10 +177,10 @@
         }
 
         .feature-card {
-            background: linear-gradient(135deg, rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0.05));
+            background: linear-gradient(135deg, var(--card-bg), rgba(255, 255, 255, 0.05));
             padding: 2.5rem;
             border-radius: 20px;
-            border: 1px solid rgba(255, 255, 255, 0.1);
+            border: 1px solid var(--card-border);
             backdrop-filter: blur(15px);
             transition: all 0.4s ease;
         }
@@ -177,14 +198,14 @@
 
         .feature-title {
             font-size: 1.5rem;
-            color: white;
+            color: var(--text-primary);
             margin-bottom: 1.5rem;
             font-weight: 600;
         }
 
         .feature-list {
             list-style: none;
-            color: rgba(255, 255, 255, 0.8);
+            color: var(--text-secondary);
         }
 
         .feature-list li {
@@ -202,36 +223,36 @@
 
         /* Dream Section */
         .dream-section {
-            background: linear-gradient(135deg, rgba(255, 255, 255, 0.15), rgba(255, 255, 255, 0.05));
+            background: linear-gradient(135deg, var(--card-bg), rgba(255, 255, 255, 0.05));
             border-radius: 25px;
             padding: 3rem;
             text-align: center;
             margin: 3rem 0;
-            border: 1px solid rgba(255, 255, 255, 0.2);
+            border: 1px solid var(--card-border);
         }
 
         .dream-title {
             font-family: 'Playfair Display', serif;
             font-size: 2rem;
-            color: white;
+            color: var(--text-primary);
             margin-bottom: 1rem;
         }
 
         .dream-text {
             font-size: 1.2rem;
-            color: rgba(255, 255, 255, 0.9);
+            color: var(--text-secondary);
             font-style: italic;
             line-height: 1.7;
         }
 
         /* Modern Contact */
         .contact-section {
-            background: rgba(255, 255, 255, 0.12);
+            background: var(--card-bg);
             backdrop-filter: blur(20px);
             border-radius: 25px;
             padding: 3rem;
             margin-top: 3rem;
-            border: 1px solid rgba(255, 255, 255, 0.15);
+            border: 1px solid var(--card-border);
         }
 
         .contact-form {
@@ -254,10 +275,10 @@
 
         .form-input {
             padding: 1rem 1.5rem;
-            border: 2px solid rgba(255, 255, 255, 0.2);
+            border: 2px solid var(--card-border);
             border-radius: 15px;
-            background: rgba(255, 255, 255, 0.1);
-            color: white;
+            background: var(--card-bg);
+            color: var(--text-primary);
             font-family: inherit;
             font-size: 1rem;
             transition: all 0.3s ease;
@@ -272,7 +293,7 @@
         }
 
         .form-input::placeholder {
-            color: rgba(255, 255, 255, 0.6);
+            color: var(--text-secondary);
         }
 
         .form-textarea {
@@ -312,15 +333,15 @@
         .social-link {
             width: 50px;
             height: 50px;
-            background: rgba(255, 255, 255, 0.1);
+            background: var(--card-bg);
             border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
-            color: white;
+            color: var(--text-primary);
             text-decoration: none;
             transition: all 0.3s ease;
-            border: 1px solid rgba(255, 255, 255, 0.2);
+            border: 1px solid var(--card-border);
             font-size: 1.2rem;
             overflow: hidden; /* Taşan içeriği gizle */
         }
@@ -434,10 +455,46 @@
             0%, 100% { transform: translateY(0px); }
             50% { transform: translateY(-10px); }
         }
+
+        /* Dark mode toggle butonu */
+        .theme-toggle {
+            position: fixed;
+            top: 2rem;
+            right: 2rem;
+            z-index: 1000;
+            background: var(--card-bg);
+            border: 1px solid var(--card-border);
+            border-radius: 50px;
+            padding: 0.8rem;
+            cursor: pointer;
+            backdrop-filter: blur(20px);
+            transition: all 0.3s ease;
+            box-shadow: 0 10px 30px var(--shadow);
+        }
+
+        .theme-toggle:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 15px 35px var(--shadow);
+        }
+
+        .theme-toggle .icon {
+            font-size: 1.2rem;
+            color: var(--text-primary);
+            transition: transform 0.3s ease;
+        }
+
+        .theme-toggle:hover .icon {
+            transform: rotate(180deg);
+        }
     </style>
 </head>
 
 <body>
+    <!-- Dark Mode Toggle -->
+    <button class="theme-toggle" id="theme-toggle" title="Tema Değiştir">
+        <span class="icon" id="theme-icon">🌙</span>
+    </button>
+
     <!-- Hero Section -->
     <section class="hero-section">
         <div class="hero-content floating">
@@ -575,6 +632,11 @@
                     // Tema rengini güncelle ve tüm siteye uygula
                     if (settings.theme_color) {
                         updateThemeColors(settings.theme_color);
+                    }
+                    
+                    // Dark mode ayarını yükle
+                    if (settings.dark_mode !== undefined) {
+                        setTheme(settings.dark_mode ? 'dark' : 'light');
                     }
                     
                     // Sosyal medya linklerini yükle
@@ -724,9 +786,69 @@
             return `#${r.toString(16).padStart(2, '0')}${g.toString(16).padStart(2, '0')}${b.toString(16).padStart(2, '0')}`;
         }
         
+        // Dark mode fonksiyonları
+        function setTheme(theme) {
+            const root = document.documentElement;
+            const themeIcon = document.getElementById('theme-icon');
+            
+            if (theme === 'dark') {
+                root.setAttribute('data-theme', 'dark');
+                themeIcon.textContent = '☀️';
+                localStorage.setItem('theme', 'dark');
+            } else {
+                root.removeAttribute('data-theme');
+                themeIcon.textContent = '🌙';
+                localStorage.setItem('theme', 'light');
+            }
+        }
+        
+        function toggleTheme() {
+            const currentTheme = localStorage.getItem('theme') || 'light';
+            const newTheme = currentTheme === 'light' ? 'dark' : 'light';
+            setTheme(newTheme);
+            
+            // Admin panelinde tema değişikliğini kaydet
+            saveThemeToServer(newTheme === 'dark');
+        }
+        
+        async function saveThemeToServer(isDark) {
+            try {
+                const response = await fetch('/api/settings', {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        dark_mode: isDark
+                    })
+                });
+                
+                if (response.ok) {
+                    console.log('Tema ayarı kaydedildi');
+                }
+            } catch (error) {
+                console.error('Tema ayarı kaydedilemedi:', error);
+            }
+        }
+        
+        // Sayfa yüklendiğinde tema ayarını yükle
+        function loadTheme() {
+            const savedTheme = localStorage.getItem('theme');
+            if (savedTheme) {
+                setTheme(savedTheme);
+            }
+        }
+        
         // Sayfa yüklendiğinde ayarları yükle
         document.addEventListener('DOMContentLoaded', function() {
             loadSiteSettings();
+            loadTheme(); // Sayfa yüklendiğinde tema ayarını yükle
+            
+            // Dark mode toggle event listener
+            const themeToggle = document.getElementById('theme-toggle');
+            if (themeToggle) {
+                themeToggle.addEventListener('click', toggleTheme);
+            }
         });
         
         // Fade-in animasyonları

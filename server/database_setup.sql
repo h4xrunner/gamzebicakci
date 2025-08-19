@@ -1,16 +1,17 @@
 -- Site ayarları tablosu
 CREATE TABLE IF NOT EXISTS site_settings (
     id SERIAL PRIMARY KEY,
-    site_title VARCHAR(255) NOT NULL DEFAULT 'Gamze Bıçakçı | Yaratıcı Portfolyo',
-    site_description TEXT DEFAULT 'Yazmaya, üretmeye ve ilham olmaya gönül vermiş bir reklamcılık öğrencisi',
-    default_author VARCHAR(255) DEFAULT 'Gamze Bıçakçı',
-    author_bio TEXT DEFAULT 'Reklamcılık öğrencisi, yaratıcı içerik üreticisi.',
-    hero_title VARCHAR(255) DEFAULT 'Gamze Bıçakçı',
-    hero_subtitle VARCHAR(255) DEFAULT 'Yaratıcı Portfolyo',
-    hero_description TEXT DEFAULT 'Yazmaya, üretmeye ve ilham olmaya gönül vermiş bir reklamcılık öğrencisi',
-    contact_email VARCHAR(255) DEFAULT 'gamze@example.com',
-            social_links JSONB DEFAULT '{"instagram": "https://instagram.com/gamzebicakci", "twitter": "https://twitter.com/gamzebicakci", "linkedin": "https://linkedin.com/in/gamzebicakci", "youtube": "", "facebook": "", "tiktok": "", "snapchat": "", "pinterest": ""}',
-    theme_color VARCHAR(7) DEFAULT '#667eea',
+    site_title VARCHAR(255),
+    site_description TEXT,
+    default_author VARCHAR(255),
+    author_bio TEXT,
+    hero_title VARCHAR(255),
+    hero_subtitle VARCHAR(255),
+    hero_description TEXT,
+    contact_email VARCHAR(255),
+    social_links JSONB,
+    theme_color VARCHAR(7),
+    dark_mode BOOLEAN DEFAULT false,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );

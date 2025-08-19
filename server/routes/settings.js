@@ -38,14 +38,15 @@ router.get('/', async (req, res) => {
           pinterest: ''
         }),
         theme_color: '#667eea',
+        dark_mode: false,
         created_at: new Date(),
         updated_at: new Date()
       };
       
       const insertResult = await pool.query(`
         INSERT INTO site_settings 
-        (site_title, site_description, default_author, author_bio, hero_title, hero_subtitle, hero_description, contact_email, social_links, theme_color, created_at, updated_at)
-        VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12)
+        (site_title, site_description, default_author, author_bio, hero_title, hero_subtitle, hero_description, contact_email, social_links, theme_color, dark_mode, created_at, updated_at)
+        VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13)
         RETURNING *
       `, [
         defaultSettings.site_title,
@@ -58,6 +59,7 @@ router.get('/', async (req, res) => {
         defaultSettings.contact_email,
         defaultSettings.social_links,
         defaultSettings.theme_color,
+        defaultSettings.dark_mode,
         defaultSettings.created_at,
         defaultSettings.updated_at
       ]);
@@ -85,7 +87,8 @@ router.put('/', async (req, res) => {
       hero_description,
       contact_email,
       social_links,
-      theme_color
+      theme_color,
+      dark_mode
     } = req.body;
 
     const result = await pool.query(`
@@ -101,7 +104,8 @@ router.put('/', async (req, res) => {
         contact_email = $8,
         social_links = $9,
         theme_color = $10,
-        updated_at = $11
+        dark_mode = $11,
+        updated_at = NOW()
       WHERE id = (SELECT id FROM site_settings ORDER BY id ASC LIMIT 1)
       RETURNING *
     `, [
@@ -115,15 +119,11 @@ router.put('/', async (req, res) => {
       contact_email,
       social_links,
       theme_color,
-      new Date()
+      dark_mode
     ]);
 
     if (result.rows.length > 0) {
-      res.json({ 
-        success: true, 
-        message: 'Ayarlar başarıyla güncellendi',
-        settings: result.rows[0]
-      });
+      res.json(result.rows[0]);
     } else {
       res.status(404).json({ error: 'Ayarlar bulunamadı' });
     }

@@ -8,34 +8,229 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <style>
-        body { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); min-height: 100vh; font-family: 'Inter', sans-serif; margin: 0; padding: 0; }
-        .home-link, .logout-link {
-            position: fixed; top: 2rem; padding: 1rem 1.5rem; background: rgba(255,255,255,0.15); border-radius: 15px; transition: all 0.3s ease; z-index: 1000; font-weight: 500; backdrop-filter: blur(20px); border: 1px solid rgba(255,255,255,0.2); color: white; text-decoration: none; box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        :root {
+            --bg-primary: #667eea;
+            --bg-secondary: #764ba2;
+            --card-bg: rgba(255, 255, 255, 0.15);
+            --card-border: rgba(255, 255, 255, 0.2);
+            --text-primary: white;
+            --text-secondary: rgba(255, 255, 255, 0.85);
+            --shadow: rgba(0, 0, 0, 0.1);
         }
-        .home-link { left: 2rem; }
-        .logout-link { right: 2rem; }
-        .home-link:hover, .logout-link:hover { background: rgba(255,255,255,0.25); transform: translateY(-3px);}
-        .admin-container { max-width: 1100px; margin: 0 auto; padding: 3rem 1rem 2rem 1rem;}
-        .admin-header { text-align: center; margin-bottom: 3rem; background: rgba(255,255,255,0.15); padding: 2rem; border-radius: 25px; backdrop-filter: blur(20px); border: 1px solid rgba(255,255,255,0.2); box-shadow: 0 20px 40px rgba(0,0,0,0.1);}
-        .admin-header h1 { font-size: 2.5rem; font-weight: 700; color: white; margin-bottom: 0.5rem;}
-        .admin-header p { font-size: 1.1rem; color: rgba(255,255,255,0.85); font-weight: 300;}
-        .tabs-nav { display: flex; justify-content: center; gap: 1rem; margin-bottom: 2.5rem; flex-wrap: wrap;}
-        .tab-btn { padding: 1rem 2rem; background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.15); color: white; border-radius: 20px; cursor: pointer; font-weight: 600; font-size: 1rem; transition: all 0.3s; margin-bottom: 0.3rem;}
-        .tab-btn.active, .tab-btn:hover { background: rgba(255,255,255,0.25); border-color: rgba(255,255,255,0.3); transform: translateY(-2px);}
-        .tab-section { display: none; animation: fadeInUp 0.5s ease forwards; }
-        .tab-section.active { display: block; }
-        .section-card { background: rgba(255,255,255,0.12); padding: 2.5rem; border-radius: 18px; backdrop-filter: blur(20px); border: 1px solid rgba(255,255,255,0.13); box-shadow: 0 10px 30px rgba(0,0,0,0.09); margin-bottom: 2rem;}
-        .post-form { display: flex; flex-direction: column; gap: 1.3rem; background: rgba(0,0,0,0.14); padding: 1.3rem 1rem; border-radius: 13px; border: 1px solid rgba(255,255,255,0.09);}
-        .form-group { display: flex; flex-direction: column; gap: 0.5rem; }
-        .form-group label { color: white; font-weight: 600; font-size: 1rem; }
-        .form-group input, .form-group select, .form-group textarea { padding: 1rem 1rem; border: 2px solid rgba(255,255,255,0.18); border-radius: 10px; background: rgba(255,255,255,0.10); color: white; font-family: inherit; font-size: 1rem; transition: all 0.3s;}
-        .form-group input::placeholder, .form-group textarea::placeholder { color: rgba(255,255,255,0.6); }
-        .form-group input:focus, .form-group textarea:focus, .form-group select:focus { outline: none; border-color: #667eea; background: rgba(255,255,255,0.15);}
-        .form-group input[type="file"] { padding: 0.5rem; background: rgba(255,255,255,0.07); color: #fff;}
-        .form-group img { max-width: 200px; border-radius: 10px; margin-top: 0.5rem; background: #fff;}
-        .btn { padding: 1rem 2.5rem; background: linear-gradient(45deg,#667eea 0%,#764ba2 100%); color: white; border: none; border-radius: 13px; cursor: pointer; font-weight: 600; font-size: 1rem; transition: all 0.3s; box-shadow: 0 8px 24px rgba(0,0,0,0.12);}
-        .btn:hover { background: linear-gradient(45deg, #7289f4 0%, #8e5bb8 100%); transform: translateY(-2px);}
-        .posts-list { margin-top: 1rem;}
+
+        :root[data-theme="dark"] {
+            --bg-primary: #1a1a2e;
+            --bg-secondary: #16213e;
+            --card-bg: rgba(255, 255, 255, 0.05);
+            --card-border: rgba(255, 255, 255, 0.1);
+            --text-primary: #ffffff;
+            --text-secondary: rgba(255, 255, 255, 0.7);
+            --shadow: rgba(0, 0, 0, 0.3);
+        }
+
+        body { 
+            background: linear-gradient(135deg, var(--bg-primary) 0%, var(--bg-secondary) 100%); 
+            min-height: 100vh; 
+            font-family: 'Inter', sans-serif; 
+            margin: 0; 
+            padding: 0; 
+            transition: background 0.3s ease;
+        }
+
+        /* Dark mode toggle butonu */
+        .theme-toggle {
+            position: fixed;
+            top: 2rem;
+            right: 8rem;
+            z-index: 1000;
+            background: var(--card-bg);
+            border: 1px solid var(--card-border);
+            border-radius: 50px;
+            padding: 0.8rem;
+            cursor: pointer;
+            backdrop-filter: blur(20px);
+            transition: all 0.3s ease;
+            box-shadow: 0 10px 30px var(--shadow);
+        }
+
+        .theme-toggle:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 15px 35px var(--shadow);
+        }
+
+        .theme-toggle .icon {
+            font-size: 1.2rem;
+            color: var(--text-primary);
+            transition: transform 0.3s ease;
+        }
+
+        .theme-toggle:hover .icon {
+            transform: rotate(180deg);
+        }
+
+        .home-link, .logout-link {
+            position: fixed; 
+            top: 2rem; 
+            padding: 1rem 1.5rem; 
+            background: var(--card-bg); 
+            border-radius: 15px; 
+            transition: all 0.3s ease; 
+            z-index: 1000; 
+            font-weight: 500; 
+            backdrop-filter: blur(20px); 
+            border: 1px solid var(--card-border); 
+            color: var(--text-primary); 
+            text-decoration: none; 
+            box-shadow: 0 10px 30px var(--shadow);
+        }
+
+        .admin-header { 
+            text-align: center; 
+            margin-bottom: 3rem; 
+            background: var(--card-bg); 
+            padding: 2rem; 
+            border-radius: 25px; 
+            backdrop-filter: blur(20px); 
+            border: 1px solid var(--card-border); 
+            box-shadow: 0 20px 40px var(--shadow);
+        }
+
+        .admin-header h1 { 
+            font-size: 2.5rem; 
+            font-weight: 700; 
+            color: var(--text-primary); 
+            margin-bottom: 0.5rem;
+        }
+
+        .admin-header p { 
+            font-size: 1.1rem; 
+            color: var(--text-secondary); 
+            font-weight: 300;
+        }
+
+        .tabs-nav { 
+            display: flex; 
+            justify-content: center; 
+            gap: 1rem; 
+            margin-bottom: 2.5rem; 
+            flex-wrap: wrap;
+        }
+
+        .tab-btn { 
+            padding: 1rem 2rem; 
+            background: var(--card-bg); 
+            border: 1px solid var(--card-border); 
+            color: var(--text-primary); 
+            border-radius: 20px; 
+            cursor: pointer; 
+            font-weight: 600; 
+            font-size: 1rem; 
+            transition: all 0.3s; 
+            margin-bottom: 0.3rem;
+        }
+
+        .tab-btn.active, .tab-btn:hover { 
+            background: var(--card-bg); 
+            border-color: var(--card-border); 
+            transform: translateY(-2px);
+        }
+
+        .tab-section { 
+            display: none; 
+            animation: fadeInUp 0.5s ease forwards; 
+        }
+
+        .tab-section.active { 
+            display: block; 
+        }
+
+        .section-card { 
+            background: var(--card-bg); 
+            padding: 2.5rem; 
+            border-radius: 18px; 
+            backdrop-filter: blur(20px); 
+            border: 1px solid var(--card-border); 
+            box-shadow: 0 10px 30px var(--shadow); 
+            margin-bottom: 2rem;
+        }
+
+        .post-form { 
+            display: flex; 
+            flex-direction: column; 
+            gap: 1.3rem; 
+            background: var(--card-bg); 
+            padding: 1.3rem 1rem; 
+            border-radius: 13px; 
+            border: 1px solid var(--card-border);
+        }
+
+        .form-group { 
+            display: flex; 
+            flex-direction: column; 
+            gap: 0.5rem; 
+        }
+
+        .form-group label { 
+            color: var(--text-primary); 
+            font-weight: 600; 
+            font-size: 1rem; 
+        }
+
+        .form-group input, .form-group select, .form-group textarea { 
+            padding: 1rem 1rem; 
+            border: 2px solid var(--card-border); 
+            border-radius: 10px; 
+            background: var(--card-bg); 
+            color: var(--text-primary); 
+            font-family: inherit; 
+            font-size: 1rem; 
+            transition: all 0.3s;
+        }
+
+        .form-group input::placeholder, .form-group textarea::placeholder { 
+            color: var(--text-secondary); 
+        }
+
+        .form-group input:focus, .form-group textarea:focus, .form-group select:focus { 
+            outline: none; 
+            border-color: #667eea; 
+            background: var(--card-bg);
+        }
+
+        .form-group input[type="file"] { 
+            padding: 0.5rem; 
+            background: var(--card-bg); 
+            color: var(--text-primary);
+        }
+
+        .form-group img { 
+            max-width: 200px; 
+            border-radius: 10px; 
+            margin-top: 0.5rem; 
+            background: #fff;
+        }
+
+        .btn { 
+            padding: 1rem 2.5rem; 
+            background: linear-gradient(45deg,#667eea 0%,#764ba2 100%); 
+            color: white; 
+            border: none; 
+            border-radius: 13px; 
+            cursor: pointer; 
+            font-weight: 600; 
+            font-size: 1rem; 
+            transition: all 0.3s; 
+            box-shadow: 0 8px 24px var(--shadow);
+        }
+
+        .btn:hover { 
+            background: linear-gradient(45deg, #7289f4 0%, #8e5bb8 100%); 
+            transform: translateY(-2px);
+        }
+
+        .posts-list { 
+            margin-top: 1rem;
+        }
 
         /* Yorum yönetimi stilleri */
         .comments-list {
@@ -46,8 +241,8 @@
         }
 
         .comment-item {
-            background: rgba(255, 255, 255, 0.09);
-            border: 1px solid rgba(255, 255, 255, 0.1);
+            background: var(--card-bg);
+            border: 1px solid var(--card-border);
             border-radius: 12px;
             padding: 1.5rem;
             backdrop-filter: blur(10px);
@@ -69,12 +264,12 @@
         }
 
         .comment-author strong {
-            color: white;
+            color: var(--text-primary);
             font-size: 1.1rem;
         }
 
         .comment-author small {
-            color: rgba(255, 255, 255, 0.7);
+            color: var(--text-secondary);
             font-size: 0.9rem;
         }
 
@@ -93,16 +288,16 @@
         }
 
         .date {
-            color: rgba(255, 255, 255, 0.6);
+            color: var(--text-secondary);
             font-size: 0.8rem;
         }
 
         .comment-content {
-            color: rgba(255, 255, 255, 0.9);
+            color: var(--text-primary);
             line-height: 1.6;
             margin-bottom: 1rem;
             padding: 1rem;
-            background: rgba(255, 255, 255, 0.03);
+            background: var(--card-bg);
             border-radius: 10px;
             border-left: 3px solid #4ecdc4;
         }
@@ -131,23 +326,81 @@
         }
 
         .no-comments {
-            color: rgba(255, 255, 255, 0.7);
+            color: var(--text-secondary);
             text-align: center;
             padding: 2rem;
             font-style: italic;
         }
-        .post-item { background: rgba(255,255,255,0.09); border-radius: 12px; padding: 1.1rem 1rem; margin-bottom: 1.2rem; border-left: 4px solid #667eea; display: flex; gap: 1.2rem; align-items: flex-start; position: relative;}
-        .post-image-thumb { width: 84px; height: 60px; object-fit: cover; border-radius: 7px; margin-right: 0.7rem; background: #fff;}
-        .post-meta { font-size: 0.91rem; color: rgba(255,255,255,0.7); margin-top: 0.2rem;}
-        .post-title { font-weight: 700; color: white;}
-        .post-actions { margin-top: 0.8rem; display: flex; gap: 1rem;}
-        .btn-small { padding: 0.5rem 1.1rem; font-size: 0.89rem; border-radius: 7px; background: rgba(255,255,255,0.11); border: 1px solid rgba(255,255,255,0.19); color: white; cursor: pointer; transition: all 0.2s; font-weight: 500;}
-        .btn-small:hover { background: rgba(255,255,255,0.23); color: #fff;}
-        .btn-danger { background: rgba(255, 64, 64, 0.13); border-color: rgba(255, 64, 64, 0.25);}
-        .btn-danger:hover { background: rgba(255, 64, 64, 0.22);}
-        .success-message, .error-message { padding: 1rem; border-radius: 10px; text-align: center; margin-bottom: 1rem; font-weight: 600;}
-        .success-message { background: linear-gradient(45deg, rgba(46,213,115,0.15),rgba(0,206,201,0.15)); color: #fff;}
-        .error-message { background: linear-gradient(45deg, rgba(255,107,107,0.15),rgba(238,82,83,0.15)); color: #fff;}
+        .post-item { 
+            background: var(--card-bg); 
+            border-radius: 12px; 
+            padding: 1.1rem 1rem; 
+            margin-bottom: 1.2rem; 
+            border-left: 4px solid #667eea; 
+            display: flex; 
+            gap: 1.2rem; 
+            align-items: flex-start; 
+            position: relative;
+        }
+        .post-image-thumb { 
+            width: 84px; 
+            height: 60px; 
+            object-fit: cover; 
+            border-radius: 7px; 
+            margin-right: 0.7rem; 
+            background: #fff;
+        }
+        .post-meta { 
+            font-size: 0.91rem; 
+            color: var(--text-secondary); 
+            margin-top: 0.2rem;
+        }
+        .post-title { 
+            font-weight: 700; 
+            color: var(--text-primary);
+        }
+        .post-actions { 
+            margin-top: 0.8rem; 
+            display: flex; 
+            gap: 1rem;
+        }
+        .btn-small { 
+            padding: 0.5rem 1.1rem; 
+            font-size: 0.89rem; 
+            border-radius: 7px; 
+            background: var(--card-bg); 
+            border: 1px solid var(--card-border); 
+            color: var(--text-primary); 
+            cursor: pointer; 
+            transition: all 0.2s; 
+            font-weight: 500;
+        }
+        .btn-small:hover { 
+            background: var(--card-bg); 
+            color: #fff;
+        }
+        .btn-danger { 
+            background: rgba(255, 64, 64, 0.13); 
+            border-color: rgba(255, 64, 64, 0.25);
+        }
+        .btn-danger:hover { 
+            background: rgba(255, 64, 64, 0.22);
+        }
+        .success-message, .error-message { 
+            padding: 1rem; 
+            border-radius: 10px; 
+            text-align: center; 
+            margin-bottom: 1rem; 
+            font-weight: 600;
+        }
+        .success-message { 
+            background: linear-gradient(45deg, rgba(46,213,115,0.15),rgba(0,206,201,0.15)); 
+            color: #fff;
+        }
+        .error-message { 
+            background: linear-gradient(45deg, rgba(255,107,107,0.15),rgba(238,82,83,0.15)); 
+            color: #fff;
+        }
         
         /* Düzeltilmiş Modal Stilleri */
         #edit-modal { 
@@ -286,8 +539,14 @@
     </style>
 </head>
 <body>
-<a href="/" class="home-link">← Ana Sayfa</a>
-<a href="/admin/logout" class="logout-link">🚪 Çıkış Yap</a>
+    <!-- Dark Mode Toggle -->
+    <button class="theme-toggle" id="theme-toggle" title="Tema Değiştir">
+        <span class="icon" id="theme-icon">🌙</span>
+    </button>
+
+    <!-- Navigation Links -->
+    <a href="/" class="home-link">🏠 Ana Sayfa</a>
+    <a href="/admin/logout" class="logout-link">🚪 Çıkış</a>
 <div class="admin-container">
     <div class="admin-header">
         <h1>⚙️ Admin Panel</h1>
@@ -513,6 +772,13 @@
                 <div class="form-group">
                     <label for="theme-color">🎨 Tema Rengi</label>
                     <input type="color" id="theme-color" name="theme_color" value="#667eea">
+                </div>
+                <div class="form-group">
+                    <label><input type="checkbox" id="dark-mode" name="dark_mode"> 🌙 Dark Mode</label>
+                </div>
+                <div class="form-group">
+                    <label for="contact-email">📧 İletişim E-posta</label>
+                    <input type="email" id="contact-email" name="contact_email" placeholder="ornek@email.com">
                 </div>
                 
                 <div class="form-group" style="margin-top: 2rem;">
@@ -1049,7 +1315,7 @@
         
         try {
             const formData = new FormData(document.getElementById('settings-form'));
-            const settings = {
+            const settingsData = {
                 site_title: formData.get('site_title'),
                 site_description: formData.get('site_description'),
                 default_author: formData.get('default_author'),
@@ -1068,13 +1334,14 @@
                     snapchat: formData.get('snapchat_link'),
                     pinterest: formData.get('pinterest_link')
                 }),
-                theme_color: formData.get('theme_color')
+                theme_color: formData.get('theme_color'),
+                dark_mode: document.getElementById('dark-mode').checked // Checkbox'ın checked durumunu al
             };
             
             const response = await fetch('/api/settings', {
                 method: 'PUT',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(settings)
+                body: JSON.stringify(settingsData)
             });
             
             if (response.ok) {
@@ -1082,7 +1349,7 @@
                 showMessage('✅ Ayarlar başarıyla kaydedildi!');
                 
                 // Yeni yazı formundaki yazar alanını güncelle
-                document.getElementById('author').value = settings.default_author;
+                document.getElementById('author').value = settingsData.default_author;
                 
                 // Ana sayfa ve blog sayfasını yenile (eğer açıksa)
                 if (window.opener && !window.opener.closed) {
@@ -1098,10 +1365,10 @@
                     windows.forEach(win => {
                         try {
                             if (win && !win.closed && win.location.pathname.includes('blog')) {
-                                console.log('📨 Blog sayfasına tema mesajı gönderiliyor:', settings.theme_color);
+                                console.log('📨 Blog sayfasına tema mesajı gönderiliyor:', settingsData.theme_color);
                                 win.postMessage({ 
                                     type: 'theme_updated', 
-                                    color: settings.theme_color,
+                                    color: settingsData.theme_color,
                                     timestamp: Date.now()
                                 }, '*');
                             }
@@ -1112,7 +1379,7 @@
                     
                     // LocalStorage ile de tema güncelleme bilgisi gönder
                     localStorage.setItem('theme_updated', JSON.stringify({
-                        color: settings.theme_color,
+                        color: settingsData.theme_color,
                         timestamp: Date.now()
                     }));
                     
@@ -1147,6 +1414,7 @@
                 document.getElementById('hero-description').value = settings.hero_description || '';
                 document.getElementById('contact-email').value = settings.contact_email || '';
                 document.getElementById('theme-color').value = settings.theme_color || '#667eea';
+                document.getElementById('dark-mode').checked = settings.dark_mode || false; // Check if dark mode is enabled
                 
                 // Sosyal medya linklerini doldur
                 if (settings.social_links) {
@@ -1196,9 +1464,68 @@
         saveSettings();
     });
     
+    // Dark mode fonksiyonları
+    function setTheme(theme) {
+        const root = document.documentElement;
+        const themeIcon = document.getElementById('theme-icon');
+        
+        if (theme === 'dark') {
+            root.setAttribute('data-theme', 'dark');
+            themeIcon.textContent = '☀️';
+            localStorage.setItem('theme', 'dark');
+        } else {
+            root.removeAttribute('data-theme');
+            themeIcon.textContent = '🌙';
+            localStorage.setItem('theme', 'light');
+        }
+    }
+    
+    function toggleTheme() {
+        const currentTheme = localStorage.getItem('theme') || 'light';
+        const newTheme = currentTheme === 'light' ? 'dark' : 'light';
+        setTheme(newTheme);
+        
+        // Server'a tema ayarını kaydet
+        saveThemeToServer(newTheme === 'dark');
+    }
+    
+    async function saveThemeToServer(isDark) {
+        try {
+            const response = await fetch('/api/settings', {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    dark_mode: isDark
+                })
+            });
+            
+            if (response.ok) {
+                console.log('Tema ayarı kaydedildi');
+            }
+        } catch (error) {
+            console.error('Tema ayarı kaydedilemedi:', error);
+        }
+    }
+    
+    function loadTheme() {
+        const savedTheme = localStorage.getItem('theme');
+        if (savedTheme) {
+            setTheme(savedTheme);
+        }
+    }
+    
     document.addEventListener('DOMContentLoaded', function() {
         loadDashboard(); 
         loadSettings();
+        loadTheme(); // Tema ayarını yükle
+        
+        // Dark mode toggle event listener
+        const themeToggle = document.getElementById('theme-toggle');
+        if (themeToggle) {
+            themeToggle.addEventListener('click', toggleTheme);
+        }
     });
 </script>
 </body>
