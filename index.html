@@ -870,10 +870,28 @@
                 root.setAttribute('data-theme', 'dark');
                 themeIcon.textContent = '☀️';
                 localStorage.setItem('theme', 'dark');
+                
+                // Dark mode CSS değişkenlerini manuel olarak ayarla
+                root.style.setProperty('--bg-primary', '#1a1a2e');
+                root.style.setProperty('--bg-secondary', '#16213e');
+                root.style.setProperty('--card-bg', 'rgba(255, 255, 255, 0.05)');
+                root.style.setProperty('--card-border', 'rgba(255, 255, 255, 0.1)');
+                root.style.setProperty('--text-primary', '#ffffff');
+                root.style.setProperty('--text-secondary', 'rgba(255, 255, 255, 0.8)');
+                root.style.setProperty('--shadow', 'rgba(0, 0, 0, 0.3)');
             } else {
                 root.removeAttribute('data-theme');
                 themeIcon.textContent = '🌙';
                 localStorage.setItem('theme', 'light');
+                
+                // Light mode CSS değişkenlerini manuel olarak ayarla
+                root.style.setProperty('--bg-primary', '#667eea');
+                root.style.setProperty('--bg-secondary', '#764ba2');
+                root.style.setProperty('--card-bg', 'rgba(255, 255, 255, 0.15)');
+                root.style.setProperty('--card-border', 'rgba(255, 255, 255, 0.2)');
+                root.style.setProperty('--text-primary', 'white');
+                root.style.setProperty('--text-secondary', 'rgba(255, 255, 255, 0.9)');
+                root.style.setProperty('--shadow', 'rgba(0, 0, 0, 0.1)');
             }
         }
         

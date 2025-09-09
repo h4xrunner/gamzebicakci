@@ -141,7 +141,9 @@
             object-fit: cover;
             border-radius: 20px 20px 0 0;
             margin-bottom: 0;
-            display: block;
+            display: block !important;
+            opacity: 1 !important;
+            visibility: visible !important;
         }
         
         .post-content-wrapper {
@@ -412,13 +414,10 @@
         }
         
         /* Image lazy loading effect */
-        .post-image {
-            transition: opacity 0.3s ease;
-            background: linear-gradient(135deg, rgba(255,255,255,0.1), rgba(255,255,255,0.05));
-        }
-        
         .post-image.loading {
             opacity: 0.7;
+            transition: opacity 0.3s ease;
+            background: linear-gradient(135deg, rgba(255,255,255,0.1), rgba(255,255,255,0.05));
         }
 
         /* Yorum sistemi stilleri */
@@ -1122,7 +1121,7 @@
                              alt="${post.title}" 
                              class="post-image loading"
                              onload="this.classList.remove('loading')"
-                             onerror="this.style.display='none'">
+                             onerror="this.src='data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAwIiBoZWlnaHQ9IjI1MCIgdmlld0JveD0iMCAwIDQwMCAyNTAiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxyZWN0IHdpZHRoPSI0MDAiIGhlaWdodD0iMjUwIiBmaWxsPSJyZ2JhKDI1NSwyNTUsMjU1LDAuMSkiLz4KPHRleHQgeD0iMjAwIiB5PSIxMjUiIGZvbnQtZmFtaWx5PSJBcmlhbCwgc2Fucy1zZXJpZiIgZm9udC1zaXplPSIxNCIgZmlsbD0icmdiYSgyNTUsMjU1LDI1NSwwLjUpIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBkeT0iLjNlbSI+UmVzaW0geXVrbGVuZW1lZGk8L3RleHQ+Cjwvc3ZnPg=='; this.classList.remove('loading');">
                     ` : ''}
                     
                     <div class="post-content-wrapper">
@@ -1457,10 +1456,30 @@
                 root.setAttribute('data-theme', 'dark');
                 themeIcon.textContent = '☀️';
                 localStorage.setItem('theme', 'dark');
+                
+                // Dark mode CSS değişkenlerini manuel olarak ayarla
+                root.style.setProperty('--primary-gradient', 'linear-gradient(135deg, #1a1a2e 0%, #16213e 100%)');
+                root.style.setProperty('--accent-color', '#4ecdc4');
+                root.style.setProperty('--accent-hover', '#45b7d1');
+                root.style.setProperty('--glass-bg', 'rgba(255, 255, 255, 0.05)');
+                root.style.setProperty('--glass-border', 'rgba(255, 255, 255, 0.1)');
+                root.style.setProperty('--text-primary', '#ffffff');
+                root.style.setProperty('--text-secondary', 'rgba(255, 255, 255, 0.8)');
+                root.style.setProperty('--shadow', 'rgba(0, 0, 0, 0.3)');
             } else {
                 root.removeAttribute('data-theme');
                 themeIcon.textContent = '🌙';
                 localStorage.setItem('theme', 'light');
+                
+                // Light mode CSS değişkenlerini manuel olarak ayarla
+                root.style.setProperty('--primary-gradient', 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)');
+                root.style.setProperty('--accent-color', '#667eea');
+                root.style.setProperty('--accent-hover', '#5a67d8');
+                root.style.setProperty('--glass-bg', 'rgba(255, 255, 255, 0.15)');
+                root.style.setProperty('--glass-border', 'rgba(255, 255, 255, 0.2)');
+                root.style.setProperty('--text-primary', 'white');
+                root.style.setProperty('--text-secondary', 'rgba(255, 255, 255, 0.9)');
+                root.style.setProperty('--shadow', 'rgba(0, 0, 0, 0.1)');
             }
         }
         
