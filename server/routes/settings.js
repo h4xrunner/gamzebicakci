@@ -102,30 +102,35 @@ router.get('/', async (req, res) => {
 // Ayarları güncelle
 router.put('/', async (req, res) => {
   try {
-    const {
-      site_title,
-      site_description,
-      default_author,
-      author_bio,
-      hero_title,
-      hero_subtitle,
-      hero_description,
-      contact_email,
-      social_links,
-      theme_color,
-      dark_mode,
-      about_title,
-      about_content,
-      hobbies_title,
-      hobbies_content,
-      courses_title,
-      courses_content,
-      dream_title,
-      dream_content,
-      dream_video_url,
-      contact_title,
-      contact_description
-    } = req.body;
+    // Önce mevcut ayarları al
+    const currentSettings = await pool.query('SELECT * FROM site_settings ORDER BY id ASC LIMIT 1');
+    const current = currentSettings.rows[0];
+
+    // Gönderilen verilerle mevcut verileri birleştir
+    const updateData = {
+      site_title: req.body.site_title !== undefined ? req.body.site_title : current.site_title,
+      site_description: req.body.site_description !== undefined ? req.body.site_description : current.site_description,
+      default_author: req.body.default_author !== undefined ? req.body.default_author : current.default_author,
+      author_bio: req.body.author_bio !== undefined ? req.body.author_bio : current.author_bio,
+      hero_title: req.body.hero_title !== undefined ? req.body.hero_title : current.hero_title,
+      hero_subtitle: req.body.hero_subtitle !== undefined ? req.body.hero_subtitle : current.hero_subtitle,
+      hero_description: req.body.hero_description !== undefined ? req.body.hero_description : current.hero_description,
+      contact_email: req.body.contact_email !== undefined ? req.body.contact_email : current.contact_email,
+      social_links: req.body.social_links !== undefined ? req.body.social_links : current.social_links,
+      theme_color: req.body.theme_color !== undefined ? req.body.theme_color : current.theme_color,
+      dark_mode: req.body.dark_mode !== undefined ? req.body.dark_mode : current.dark_mode,
+      about_title: req.body.about_title !== undefined ? req.body.about_title : current.about_title,
+      about_content: req.body.about_content !== undefined ? req.body.about_content : current.about_content,
+      hobbies_title: req.body.hobbies_title !== undefined ? req.body.hobbies_title : current.hobbies_title,
+      hobbies_content: req.body.hobbies_content !== undefined ? req.body.hobbies_content : current.hobbies_content,
+      courses_title: req.body.courses_title !== undefined ? req.body.courses_title : current.courses_title,
+      courses_content: req.body.courses_content !== undefined ? req.body.courses_content : current.courses_content,
+      dream_title: req.body.dream_title !== undefined ? req.body.dream_title : current.dream_title,
+      dream_content: req.body.dream_content !== undefined ? req.body.dream_content : current.dream_content,
+      dream_video_url: req.body.dream_video_url !== undefined ? req.body.dream_video_url : current.dream_video_url,
+      contact_title: req.body.contact_title !== undefined ? req.body.contact_title : current.contact_title,
+      contact_description: req.body.contact_description !== undefined ? req.body.contact_description : current.contact_description
+    };
 
     const result = await pool.query(`
       UPDATE site_settings 
@@ -156,28 +161,28 @@ router.put('/', async (req, res) => {
       WHERE id = (SELECT id FROM site_settings ORDER BY id ASC LIMIT 1)
       RETURNING *
     `, [
-      site_title,
-      site_description,
-      default_author,
-      author_bio,
-      hero_title,
-      hero_subtitle,
-      hero_description,
-      contact_email,
-      social_links,
-      theme_color,
-      dark_mode,
-      about_title,
-      about_content,
-      hobbies_title,
-      hobbies_content,
-      courses_title,
-      courses_content,
-      dream_title,
-      dream_content,
-      dream_video_url,
-      contact_title,
-      contact_description
+      updateData.site_title,
+      updateData.site_description,
+      updateData.default_author,
+      updateData.author_bio,
+      updateData.hero_title,
+      updateData.hero_subtitle,
+      updateData.hero_description,
+      updateData.contact_email,
+      updateData.social_links,
+      updateData.theme_color,
+      updateData.dark_mode,
+      updateData.about_title,
+      updateData.about_content,
+      updateData.hobbies_title,
+      updateData.hobbies_content,
+      updateData.courses_title,
+      updateData.courses_content,
+      updateData.dream_title,
+      updateData.dream_content,
+      updateData.dream_video_url,
+      updateData.contact_title,
+      updateData.contact_description
     ]);
 
     if (result.rows.length > 0) {
