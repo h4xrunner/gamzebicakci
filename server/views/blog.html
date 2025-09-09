@@ -1293,6 +1293,7 @@
         // Sayfa yüklendiğinde ayarları yükle
         document.addEventListener('DOMContentLoaded', function() {
             loadSiteSettings();
+            loadTheme(); // Tema ayarını yükle
             
             // Tema değişikliklerini dinle (admin panelinden gelen)
             window.addEventListener('message', function(e) {
@@ -1457,29 +1458,47 @@
                 themeIcon.textContent = '☀️';
                 localStorage.setItem('theme', 'dark');
                 
-                // Dark mode CSS değişkenlerini manuel olarak ayarla
-                root.style.setProperty('--primary-gradient', 'linear-gradient(135deg, #1a1a2e 0%, #16213e 100%)');
-                root.style.setProperty('--accent-color', '#4ecdc4');
-                root.style.setProperty('--accent-hover', '#45b7d1');
-                root.style.setProperty('--glass-bg', 'rgba(255, 255, 255, 0.05)');
-                root.style.setProperty('--glass-border', 'rgba(255, 255, 255, 0.1)');
-                root.style.setProperty('--text-primary', '#ffffff');
-                root.style.setProperty('--text-secondary', 'rgba(255, 255, 255, 0.8)');
-                root.style.setProperty('--shadow', 'rgba(0, 0, 0, 0.3)');
+                // Dark mode CSS değişkenlerini !important ile zorla ayarla
+                root.style.setProperty('--primary-gradient', 'linear-gradient(135deg, #1a1a2e 0%, #16213e 100%)', 'important');
+                root.style.setProperty('--accent-color', '#4ecdc4', 'important');
+                root.style.setProperty('--accent-hover', '#45b7d1', 'important');
+                root.style.setProperty('--glass-bg', 'rgba(255, 255, 255, 0.05)', 'important');
+                root.style.setProperty('--glass-border', 'rgba(255, 255, 255, 0.1)', 'important');
+                root.style.setProperty('--text-primary', '#ffffff', 'important');
+                root.style.setProperty('--text-secondary', 'rgba(255, 255, 255, 0.8)', 'important');
+                root.style.setProperty('--shadow', 'rgba(0, 0, 0, 0.3)', 'important');
+                
+                // Body background'ını zorla güncelle
+                document.body.style.setProperty('background', 'linear-gradient(135deg, #1a1a2e 0%, #16213e 100%)', 'important');
+                
+                // Tüm blog elementlerini de güncelle
+                document.querySelectorAll('.blog-header, .blog-post, .guest-post-form, .comment, .comment-form').forEach(el => {
+                    el.style.setProperty('background', 'rgba(255, 255, 255, 0.05)', 'important');
+                    el.style.setProperty('border-color', 'rgba(255, 255, 255, 0.1)', 'important');
+                });
             } else {
                 root.removeAttribute('data-theme');
                 themeIcon.textContent = '🌙';
                 localStorage.setItem('theme', 'light');
                 
-                // Light mode CSS değişkenlerini manuel olarak ayarla
-                root.style.setProperty('--primary-gradient', 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)');
-                root.style.setProperty('--accent-color', '#667eea');
-                root.style.setProperty('--accent-hover', '#5a67d8');
-                root.style.setProperty('--glass-bg', 'rgba(255, 255, 255, 0.15)');
-                root.style.setProperty('--glass-border', 'rgba(255, 255, 255, 0.2)');
-                root.style.setProperty('--text-primary', 'white');
-                root.style.setProperty('--text-secondary', 'rgba(255, 255, 255, 0.9)');
-                root.style.setProperty('--shadow', 'rgba(0, 0, 0, 0.1)');
+                // Light mode CSS değişkenlerini !important ile zorla ayarla
+                root.style.setProperty('--primary-gradient', 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)', 'important');
+                root.style.setProperty('--accent-color', '#667eea', 'important');
+                root.style.setProperty('--accent-hover', '#5a67d8', 'important');
+                root.style.setProperty('--glass-bg', 'rgba(255, 255, 255, 0.15)', 'important');
+                root.style.setProperty('--glass-border', 'rgba(255, 255, 255, 0.2)', 'important');
+                root.style.setProperty('--text-primary', 'white', 'important');
+                root.style.setProperty('--text-secondary', 'rgba(255, 255, 255, 0.9)', 'important');
+                root.style.setProperty('--shadow', 'rgba(0, 0, 0, 0.1)', 'important');
+                
+                // Body background'ını zorla güncelle
+                document.body.style.setProperty('background', 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)', 'important');
+                
+                // Tüm blog elementlerini de güncelle
+                document.querySelectorAll('.blog-header, .blog-post, .guest-post-form, .comment, .comment-form').forEach(el => {
+                    el.style.setProperty('background', 'rgba(255, 255, 255, 0.15)', 'important');
+                    el.style.setProperty('border-color', 'rgba(255, 255, 255, 0.2)', 'important');
+                });
             }
         }
         
@@ -1525,8 +1544,6 @@
             themeToggle.addEventListener('click', toggleTheme);
         }
         
-        // Sayfa yüklendiğinde tema ayarını yükle
-        loadTheme();
     </script>
 </body>
 </html>

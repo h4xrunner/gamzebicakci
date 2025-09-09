@@ -68,9 +68,10 @@
             transform: rotate(180deg);
         }
 
-        .home-link, .logout-link {
+        .home-link {
             position: fixed; 
             top: 2rem; 
+            left: 2rem;
             padding: 1rem 1.5rem; 
             background: var(--card-bg); 
             border-radius: 15px; 
@@ -82,6 +83,26 @@
             color: var(--text-primary); 
             text-decoration: none; 
             box-shadow: 0 10px 30px var(--shadow);
+        }
+
+        .logout-link {
+            position: fixed;
+            bottom: 2rem;
+            left: 50%;
+            transform: translateX(-50%);
+            padding: 1rem 2rem;
+            background: var(--card-bg);
+            border: 1px solid var(--card-border);
+            border-radius: 25px;
+            color: var(--text-primary);
+            text-decoration: none;
+            transition: all 0.3s ease;
+            z-index: 1000;
+            font-weight: 500;
+            backdrop-filter: blur(20px);
+            box-shadow: 0 10px 30px var(--shadow);
+            text-align: center;
+            min-width: 120px;
         }
 
         .admin-header { 
@@ -528,8 +549,8 @@
         @media (max-width: 768px) {
             .admin-header h1 { font-size: 1.4rem;}
             .admin-container { padding: 1rem 0.1rem;}
-            .home-link, .logout-link { top: 1rem; left: 1rem; right: auto; padding: 0.7rem 1.1rem;}
-            .logout-link { left: auto; right: 1rem;}
+            .home-link { top: 1rem; left: 1rem; padding: 0.7rem 1.1rem;}
+            .logout-link { bottom: 1rem; left: 50%; transform: translateX(-50%); padding: 0.8rem 1.5rem;}
             #edit-modal .edit-modal-content {
                 width: 95vw;
                 padding: 1.5rem 1rem;
