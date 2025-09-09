@@ -767,6 +767,57 @@
                     <input type="url" id="pinterest-link" name="pinterest_link" placeholder="Pinterest profil linki...">
                 </div>
                 
+                <h3 style="color: white; margin: 2rem 0 1rem 0; border-bottom: 1px solid rgba(255,255,255,0.2); padding-bottom: 0.5rem;">📄 Ana Sayfa İçerikleri</h3>
+                
+                <div class="form-group">
+                    <label for="about-title">👤 Hakkında Başlığı</label>
+                    <input type="text" id="about-title" name="about_title" placeholder="Hakkında bölümü başlığı...">
+                </div>
+                <div class="form-group">
+                    <label for="about-content">📝 Hakkında İçeriği</label>
+                    <textarea id="about-content" name="about_content" style="min-height: 150px;" placeholder="Hakkında bölümü içeriği..."></textarea>
+                </div>
+                
+                <div class="form-group">
+                    <label for="hobbies-title">💝 Hobiler Başlığı</label>
+                    <input type="text" id="hobbies-title" name="hobbies_title" placeholder="Hobiler bölümü başlığı...">
+                </div>
+                <div class="form-group">
+                    <label for="hobbies-content">🎯 Hobiler İçeriği (Her satır bir hobi)</label>
+                    <textarea id="hobbies-content" name="hobbies_content" style="min-height: 150px;" placeholder="Her satıra bir hobi yazın..."></textarea>
+                </div>
+                
+                <div class="form-group">
+                    <label for="courses-title">📚 Dersler Başlığı</label>
+                    <input type="text" id="courses-title" name="courses_title" placeholder="Dersler bölümü başlığı...">
+                </div>
+                <div class="form-group">
+                    <label for="courses-content">📖 Dersler İçeriği (Her satır bir ders grubu)</label>
+                    <textarea id="courses-content" name="courses_content" style="min-height: 100px;" placeholder="Her satıra bir ders grubu yazın..."></textarea>
+                </div>
+                
+                <div class="form-group">
+                    <label for="dream-title">🌟 Hayal Başlığı</label>
+                    <input type="text" id="dream-title" name="dream_title" placeholder="Hayal bölümü başlığı...">
+                </div>
+                <div class="form-group">
+                    <label for="dream-content">💭 Hayal İçeriği</label>
+                    <input type="text" id="dream-content" name="dream_content" placeholder="Hayal bölümü içeriği...">
+                </div>
+                <div class="form-group">
+                    <label for="dream-video-url">🎬 Video URL</label>
+                    <input type="url" id="dream-video-url" name="dream_video_url" placeholder="YouTube video linki...">
+                </div>
+                
+                <div class="form-group">
+                    <label for="contact-title">💌 İletişim Başlığı</label>
+                    <input type="text" id="contact-title" name="contact_title" placeholder="İletişim bölümü başlığı...">
+                </div>
+                <div class="form-group">
+                    <label for="contact-description">📧 İletişim Açıklaması</label>
+                    <textarea id="contact-description" name="contact_description" style="min-height: 100px;" placeholder="İletişim bölümü açıklaması..."></textarea>
+                </div>
+                
                 <h3 style="color: white; margin: 2rem 0 1rem 0; border-bottom: 1px solid rgba(255,255,255,0.2); padding-bottom: 0.5rem;">🎨 Görsel Ayarlar</h3>
                 
                 <div class="form-group">
@@ -775,10 +826,6 @@
                 </div>
                 <div class="form-group">
                     <label><input type="checkbox" id="dark-mode" name="dark_mode"> 🌙 Dark Mode</label>
-                </div>
-                <div class="form-group">
-                    <label for="contact-email">📧 İletişim E-posta</label>
-                    <input type="email" id="contact-email" name="contact_email" placeholder="ornek@email.com">
                 </div>
                 
                 <div class="form-group" style="margin-top: 2rem;">
@@ -1335,7 +1382,20 @@
                     pinterest: formData.get('pinterest_link')
                 }),
                 theme_color: formData.get('theme_color'),
-                dark_mode: document.getElementById('dark-mode').checked // Checkbox'ın checked durumunu al
+                dark_mode: document.getElementById('dark-mode').checked,
+                
+                // Ana sayfa içerik alanları
+                about_title: formData.get('about_title'),
+                about_content: formData.get('about_content'),
+                hobbies_title: formData.get('hobbies_title'),
+                hobbies_content: formData.get('hobbies_content'),
+                courses_title: formData.get('courses_title'),
+                courses_content: formData.get('courses_content'),
+                dream_title: formData.get('dream_title'),
+                dream_content: formData.get('dream_content'),
+                dream_video_url: formData.get('dream_video_url'),
+                contact_title: formData.get('contact_title'),
+                contact_description: formData.get('contact_description')
             };
             
             const response = await fetch('/api/settings', {
@@ -1414,7 +1474,20 @@
                 document.getElementById('hero-description').value = settings.hero_description || '';
                 document.getElementById('contact-email').value = settings.contact_email || '';
                 document.getElementById('theme-color').value = settings.theme_color || '#667eea';
-                document.getElementById('dark-mode').checked = settings.dark_mode || false; // Check if dark mode is enabled
+                document.getElementById('dark-mode').checked = settings.dark_mode || false;
+                
+                // Ana sayfa içerik alanlarını doldur
+                document.getElementById('about-title').value = settings.about_title || '';
+                document.getElementById('about-content').value = settings.about_content || '';
+                document.getElementById('hobbies-title').value = settings.hobbies_title || '';
+                document.getElementById('hobbies-content').value = settings.hobbies_content || '';
+                document.getElementById('courses-title').value = settings.courses_title || '';
+                document.getElementById('courses-content').value = settings.courses_content || '';
+                document.getElementById('dream-title').value = settings.dream_title || '';
+                document.getElementById('dream-content').value = settings.dream_content || '';
+                document.getElementById('dream-video-url').value = settings.dream_video_url || '';
+                document.getElementById('contact-title').value = settings.contact_title || '';
+                document.getElementById('contact-description').value = settings.contact_description || '';
                 
                 // Sosyal medya linklerini doldur
                 if (settings.social_links) {

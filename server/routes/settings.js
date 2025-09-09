@@ -39,14 +39,28 @@ router.get('/', async (req, res) => {
         }),
         theme_color: '#667eea',
         dark_mode: false,
+        
+        // Ana sayfa içerik alanları
+        about_title: 'GAMZE BIÇAKÇI KİMDİR?',
+        about_content: '2004 yılının sıcak bir yaz gününde 14 Ağustos\'ta dünyaya gelmiştir. Kendisinden 2 yaş büyük bir abisi vardır. 4 kişilik çekirdek bir aileyle büyümüştür.\n\nİlkokuldan beri yazmayla ilgilenmiştir. Kısa hikayeler, deneme yazıları, milli bayramlarla ilgili yazılar yazıp yarışmalara katılmıştır. Yazdıklarıyla insanları etkilemeyi sever.\n\nÖdüller aldıkça ve insanları etkilediğini hissettikçe bu yönünün kuvvetli olduğuna inanmış ve geleceğinin bir parçasının bu olmasını istemiştir. Yaratıcı yönüne inandığı için üniversitede reklamcılık okumaya karar vermiştir.',
+        hobbies_title: 'HOBİLER',
+        hobbies_content: 'Son birkaç yıldır olmasa da bir dönem kitap kurduydu :(\nMüzik dinlemeyi ve dans etmeyi sever.\nBir şeyler pişirmeyi (özellikle tatlı) sever.\nBasketbol oynamayı sever.\nBir dönem pilates ve yogaya ilgiliydi.\nPsikolojiyle ilgili kitaplar okumayı ve filmler izlemeyi sever.\nYeni yerler keşfetmeye bayılır. (Özellikle az insanın olduğu)\nYürüyüş yapmayı sever.\nTam olarak bilmese de yüzmeyi sever.\nMüzik aletleri çalmayı deniyor, umarım bir gün başarır.\nOrganizasyonlar yapmaya bayılır. (doğum günleri, özel günler vs.)\nSesini kullanmayı sever. (şiir okumak, dinleti vb. etkinlikler)\nDans ve müzik tutkusu ile hayatı renklendirir.\nKahve tutkusu ile her güne enerji dolu başlar.',
+        courses_title: 'ALDIĞIM DERSLER:',
+        courses_content: 'fotoğrafçılık | internet programcılığı | iletişim tarihi\nreklama giriş 2 | siyaset bilimine giriş | iktisat\npsikoloji | kariyer planlama | ingilizce',
+        dream_title: 'enbüyükhayalim',
+        dream_content: '🎬 YouTube\'da izle',
+        dream_video_url: 'https://youtu.be/LIZ1KxOVBSI?si=e1QrT9Y5QR8LPJvL',
+        contact_title: '💌 İletişime Geç',
+        contact_description: 'Her türlü soru, fikir ya da işbirliği için benimle iletişime geçebilirsin.',
+        
         created_at: new Date(),
         updated_at: new Date()
       };
       
       const insertResult = await pool.query(`
         INSERT INTO site_settings 
-        (site_title, site_description, default_author, author_bio, hero_title, hero_subtitle, hero_description, contact_email, social_links, theme_color, dark_mode, created_at, updated_at)
-        VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13)
+        (site_title, site_description, default_author, author_bio, hero_title, hero_subtitle, hero_description, contact_email, social_links, theme_color, dark_mode, about_title, about_content, hobbies_title, hobbies_content, courses_title, courses_content, dream_title, dream_content, dream_video_url, contact_title, contact_description, created_at, updated_at)
+        VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, $18, $19, $20, $21, $22, $23, $24)
         RETURNING *
       `, [
         defaultSettings.site_title,
@@ -60,6 +74,17 @@ router.get('/', async (req, res) => {
         defaultSettings.social_links,
         defaultSettings.theme_color,
         defaultSettings.dark_mode,
+        defaultSettings.about_title,
+        defaultSettings.about_content,
+        defaultSettings.hobbies_title,
+        defaultSettings.hobbies_content,
+        defaultSettings.courses_title,
+        defaultSettings.courses_content,
+        defaultSettings.dream_title,
+        defaultSettings.dream_content,
+        defaultSettings.dream_video_url,
+        defaultSettings.contact_title,
+        defaultSettings.contact_description,
         defaultSettings.created_at,
         defaultSettings.updated_at
       ]);
@@ -88,7 +113,18 @@ router.put('/', async (req, res) => {
       contact_email,
       social_links,
       theme_color,
-      dark_mode
+      dark_mode,
+      about_title,
+      about_content,
+      hobbies_title,
+      hobbies_content,
+      courses_title,
+      courses_content,
+      dream_title,
+      dream_content,
+      dream_video_url,
+      contact_title,
+      contact_description
     } = req.body;
 
     const result = await pool.query(`
@@ -105,6 +141,17 @@ router.put('/', async (req, res) => {
         social_links = $9,
         theme_color = $10,
         dark_mode = $11,
+        about_title = $12,
+        about_content = $13,
+        hobbies_title = $14,
+        hobbies_content = $15,
+        courses_title = $16,
+        courses_content = $17,
+        dream_title = $18,
+        dream_content = $19,
+        dream_video_url = $20,
+        contact_title = $21,
+        contact_description = $22,
         updated_at = NOW()
       WHERE id = (SELECT id FROM site_settings ORDER BY id ASC LIMIT 1)
       RETURNING *
@@ -119,7 +166,18 @@ router.put('/', async (req, res) => {
       contact_email,
       social_links,
       theme_color,
-      dark_mode
+      dark_mode,
+      about_title,
+      about_content,
+      hobbies_title,
+      hobbies_content,
+      courses_title,
+      courses_content,
+      dream_title,
+      dream_content,
+      dream_video_url,
+      contact_title,
+      contact_description
     ]);
 
     if (result.rows.length > 0) {

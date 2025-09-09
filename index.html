@@ -644,6 +644,9 @@
                         loadSocialLinks(settings.social_links);
                     }
                     
+                    // Ana sayfa içeriklerini güncelle
+                    updateHomePageContent(settings);
+                    
                 } else {
                     console.log('Ayarlar yüklenemedi, varsayılan değerler kullanılıyor');
                 }
@@ -695,6 +698,78 @@
             
             // Body background'ını güncelle
             document.body.style.background = `linear-gradient(135deg, ${primaryColor} 0%, ${adjustColor(primaryColor, -20)} 100%)`;
+        }
+        
+        // Ana sayfa içeriklerini güncelle
+        function updateHomePageContent(settings) {
+            // Hakkında bölümü
+            if (settings.about_title) {
+                const aboutTitle = document.querySelector('.section-title');
+                if (aboutTitle) aboutTitle.textContent = settings.about_title;
+            }
+            
+            if (settings.about_content) {
+                const aboutContent = document.querySelector('.about-text');
+                if (aboutContent) {
+                    aboutContent.innerHTML = settings.about_content.replace(/\n\n/g, '<br><br>');
+                }
+            }
+            
+            // Hobiler bölümü
+            if (settings.hobbies_title) {
+                const hobbiesTitle = document.querySelector('.feature-card:nth-child(1) .feature-title');
+                if (hobbiesTitle) hobbiesTitle.textContent = settings.hobbies_title;
+            }
+            
+            if (settings.hobbies_content) {
+                const hobbiesList = document.querySelector('.feature-card:nth-child(1) .feature-list');
+                if (hobbiesList) {
+                    const hobbies = settings.hobbies_content.split('\n').filter(h => h.trim());
+                    hobbiesList.innerHTML = hobbies.map(hobby => `<li>${hobby.trim()}</li>`).join('');
+                }
+            }
+            
+            // Dersler bölümü
+            if (settings.courses_title) {
+                const coursesTitle = document.querySelector('.feature-card:nth-child(2) .feature-title');
+                if (coursesTitle) coursesTitle.textContent = settings.courses_title;
+            }
+            
+            if (settings.courses_content) {
+                const coursesList = document.querySelector('.feature-card:nth-child(2) .feature-list');
+                if (coursesList) {
+                    const courses = settings.courses_content.split('\n').filter(c => c.trim());
+                    coursesList.innerHTML = courses.map(course => `<li>${course.trim()}</li>`).join('');
+                }
+            }
+            
+            // Hayal bölümü
+            if (settings.dream_title) {
+                const dreamTitle = document.querySelector('.dream-title');
+                if (dreamTitle) dreamTitle.textContent = settings.dream_title;
+            }
+            
+            if (settings.dream_content && settings.dream_video_url) {
+                const dreamText = document.querySelector('.dream-text');
+                if (dreamText) {
+                    dreamText.innerHTML = `
+                        <a href="${settings.dream_video_url}" target="_blank" style="color: #4ecdc4; text-decoration: none; font-weight: 600;">
+                            ${settings.dream_content}
+                        </a>
+                    `;
+                }
+            }
+            
+            // İletişim bölümü
+            if (settings.contact_title) {
+                const contactTitle = document.querySelector('.contact-section .section-title');
+                if (contactTitle) contactTitle.textContent = settings.contact_title;
+            }
+            
+            if (settings.contact_description) {
+                const contactDesc = document.querySelector('.contact-section p');
+                if (contactDesc) contactDesc.textContent = settings.contact_description;
+            }
         }
         
         // Sosyal medya linklerini yükle

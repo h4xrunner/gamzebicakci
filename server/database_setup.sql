@@ -12,6 +12,20 @@ CREATE TABLE IF NOT EXISTS site_settings (
     social_links JSONB,
     theme_color VARCHAR(7),
     dark_mode BOOLEAN DEFAULT false,
+    
+    -- Ana sayfa içerik alanları
+    about_title VARCHAR(255),
+    about_content TEXT,
+    hobbies_title VARCHAR(255),
+    hobbies_content TEXT,
+    courses_title VARCHAR(255),
+    courses_content TEXT,
+    dream_title VARCHAR(255),
+    dream_content TEXT,
+    dream_video_url VARCHAR(500),
+    contact_title VARCHAR(255),
+    contact_description TEXT,
+    
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
