@@ -104,6 +104,53 @@
             letter-spacing: 0.5px;
         }
         
+        /* Kategori Filtreleri */
+        .category-filters {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.8rem;
+            justify-content: center;
+            margin-top: 2rem;
+            padding: 1.5rem;
+            background: rgba(255, 255, 255, 0.08);
+            border-radius: 20px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+        }
+        
+        .category-filter {
+            padding: 0.8rem 1.5rem;
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 25px;
+            color: var(--text-primary);
+            font-size: 0.9rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            backdrop-filter: blur(10px);
+            font-family: 'Inter', sans-serif;
+        }
+        
+        .category-filter:hover {
+            background: rgba(255, 255, 255, 0.2);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+        }
+        
+        .category-filter.active {
+            background: linear-gradient(45deg, #4ecdc4, #45b7d1);
+            border-color: #4ecdc4;
+            color: white;
+            box-shadow: 0 8px 20px rgba(78, 205, 196, 0.3);
+        }
+        
+        .category-filter.active:hover {
+            background: linear-gradient(45deg, #45b7d1, #4ecdc4);
+            transform: translateY(-2px);
+            box-shadow: 0 12px 25px rgba(78, 205, 196, 0.4);
+        }
+        
         .blog-post {
             background: var(--glass-bg);
             margin-bottom: 2.5rem;
@@ -392,6 +439,16 @@
             
             .post-image {
                 height: 200px;
+            }
+            
+            .category-filters {
+                gap: 0.5rem;
+                padding: 1rem;
+            }
+            
+            .category-filter {
+                padding: 0.6rem 1rem;
+                font-size: 0.8rem;
             }
         }
         
@@ -846,6 +903,22 @@
         <div class="blog-header">
             <h1>✨ Blog</h1>
             <p>Düşüncelerim, deneyimlerim ve öğrendiklerim...</p>
+            
+            <!-- Kategori Filtreleri -->
+            <div class="category-filters">
+                <button class="category-filter active" data-category="all">🌟 Tümü</button>
+                <button class="category-filter" data-category="Teknoloji">💻 Teknoloji</button>
+                <button class="category-filter" data-category="Bilim">🔬 Bilim</button>
+                <button class="category-filter" data-category="Sanat">🎨 Sanat</button>
+                <button class="category-filter" data-category="Edebiyat">📚 Edebiyat</button>
+                <button class="category-filter" data-category="Felsefe">🤔 Felsefe</button>
+                <button class="category-filter" data-category="Seyahat">✈️ Seyahat</button>
+                <button class="category-filter" data-category="Yemek">🍽️ Yemek</button>
+                <button class="category-filter" data-category="Spor">⚽ Spor</button>
+                <button class="category-filter" data-category="Sağlık">🏥 Sağlık</button>
+                <button class="category-filter" data-category="Eğitim">🎓 Eğitim</button>
+                <button class="category-filter" data-category="Diğer">📝 Diğer</button>
+            </div>
         </div>
         
         <!-- Misafir Yazı Ekleme Butonu -->
@@ -929,6 +1002,10 @@
     <script src="../assets/js/main.js"></script>
     
     <script>
+        // Global değişkenler
+        let allPosts = [];
+        let currentCategory = 'all';
+        
         function calculateReadTime(text) {
             const wordsPerMinute = 200;
             const words = text.split(' ').length;
@@ -960,7 +1037,6 @@
             try {
                 const response = await fetch('/api/posts');
                 const posts = await response.json();
-                const postsContainer = document.getElementById('blog-posts');
                 
                 // Filter only public posts for blog display
                 const publicPosts = posts.filter(post => 
@@ -968,30 +1044,14 @@
                     (post.status === 'scheduled' && new Date(post.publish_at) <= new Date())
                 );
                 
-                if (publicPosts.length === 0) {
-                    postsContainer.innerHTML = `
-                        <div class="no-posts">
-                            <h3>🌟 Henüz yazı yok</h3>
-                            <p>İlk blog yazısı yakında yayınlanacak!</p>
-                        </div>
-                    `;
-                    return;
-                }
+                // Tüm postları global değişkende sakla
+                allPosts = publicPosts;
                 
-                postsContainer.innerHTML = publicPosts.map((post, index) => {
-                    post.index = index; // index ekle
-                    return renderPost(post);
-                }).join('');
+                // Kategori filtrelerini güncelle
+                updateCategoryFilters();
                 
-                // Her post için yorumları yükle
-                publicPosts.forEach(post => {
-                    if (post.comments_enabled) {
-                        loadComments(post.id);
-                    }
-                });
-                
-                // Add intersection observer for animations
-                observeElements();
+                // Mevcut kategoriye göre postları filtrele ve göster
+                filterPostsByCategory(currentCategory);
                 
             } catch (error) {
                 console.error('Blog yazıları yüklenemedi:', error);
@@ -1002,6 +1062,96 @@
                     </div>
                 `;
             }
+        }
+        
+        // Kategori filtrelerini güncelle
+        function updateCategoryFilters() {
+            const categories = [...new Set(allPosts.map(post => post.category).filter(cat => cat))];
+            const filterContainer = document.querySelector('.category-filters');
+            
+            // Mevcut filtreleri temizle (Tümü butonu hariç)
+            const existingFilters = filterContainer.querySelectorAll('.category-filter:not([data-category="all"])');
+            existingFilters.forEach(filter => filter.remove());
+            
+            // Kategorilere göre filtre butonları ekle
+            categories.forEach(category => {
+                const button = document.createElement('button');
+                button.className = 'category-filter';
+                button.setAttribute('data-category', category);
+                button.textContent = getCategoryIcon(category) + ' ' + category;
+                button.addEventListener('click', () => selectCategory(category));
+                
+                // Tümü butonundan sonra ekle
+                const allButton = filterContainer.querySelector('[data-category="all"]');
+                allButton.parentNode.insertBefore(button, allButton.nextSibling);
+            });
+        }
+        
+        // Kategori ikonunu al
+        function getCategoryIcon(category) {
+            const icons = {
+                'Teknoloji': '💻',
+                'Bilim': '🔬',
+                'Sanat': '🎨',
+                'Edebiyat': '📚',
+                'Felsefe': '🤔',
+                'Seyahat': '✈️',
+                'Yemek': '🍽️',
+                'Spor': '⚽',
+                'Sağlık': '🏥',
+                'Eğitim': '🎓',
+                'Diğer': '📝'
+            };
+            return icons[category] || '📝';
+        }
+        
+        // Kategori seç
+        function selectCategory(category) {
+            currentCategory = category;
+            
+            // Aktif butonu güncelle
+            document.querySelectorAll('.category-filter').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            document.querySelector(`[data-category="${category}"]`).classList.add('active');
+            
+            // Postları filtrele
+            filterPostsByCategory(category);
+        }
+        
+        // Kategoriye göre postları filtrele
+        function filterPostsByCategory(category) {
+            const postsContainer = document.getElementById('blog-posts');
+            let filteredPosts = allPosts;
+            
+            if (category !== 'all') {
+                filteredPosts = allPosts.filter(post => post.category === category);
+            }
+            
+            if (filteredPosts.length === 0) {
+                postsContainer.innerHTML = `
+                    <div class="no-posts">
+                        <h3>📝 Bu kategoride henüz yazı yok</h3>
+                        <p>${category === 'all' ? 'Henüz hiç yazı yayınlanmamış.' : `${category} kategorisinde henüz yazı bulunmuyor.`}</p>
+                    </div>
+                `;
+                return;
+            }
+            
+            postsContainer.innerHTML = filteredPosts.map((post, index) => {
+                post.index = index;
+                return renderPost(post);
+            }).join('');
+            
+            // Her post için yorumları yükle
+            filteredPosts.forEach(post => {
+                if (post.comments_enabled) {
+                    loadComments(post.id);
+                }
+            });
+            
+            // Add intersection observer for animations
+            observeElements();
         }
         
         // Smooth scroll animation for new posts
@@ -1447,6 +1597,14 @@
         
         // Sayfa yüklendiğinde blog yazılarını getir
         loadBlogPosts();
+        
+        // Tümü butonuna event listener ekle
+        document.addEventListener('DOMContentLoaded', function() {
+            const allButton = document.querySelector('[data-category="all"]');
+            if (allButton) {
+                allButton.addEventListener('click', () => selectCategory('all'));
+            }
+        });
         
         // Dark mode fonksiyonları
         function setTheme(theme) {
