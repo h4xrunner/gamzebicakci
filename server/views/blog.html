@@ -205,12 +205,14 @@
         .post-image {
             width: 100%;
             height: 250px;
-            object-fit: cover;
+            object-fit: contain;
+            object-position: center;
             border-radius: 20px 20px 0 0;
             margin-bottom: 0;
             display: block !important;
             opacity: 1 !important;
             visibility: visible !important;
+            background: rgba(255, 255, 255, 0.05);
         }
         
         .post-content-wrapper {
@@ -459,6 +461,8 @@
             
             .post-image {
                 height: 200px;
+                object-fit: contain;
+                object-position: center;
             }
             
             .category-filters {
