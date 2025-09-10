@@ -164,6 +164,26 @@
             overflow: hidden;
         }
         
+        .blog-post.featured {
+            border: 2px solid #4ecdc4;
+            box-shadow: 0 12px 40px rgba(78, 205, 196, 0.3);
+        }
+        
+        .blog-post.featured::after {
+            content: "⭐ ÖNE ÇIKAN";
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            background: linear-gradient(45deg, #4ecdc4, #45b7d1);
+            color: white;
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            z-index: 10;
+            box-shadow: 0 4px 15px rgba(78, 205, 196, 0.4);
+        }
+        
         .blog-post::before {
             content: '';
             position: absolute;
@@ -1262,8 +1282,7 @@
             const formattedContent = formatContent(post.content || '');
             
             return `
-                <article class="blog-post" style="animation-delay: ${post.index * 0.1}s">
-                    ${post.featured ? '<div class="featured-badge">⭐ Öne Çıkan</div>' : ''}
+                <article class="blog-post ${post.featured ? 'featured' : ''}" style="animation-delay: ${post.index * 0.1}s">
                     ${getStatusBadge(post.status, post.publish_at)}
                     
                     ${post.image ? `

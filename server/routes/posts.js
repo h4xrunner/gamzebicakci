@@ -29,7 +29,7 @@ router.get('/', async (req, res) => {
     const result = await pool.query(`
       SELECT * FROM posts 
       WHERE status = 'public' OR (status = 'scheduled' AND publish_at <= NOW())
-      ORDER BY created_at DESC
+      ORDER BY featured DESC, created_at DESC
     `);
     res.json(result.rows);
   } catch (err) {
